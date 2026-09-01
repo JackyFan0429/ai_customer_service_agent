@@ -1,0 +1,8 @@
+# Historical support data may contain sensitive content. Keep it out of Git.
+data/input/
+data/output/
+
+__pycache__/
+*.py[cod]
+.DS_Store
+

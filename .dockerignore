@@ -1,0 +1,16 @@
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+__pycache__
+*.py[cod]
+runtime
+data/input
+data/output/*
+!data/output/retrieval
+!data/output/retrieval/retrieval_corpus.jsonl
+knowledge/official/internal
+knowledge/official/sources
+knowledge/official/audit
+tests

@@ -7,9 +7,11 @@ An evidence-grounded customer support agent built on an official knowledge base 
 * P1 official knowledge takes priority; P2 historical cases are used only as troubleshooting references.
 * Automatically excludes outdated official materials, potentially conflicting cases, and restricted content.
 * Routes questions to direct answers, requests for additional information, or human escalation.
+* Fails closed before model generation when the knowledge base does not sufficiently cover a question or its exact error code.
 * Internal knowledge may influence routing, but it is never included in customer-facing prompts or citation lists.
 * Supports both a fully local deterministic mode and an OpenAI Responses API mode.
-* Returns structured evidence for easier auditing and future integration with Telegram or web services.
+* Includes a browser-based support workspace with persistent local conversation history.
+* Returns structured evidence for easier auditing and future integration with Telegram.
 
 ## Quick Start
 
@@ -30,6 +32,48 @@ JSON output:
 ```bash
 python3 -m krill_agent.cli --json "How should I configure the Codex Base URL?"
 ```
+
+## Web MVP
+
+Start the local web interface with the dependency-free Python server:
+
+```bash
+python3 -m krill_agent.web
+```
+
+Open [http://127.0.0.1:8080](http://127.0.0.1:8080). The interface includes a conversation-history sidebar, right-aligned green customer messages, left-aligned AI responses, routing status, and evidence labels.
+
+The command above intentionally uses the safe `local` provider. A provider flag passed to an earlier CLI command does not carry over to a separate web-server process. To run the web interface with an OpenAI model, use:
+
+```bash
+export OPENAI_API_KEY="..."
+export OPENAI_MODEL="your-model-id"
+python3 -m krill_agent.web --provider openai
+```
+
+The active provider is displayed in the top-right status pill and printed in the server startup message.
+
+Conversation history is stored in `runtime/krill_agent.db` using SQLite. The `runtime/` directory is ignored by Git.
+
+Optional web settings:
+
+| Variable | Purpose | Default |
+| --- | --- | --- |
+| `KRILL_WEB_HOST` | HTTP bind address | `127.0.0.1` |
+| `KRILL_WEB_PORT` | HTTP port | `8080` |
+| `KRILL_AGENT_DB` | SQLite database path | `runtime/krill_agent.db` |
+
+## Docker
+
+Build and run the local MVP:
+
+```bash
+docker compose up --build
+```
+
+Then open [http://localhost:8080](http://localhost:8080). The Compose configuration mounts `./runtime` into the container, so conversation history survives container replacement.
+
+To use the OpenAI provider, copy `.env.example` to `.env`, set the API key and model, and change `KRILL_AGENT_PROVIDER` to `openai`. Never commit the resulting `.env` file.
 
 ## Using OpenAI Models
 
@@ -58,7 +102,7 @@ Do not commit `.env` files, API keys, customer data, or internal PDFs to Git.
 The core agent tests do not depend on external services:
 
 ```bash
-python3 -m unittest tests.test_agent tests.test_providers -v
+python3 -m unittest tests.test_agent tests.test_database tests.test_providers tests.test_web -v
 ```
 
 The full test suite also validates PDF strikethrough extraction logic and requires the project's PDF runtime dependencies:
@@ -108,4 +152,4 @@ python3 scripts/build_retrieval_corpus.py \
 
 ## Project Status
 
-The current version includes a runnable agent core and CLI. Before production integration, the project still needs persistent sessions, Telegram/web channel adapters, real-time account tools, a human ticketing system, and an online evaluation set.
+The current version includes a runnable agent core, CLI, browser MVP, SQLite conversation history, and local Docker deployment. Before production integration, the project still needs authentication, a Telegram adapter, real-time account tools, a human ticketing system, and an online evaluation set.

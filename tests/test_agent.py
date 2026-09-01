@@ -7,7 +7,7 @@ from pathlib import Path
 from krill_agent.agent import CustomerAgent
 from krill_agent.config import AgentConfig
 from krill_agent.models import Route
-from krill_agent.policy import select_evidence
+from krill_agent.policy import IDENTITY_RESPONSE, select_evidence
 
 
 def record(**overrides):
@@ -149,6 +149,59 @@ class AgentTests(unittest.TestCase):
         response = agent.respond("今天服务是不是挂了？")
         self.assertEqual(response.route, Route.ESCALATE)
         self.assertIn("实时服务状态", response.reason)
+
+    def test_identity_question_without_punctuation_uses_standard_response(self):
+        provider = StubProvider()
+        agent = self.make_agent([record()], provider)
+        response = agent.respond("你是谁")
+        self.assertEqual(response.route, Route.ANSWER)
+        self.assertEqual(response.answer, IDENTITY_RESPONSE)
+        self.assertEqual(response.citations, [])
+        self.assertEqual(provider.evidence, [])
+
+    def test_identity_question_with_punctuation_has_same_response(self):
+        provider = StubProvider()
+        agent = self.make_agent([record()], provider)
+        response = agent.respond("你是谁？")
+        self.assertEqual(response.answer, IDENTITY_RESPONSE)
+        self.assertEqual(provider.evidence, [])
+
+    def test_out_of_domain_question_clarifies_without_generation(self):
+        provider = StubProvider()
+        agent = self.make_agent([record()], provider)
+        response = agent.respond("怎么在月球上用 Krill 煮咖啡？")
+        self.assertEqual(response.route, Route.CLARIFY)
+        self.assertIn("没有从知识库中找到", response.answer)
+        self.assertIn("已经尝试的步骤", response.answer)
+        self.assertEqual(provider.evidence, [])
+
+    def test_error_code_must_appear_in_evidence(self):
+        provider = StubProvider()
+        claude_without_401 = record(
+            title="Claude Code connection setup",
+            text="Configure Claude Code using the current setup guide.",
+            products=["claude"],
+            clients=["claude_code"],
+            keywords=["Claude", "Code", "connection"],
+        )
+        agent = self.make_agent([claude_without_401], provider)
+        response = agent.respond("Claude Code 报 401 怎么办？")
+        self.assertEqual(response.route, Route.CLARIFY)
+        self.assertEqual(provider.evidence, [])
+
+    def test_matching_error_code_can_reach_provider(self):
+        provider = StubProvider()
+        claude_with_401 = record(
+            title="Claude Code 401 error",
+            text="A Claude Code 401 error can indicate invalid authentication configuration.",
+            products=["claude"],
+            clients=["claude_code"],
+            keywords=["Claude", "Code", "401", "authentication"],
+        )
+        agent = self.make_agent([claude_with_401], provider)
+        response = agent.respond("Claude Code 报 401 怎么办？")
+        self.assertEqual(response.route, Route.ANSWER)
+        self.assertTrue(provider.evidence)
 
 
 if __name__ == "__main__":

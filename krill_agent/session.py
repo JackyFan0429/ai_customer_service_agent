@@ -19,10 +19,14 @@ class SessionStore:
     def add(self, session_id: str, role: str, text: str) -> None:
         self._sessions[session_id].append(Turn(role=role, text=text))
 
+    def replace(self, session_id: str, turns: list[Turn]) -> None:
+        history: deque[Turn] = deque(maxlen=self._sessions[session_id].maxlen)
+        history.extend(turns)
+        self._sessions[session_id] = history
+
     def contextualize(self, session_id: str | None, query: str) -> str:
         if not session_id or session_id not in self._sessions:
             return query
         history = list(self._sessions[session_id])[-4:]
         compact = "\n".join(f"{turn.role}: {turn.text[:300]}" for turn in history)
         return f"历史对话：\n{compact}\n\n当前问题：{query}"
-

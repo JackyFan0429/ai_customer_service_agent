@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Local Krill AI customer support workspace">
+    <title>Krill AI Support</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-mark" aria-hidden="true">K</div>
+        <div class="brand-copy">
+          <strong>Krill AI</strong>
+          <span>Customer Support</span>
+        </div>
+        <div class="topbar-status">
+          <span class="status-dot"></span>
+          <span id="providerLabel">Connecting</span>
+        </div>
+      </header>
+
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-heading">
+          <div>
+            <span class="eyebrow">Workspace</span>
+            <h1>Conversations</h1>
+          </div>
+          <button class="icon-button" id="closeSidebar" aria-label="Close conversation history">×</button>
+        </div>
+        <button class="new-chat-button" id="newConversation">
+          <span>＋</span>
+          New conversation
+        </button>
+        <div class="history-label">Recent</div>
+        <nav class="conversation-list" id="conversationList" aria-label="Conversation history"></nav>
+        <div class="sidebar-footer">
+          <span class="database-icon" aria-hidden="true">▰</span>
+          <div>
+            <strong>Stored locally</strong>
+            <span>SQLite conversation history</span>
+          </div>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <div class="workspace-header">
+          <button class="icon-button menu-button" id="openSidebar" aria-label="Open conversation history">☰</button>
+          <div>
+            <span class="eyebrow">Support desk</span>
+            <h2 id="conversationTitle">New conversation</h2>
+          </div>
+          <button class="delete-button" id="deleteConversation" title="Delete this conversation">Delete</button>
+        </div>
+
+        <section class="messages" id="messages" aria-live="polite">
+          <div class="empty-state" id="emptyState">
+            <div class="empty-logo">K</div>
+            <h3>How can I help?</h3>
+            <p>Ask a question about setup, models, billing, or troubleshooting. Answers are grounded in the local knowledge base.</p>
+            <div class="suggestions">
+              <button data-prompt="How should I configure the Codex Base URL?">Configure Codex</button>
+              <button data-prompt="Claude Code cannot connect. What information should I check?">Connection issue</button>
+            </div>
+          </div>
+        </section>
+
+        <footer class="composer-wrap">
+          <form class="composer" id="messageForm">
+            <textarea id="messageInput" rows="1" maxlength="8000" placeholder="Write a customer question…" aria-label="Customer question"></textarea>
+            <button type="submit" id="sendButton">
+              <span>Send</span>
+              <span aria-hidden="true">↑</span>
+            </button>
+          </form>
+          <p class="composer-note">Enter to send · Shift + Enter for a new line · Do not share passwords or API keys</p>
+        </footer>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status"></div>
+    <script src="/app.js" defer></script>
+  </body>
+</html>

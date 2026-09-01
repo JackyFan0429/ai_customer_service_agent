@@ -1,0 +1,13 @@
+services:
+  krill-agent:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      KRILL_AGENT_PROVIDER: ${KRILL_AGENT_PROVIDER:-local}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://api.openai.com/v1}
+    volumes:
+      - ./runtime:/app/runtime
+    restart: unless-stopped

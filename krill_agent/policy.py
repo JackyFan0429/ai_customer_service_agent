@@ -16,6 +16,14 @@ ACCOUNT_SPECIFIC_RE = re.compile(
 )
 LIVE_STATE_RE = re.compile(r"(现在|今天|刚刚|此刻).{0,12}(挂了|故障|宕机|异常|不可用|恢复|状态)", re.I)
 VAGUE_RE = re.compile(r"^(不能用|用不了|不行|报错了|有问题|怎么办|help|你好)[!！?？。\s]*$", re.I)
+IDENTITY_RE = re.compile(
+    r"^(你是谁|你是什么|你是机器人吗|who are you|what are you)[!！?？。\s]*$",
+    re.I,
+)
+GREETING_RE = re.compile(r"^(你好|您好|hello|hi|hey)[!！?？。\s]*$", re.I)
+
+IDENTITY_RESPONSE = "我是 Krill AI 客服助手，可以协助解答产品使用、订单和常见问题。请问有什么可以帮您？"
+GREETING_RESPONSE = "您好，我是 Krill AI 客服助手。请问有什么可以帮您？"
 
 
 def is_current(record: dict[str, Any], today: date) -> bool:
@@ -35,12 +43,23 @@ def select_evidence(
     *,
     today: date,
     min_score: float,
+    query: str | None = None,
 ) -> tuple[list[Evidence], list[Evidence]]:
     customer: list[Evidence] = []
     internal: list[Evidence] = []
     for record in records:
         if float(record.get("score", 0.0)) < min_score:
             continue
+        if query is not None:
+            coverage = float(record.get("query_term_coverage", 0.0))
+            query_term_count = int(record.get("query_term_count", 0))
+            required_coverage = 0.5 if query_term_count <= 2 else 0.4
+            if query_term_count == 0 or coverage < required_coverage:
+                continue
+            critical_terms = set(record.get("critical_query_terms", []))
+            matched_critical_terms = set(record.get("matched_critical_terms", []))
+            if critical_terms and not critical_terms.issubset(matched_critical_terms):
+                continue
         current = is_current(record, today)
         evidence = Evidence.from_record(record, current=current)
         if evidence.audience == "restricted_internal":
@@ -62,6 +81,18 @@ def select_evidence(
 def decide_route(query: str, customer: list[Evidence], internal: list[Evidence]) -> PolicyDecision:
     normalized = query.strip()
     internal_ids = tuple(item.document_id for item in internal)
+    if IDENTITY_RE.fullmatch(normalized):
+        return PolicyDecision(
+            route=Route.ANSWER,
+            reason="标准身份说明，不需要检索知识库",
+            customer_message=IDENTITY_RESPONSE,
+        )
+    if GREETING_RE.fullmatch(normalized):
+        return PolicyDecision(
+            route=Route.ANSWER,
+            reason="标准问候，不需要检索知识库",
+            customer_message=GREETING_RESPONSE,
+        )
     if ACCOUNT_SPECIFIC_RE.search(normalized):
         return PolicyDecision(
             route=Route.ESCALATE,
@@ -86,8 +117,8 @@ def decide_route(query: str, customer: list[Evidence], internal: list[Evidence])
     if not customer:
         return PolicyDecision(
             route=Route.CLARIFY,
-            reason="没有足够的可公开证据支持回答",
-            customer_message="我暂时没有找到足够可靠的公开知识。请补充产品或客户端、操作步骤、发生时间和完整报错；如涉及账户或订单，请转人工客服处理。",
+            reason="知识库没有足够相关且可公开的证据支持回答",
+            customer_message="我暂时没有从知识库中找到足够可靠的答案。请再详细说明你使用的产品或客户端、想完成的操作、已经尝试的步骤，以及完整报错文字（请先遮盖 API Key、密码和个人信息）。",
             internal_document_ids=internal_ids,
         )
     return PolicyDecision(

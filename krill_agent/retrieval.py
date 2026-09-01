@@ -11,6 +11,19 @@ from typing import Any
 
 
 WORD_RE = re.compile(r"[a-z][a-z0-9_.+-]*|\d{3}|[\u4e00-\u9fff]", re.I)
+LATIN_OR_CODE_RE = re.compile(r"[a-z][a-z0-9_.+-]*|\d{3,}", re.I)
+GENERIC_QUERY_TERMS = {
+    "你好",
+    "请问",
+    "一下",
+    "什么",
+    "怎么",
+    "如何",
+    "是否",
+    "问题",
+    "这个",
+    "那个",
+}
 
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -24,6 +37,29 @@ def terms(text: str) -> list[str]:
     chinese = "".join(ch for ch in raw if "\u4e00" <= ch <= "\u9fff")
     base.extend(chinese[index : index + 2] for index in range(max(0, len(chinese) - 1)))
     return base
+
+
+def meaningful_query_terms(text: str) -> set[str]:
+    """Return intent-bearing tokens used to estimate KB coverage.
+
+    Single Chinese characters are intentionally excluded because they caused
+    unrelated records to appear well matched. Unknown terms remain in the
+    denominator, which makes out-of-domain questions fail closed.
+    """
+    raw = str(text).casefold()
+    features = set(LATIN_OR_CODE_RE.findall(raw))
+    for segment in re.findall(r"[\u4e00-\u9fff]+", raw):
+        features.update(segment[index : index + 2] for index in range(max(0, len(segment) - 1)))
+    return {item for item in features if item not in GENERIC_QUERY_TERMS}
+
+
+def critical_query_terms(text: str) -> set[str]:
+    """Return exact error/status tokens that must occur in supporting evidence."""
+    return {
+        item.casefold()
+        for item in LATIN_OR_CODE_RE.findall(str(text))
+        if item.isdigit() or any(character.isdigit() for character in item)
+    }
 
 
 def char_features(text: str) -> Counter[str]:
@@ -77,6 +113,8 @@ def search(
     for values in document_terms:
         doc_freq.update(set(values))
     query_terms = terms(query)
+    coverage_terms = meaningful_query_terms(query)
+    critical_terms = critical_query_terms(query)
     query_features = char_features(query)
     n_docs = len(filtered)
     raw_scores: list[tuple[float, float, dict[str, Any]]] = []
@@ -115,11 +153,21 @@ def search(
         score = base + authority_boost
         if score <= 0:
             continue
+        document_coverage_terms = meaningful_query_terms(searchable_text(row))
+        matched_coverage_terms = coverage_terms.intersection(document_coverage_terms)
+        query_term_coverage = len(matched_coverage_terms) / max(1, len(coverage_terms))
+        document_text = searchable_text(row).casefold()
+        matched_critical_terms = {item for item in critical_terms if item in document_text}
         results.append({
             "score": round(score, 6),
             "lexical_score": round(lexical, 6),
             "semantic_ngram_score": round(semantic, 6),
             "authority_boost": authority_boost,
+            "query_term_coverage": round(query_term_coverage, 6),
+            "matched_query_terms": sorted(matched_coverage_terms),
+            "query_term_count": len(coverage_terms),
+            "critical_query_terms": sorted(critical_terms),
+            "matched_critical_terms": sorted(matched_critical_terms),
             **row,
         })
     results.sort(
@@ -139,4 +187,3 @@ class HybridRetriever:
 
     def search(self, query: str, top_k: int = 8) -> list[dict[str, Any]]:
         return search(self.corpus, query, top_k)
-

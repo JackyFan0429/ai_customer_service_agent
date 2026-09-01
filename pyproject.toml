@@ -12,7 +12,10 @@ dependencies = []
 
 [project.scripts]
 krill-agent = "krill_agent.cli:main"
+krill-agent-web = "krill_agent.web:main"
 
 [tool.setuptools.packages.find]
 include = ["krill_agent*"]
 
+[tool.setuptools.package-data]
+krill_agent = ["static/*.html", "static/*.css", "static/*.js", "static/*.svg"]

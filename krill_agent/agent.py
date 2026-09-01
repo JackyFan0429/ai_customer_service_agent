@@ -67,9 +67,13 @@ class CustomerAgent:
             records,
             today=self.today,
             min_score=self.config.min_score,
+            query=contextual_query,
         )
         decision = decide_route(query, customer, internal)
-        if decision.route is Route.ANSWER:
+        if decision.route is Route.ANSWER and decision.customer_message:
+            answer = decision.customer_message
+            citations = []
+        elif decision.route is Route.ANSWER:
             answer = self.provider.generate(query, customer, self.config.max_evidence_chars)
             # The local renderer quotes only its leading evidence item. Model
             # providers receive the complete curated set, so expose that set

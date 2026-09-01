@@ -2,7 +2,11 @@
 data/input/
 data/output/
 
+# Internal official material can contain operational and financial details.
+knowledge/official/internal/
+knowledge/official/sources/
+knowledge/official/audit/
+
 __pycache__/
 *.py[cod]
 .DS_Store
-

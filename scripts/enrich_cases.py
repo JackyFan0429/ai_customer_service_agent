@@ -87,6 +87,16 @@ LOW_VALUE_SUPPORT_RE = re.compile(
 REDACTION_TOKEN_RE = re.compile(
     r"<(?:EMAIL|API_KEY|TOKEN|SECRET|ID|USER_ID|SUBSCRIPTION_ID)>"
 )
+SECONDARY_SECRET_RE = re.compile(
+    r"\b(?:nb|sk|rk|pk|key)[_-][A-Za-z0-9_-]{16,}\b",
+    re.I,
+)
+JWT_RE = re.compile(
+    r"\beyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{10,}(?:\.[A-Za-z0-9_-]{10,})?\b"
+)
+LABELED_SECRET_RE = re.compile(
+    r"(?i)\b(api[_ -]?key|token|secret|password)\s*[：:=]\s*([^\s,;]{8,})"
+)
 CONTENT_INJECTION_RE = re.compile(
     r"(?:<\s*script\b|javascript\s*:|on(?:error|load|click)\s*=|"
     r"忽略.{0,20}(?:之前|以上|系统).{0,20}(?:指令|提示词)|"
@@ -104,7 +114,11 @@ def parse_args() -> argparse.Namespace:
 
 
 def clean(value: Any) -> str:
-    return re.sub(r"\s+", " ", str(value or "")).strip()
+    text = str(value or "")
+    text = SECONDARY_SECRET_RE.sub("<API_KEY>", text)
+    text = JWT_RE.sub("<TOKEN>", text)
+    text = LABELED_SECRET_RE.sub(lambda match: f"{match.group(1)}：<SECRET>", text)
+    return re.sub(r"\s+", " ", text).strip()
 
 
 def normalized(value: Any) -> str:
@@ -127,6 +141,17 @@ def unique(values: Iterable[Any]) -> list[Any]:
             seen.add(key)
             out.append(value)
     return out
+
+
+def sanitize_value(value: Any) -> Any:
+    """Apply the KB's second redaction pass to copied source fields."""
+    if isinstance(value, str):
+        return clean(value)
+    if isinstance(value, list):
+        return [sanitize_value(item) for item in value]
+    if isinstance(value, dict):
+        return {key: sanitize_value(item) for key, item in value.items()}
+    return value
 
 
 def match_labels(text: str, rules: Iterable[tuple[str, tuple[str, ...]]]) -> list[str]:
@@ -401,7 +426,7 @@ def enrich_case(case: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
             "source_case_quality": case.get("case_quality"),
         },
     }
-    enriched = dict(case)
+    enriched = sanitize_value(case)
     enriched["enrichment"] = enrichment
     return enriched, enrichment
 

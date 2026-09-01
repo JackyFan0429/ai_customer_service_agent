@@ -88,6 +88,19 @@ class EnrichmentTests(unittest.TestCase):
         _, result = enrich_case(case)
         self.assertEqual(result["historical_solution_candidates"], [])
 
+    def test_secondary_secret_redaction(self):
+        case = base_case(
+            description="配置密钥 nb_ABCdef1234567890_very_secret_value",
+            messages=[
+                {"role": "user", "content": "nb_ABCdef1234567890_very_secret_value 无法使用", "telegram_message_id": 1},
+                {"role": "support", "content": "请更换密钥", "telegram_message_id": 2},
+            ],
+        )
+        enriched, result = enrich_case(case)
+        serialized = str(enriched)
+        self.assertNotIn("nb_ABCdef1234567890_very_secret_value", serialized)
+        self.assertIn("<API_KEY>", result["problem_summary"])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,64 +1,87 @@
-# AI customer agent knowledge pipeline
+# Krill AI Customer Support
 
-This repository currently implements the first semantic-enrichment stage for a
-historical Telegram support-case knowledge base.
+An evidence-grounded customer support agent built on an official knowledge base and historical support cases. The project currently includes knowledge processing, official knowledge conflict checks, hybrid retrieval, and a runnable customer support response workflow.
 
-## Run
+## Current Capabilities
+
+* P1 official knowledge takes priority; P2 historical cases are used only as troubleshooting references.
+* Automatically excludes outdated official materials, potentially conflicting cases, and restricted content.
+* Routes questions to direct answers, requests for additional information, or human escalation.
+* Internal knowledge may influence routing, but it is never included in customer-facing prompts or citation lists.
+* Supports both a fully local deterministic mode and an OpenAI Responses API mode.
+* Returns structured evidence for easier auditing and future integration with Telegram or web services.
+
+## Quick Start
+
+Requires Python 3.11 or later. The default local mode requires no third-party dependencies or API key.
+
+```bash
+python3 -m krill_agent.cli "How should I configure the Codex Base URL?"
+```
+
+Interactive mode:
+
+```bash
+python3 -m krill_agent.cli
+```
+
+JSON output:
+
+```bash
+python3 -m krill_agent.cli --json "How should I configure the Codex Base URL?"
+```
+
+## Using OpenAI Models
+
+The project calls models through the Responses API. The model is not hard-coded and must be explicitly specified in the deployment environment.
+
+```bash
+export OPENAI_API_KEY="..."
+export OPENAI_MODEL="your-model-id"
+python3 -m krill_agent.cli --provider openai "How should I configure the Codex Base URL?"
+```
+
+Optional environment variables:
+
+| Variable               | Purpose                      | Default                                        |
+| ---------------------- | ---------------------------- | ---------------------------------------------- |
+| `KRILL_AGENT_PROVIDER` | `local` or `openai`          | `local`                                        |
+| `KRILL_AGENT_CORPUS`   | Retrieval corpus path        | `data/output/retrieval/retrieval_corpus.jsonl` |
+| `OPENAI_API_KEY`       | OpenAI API key               | None                                           |
+| `OPENAI_MODEL`         | Explicitly selected model ID | None                                           |
+| `OPENAI_BASE_URL`      | Responses API base URL       | `https://api.openai.com/v1`                    |
+
+Do not commit `.env` files, API keys, customer data, or internal PDFs to Git.
+
+## Running Tests
+
+The core agent tests do not depend on external services:
+
+```bash
+python3 -m unittest tests.test_agent tests.test_providers -v
+```
+
+The full test suite also validates PDF strikethrough extraction logic and requires the project's PDF runtime dependencies:
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+## Knowledge Base Pipeline
+
+Raw customer data and generated outputs are excluded from Git by default. To rebuild the full pipeline, run the following steps in order:
 
 ```bash
 python3 scripts/enrich_cases.py \
   --input data/input/case_kb_preview/canonical_cases.jsonl \
   --output data/output/enriched
-```
 
-No external API or third-party Python dependency is required for this baseline.
-
-Validate a completed run with:
-
-```bash
-python3 scripts/validate_enrichment.py \
-  --source data/input/case_kb_preview/canonical_cases.jsonl \
-  --output data/output/enriched
-```
-
-## Outputs
-
-- `canonical_cases_enriched.jsonl`: all canonical records plus enrichment.
-- `case_summaries.jsonl`: only records currently eligible for retrieval.
-- `low_confidence_cases.jsonl`: archive-only records.
-- `conflicts_or_review.jsonl`: human-review queue. Conflict status remains
-  unchecked until an official knowledge base is connected.
-- `enrichment_report.json`: counts, categories, quality flags, and limitations.
-
-The input and generated output directories are ignored by Git because support
-data can contain sensitive content.
-
-## Official knowledge and conflict checks
-
-Official snapshots live in `knowledge/official/*.jsonl`. Every record must include
-a source URL, retrieval date, review deadline, volatility level, categories,
-keywords, and explicit claims. Public snapshots are never generated from historical
-support answers.
-
-The internal official PDF is preserved locally as
-`knowledge/official/sources/krillai_ticket_knowledge_base.pdf`. It is ignored by
-Git. Extract it with the bundled Python runtime and `pdfplumber`:
-
-```bash
 python3 scripts/extract_pdf_official_kb.py \
   --input knowledge/official/sources/krillai_ticket_knowledge_base.pdf \
   --output knowledge/official/internal/krill_internal_pdf.jsonl \
   --audit knowledge/official/audit/krill_internal_pdf_audit.json \
   --report knowledge/official/audit/krill_internal_pdf_report.json
-```
 
-Visual strike-through lines are excluded before section chunking and retained only
-in the audit file. Restricted payment addresses, exact internal platform limits,
-and internal pricing sections are marked `retrieval_policy=excluded`. Other
-internal operational guidance is tagged `agent_internal` with a non-disclosure
-generation policy.
-
-```bash
 python3 scripts/ingest_official_kb.py \
   --input knowledge/official \
   --output data/output/official_kb
@@ -73,23 +96,16 @@ python3 scripts/build_retrieval_corpus.py \
   --cases data/output/enriched/case_summaries.jsonl \
   --conflicts data/output/conflicts/case_conflict_assessments.jsonl \
   --output data/output/retrieval
-
-python3 scripts/hybrid_search.py \
-  --corpus data/output/retrieval/retrieval_corpus.jsonl \
-  --query "Codex 配置 Base URL 后连接失败"
 ```
 
-Validate policy enforcement and the secondary secret scan with:
+## Documentation
 
-```bash
-python3 scripts/validate_official_pipeline.py \
-  --official-kb data/output/official_kb/official_kb.jsonl \
-  --cases data/output/enriched/case_summaries.jsonl \
-  --assessments data/output/conflicts/case_conflict_assessments.jsonl \
-  --corpus data/output/retrieval/retrieval_corpus.jsonl
-```
+* [System Architecture](docs/architecture.md)
+* [Operations and Deployment](docs/operations.md)
+* [Safety and Response Policy](docs/safety.md)
+* [Official Knowledge Base Policy](docs/official_kb_policy.md)
+* [Historical Case Enrichment Schema](docs/enrichment_schema.md)
 
-The baseline combines BM25 with character n-gram similarity so Chinese and exact
-error strings both work without an embedding service. Official P1 records receive
-a small authority boost only when they are already relevant. Historical P2 records
-remain troubleshooting evidence and cannot establish current facts.
+## Project Status
+
+The current version includes a runnable agent core and CLI. Before production integration, the project still needs persistent sessions, Telegram/web channel adapters, real-time account tools, a human ticketing system, and an online evaluation set.

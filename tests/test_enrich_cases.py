@@ -7,13 +7,13 @@ def base_case(**updates):
     case = {
         "ticket_id": "940",
         "structure_confidence": 1.0,
-        "title": "Codex 连接失败",
+        "title": "ClientA 连接失败",
         "description": "请求返回 502 service unavailable",
         "status": "closed",
         "messages": [
-            {"role": "user", "content": "一直连接失败", "telegram_message_id": 1},
-            {"role": "support", "content": "请检查代理配置并尝试切换网络", "telegram_message_id": 2},
-            {"role": "user", "content": "切换后可以用了", "telegram_message_id": 3},
+            {"role": "user", "content": "一直连接失败", "message_id": 1},
+            {"role": "support", "content": "请检查代理配置并尝试切换网络", "message_id": 2},
+            {"role": "user", "content": "切换后可以用了", "message_id": 3},
         ],
         "warnings": [],
         "canonical_source": "forum",
@@ -62,11 +62,11 @@ class EnrichmentTests(unittest.TestCase):
 
     def test_support_fallback_does_not_replace_user_intent(self):
         case = base_case(
-            title="Codex 连接失败",
+            title="ClientA 连接失败",
             description="请求返回 502",
             messages=[
-                {"role": "user", "content": "一直连接失败", "telegram_message_id": 1},
-                {"role": "support", "content": "如果仍然失败可以申请退款", "telegram_message_id": 2},
+                {"role": "user", "content": "一直连接失败", "message_id": 1},
+                {"role": "support", "content": "如果仍然失败可以申请退款", "message_id": 2},
             ],
         )
         _, result = enrich_case(case)
@@ -81,8 +81,8 @@ class EnrichmentTests(unittest.TestCase):
     def test_processing_acknowledgement_is_not_a_solution(self):
         case = base_case(
             messages=[
-                {"role": "user", "content": "一直连接失败", "telegram_message_id": 1},
-                {"role": "support", "content": "正在处理中～", "telegram_message_id": 2},
+                {"role": "user", "content": "一直连接失败", "message_id": 1},
+                {"role": "support", "content": "正在处理中～", "message_id": 2},
             ]
         )
         _, result = enrich_case(case)
@@ -92,8 +92,8 @@ class EnrichmentTests(unittest.TestCase):
         case = base_case(
             description="配置密钥 nb_ABCdef1234567890_very_secret_value",
             messages=[
-                {"role": "user", "content": "nb_ABCdef1234567890_very_secret_value 无法使用", "telegram_message_id": 1},
-                {"role": "support", "content": "请更换密钥", "telegram_message_id": 2},
+                {"role": "user", "content": "nb_ABCdef1234567890_very_secret_value 无法使用", "message_id": 1},
+                {"role": "support", "content": "请更换密钥", "message_id": 2},
             ],
         )
         enriched, result = enrich_case(case)

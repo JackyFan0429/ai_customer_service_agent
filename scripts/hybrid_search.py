@@ -7,7 +7,7 @@ import argparse
 import json
 from pathlib import Path
 
-from krill_agent.retrieval import read_jsonl, search
+from support_agent.retrieval import read_jsonl, search
 
 
 def parse_args() -> argparse.Namespace:

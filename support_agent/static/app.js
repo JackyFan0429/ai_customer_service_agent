@@ -82,7 +82,7 @@ function messageElement(message) {
   cluster.className = "message-cluster";
   const meta = document.createElement("div");
   meta.className = "message-meta";
-  meta.textContent = `${message.role === "user" ? "You" : "Krill AI"} · ${formatTime(message.created_at)}`;
+  meta.textContent = `${message.role === "user" ? "You" : "智能客服助手"} · ${formatTime(message.created_at)}`;
   const bubble = document.createElement("div");
   bubble.className = "message-bubble";
   bubble.textContent = message.content;
@@ -234,7 +234,7 @@ document.querySelectorAll("[data-prompt]").forEach((button) => {
 async function bootstrap() {
   try {
     const health = await api("/api/health");
-    elements.providerLabel.textContent = `${health.provider} provider`;
+    elements.providerLabel.textContent = `${health.provider} · ${health.synthetic_demo ? "虚构演示资料" : "自定义知识库"}`;
     await refreshConversations();
     if (state.conversations.length) await selectConversation(state.conversations[0].id);
     else await createConversation();

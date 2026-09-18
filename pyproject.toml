@@ -3,19 +3,22 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "krill-customer-agent"
-version = "0.1.0"
-description = "Evidence-grounded customer support agent for the Krill knowledge base"
+name = "ai-customer-service-agent"
+version = "0.2.0"
+description = "Personal evidence-grounded customer support prototype"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = []
 
+[project.optional-dependencies]
+pdf = ["pdfplumber>=0.11,<0.12"]
+
 [project.scripts]
-krill-agent = "krill_agent.cli:main"
-krill-agent-web = "krill_agent.web:main"
+support-agent = "support_agent.cli:main"
+support-agent-web = "support_agent.web:main"
 
 [tool.setuptools.packages.find]
-include = ["krill_agent*"]
+include = ["support_agent*"]
 
 [tool.setuptools.package-data]
-krill_agent = ["static/*.html", "static/*.css", "static/*.js", "static/*.svg"]
+support_agent = ["static/*.html", "static/*.css", "static/*.js", "static/*.svg", "demo/*.jsonl"]

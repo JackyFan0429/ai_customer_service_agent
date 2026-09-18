@@ -2,10 +2,10 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from krill_agent.database import ConversationDatabase
-from krill_agent.models import AgentResponse, Route
-from krill_agent.session import SessionStore
-from krill_agent.web import WebApplication
+from support_agent.database import ConversationDatabase
+from support_agent.models import AgentResponse, Route
+from support_agent.session import SessionStore
+from support_agent.web import WebApplication
 
 
 class FakeProvider:
@@ -41,7 +41,7 @@ class WebApplicationTests(unittest.TestCase):
 
         status, payload = self.application.send_message(
             conversation["id"],
-            {"content": "How do I configure Codex?"},
+            {"content": "How do I configure ClientA?"},
         )
         self.assertEqual(status, 201)
         self.assertEqual(payload["user_message"]["role"], "user")
@@ -50,7 +50,7 @@ class WebApplicationTests(unittest.TestCase):
         status, history = self.application.get_messages(conversation["id"])
         self.assertEqual(status, 200)
         self.assertEqual(len(history["messages"]), 2)
-        self.assertEqual(history["conversation"]["title"], "How do I configure Codex?")
+        self.assertEqual(history["conversation"]["title"], "How do I configure ClientA?")
 
     def test_empty_message_is_rejected(self):
         _, conversation = self.application.create_conversation({})

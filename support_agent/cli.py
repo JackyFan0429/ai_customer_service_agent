@@ -1,4 +1,4 @@
-"""Command-line entry point for the Krill customer agent."""
+"""Command-line entry point for the AI customer agent."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("query", nargs="?", help="客户问题；省略后进入交互模式")
     parser.add_argument("--provider", choices=("local", "openai"))
-    parser.add_argument("--model", help="OpenAI 模型 ID；也可设置 OPENAI_MODEL")
+    parser.add_argument("--model", help="模型 ID；也可设置 OPENAI_MODEL")
     parser.add_argument("--corpus", type=Path, help="检索语料 JSONL")
     parser.add_argument("--session-id", default="cli")
     parser.add_argument("--json", action="store_true", help="输出结构化 JSON")
@@ -49,7 +49,7 @@ def main() -> None:
         if args.query:
             print_response(agent.respond(args.query, session_id=args.session_id), args.json)
             return
-        print("Krill 客服 Agent（输入 exit 退出）")
+        print("智能客服 Agent（输入 exit 退出）")
         while True:
             query = input("\n你：").strip()
             if query.casefold() in {"exit", "quit", "退出"}:

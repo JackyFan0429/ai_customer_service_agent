@@ -6,24 +6,18 @@ import re
 from datetime import date
 from typing import Any
 
-from .models import Evidence, PolicyDecision, Route
+from .models import Evidence, Intent, PolicyDecision, QueryUnderstanding, Route
 
 
 ACCOUNT_SPECIFIC_RE = re.compile(
     r"(我的|我这|帮我|替我).{0,10}(账号|账户|订单|余额|额度|套餐|订阅|退款|发票|邮箱|登录)"
-    r"|(订单号|支付截图|退款|重复扣费|余额异常|账号被封|账户被封)",
+    r"|(订单号|支付截图|重复扣费|余额异常|账号被封|账户被封)"
+    r"|(我要|我想|帮我|给我|申请|办理).{0,6}退款",
     re.I,
 )
 LIVE_STATE_RE = re.compile(r"(现在|今天|刚刚|此刻).{0,12}(挂了|故障|宕机|异常|不可用|恢复|状态)", re.I)
-VAGUE_RE = re.compile(r"^(不能用|用不了|不行|报错了|有问题|怎么办|help|你好)[!！?？。\s]*$", re.I)
-IDENTITY_RE = re.compile(
-    r"^(你是谁|你是什么|你是机器人吗|who are you|what are you)[!！?？。\s]*$",
-    re.I,
-)
-GREETING_RE = re.compile(r"^(你好|您好|hello|hi|hey)[!！?？。\s]*$", re.I)
-
-IDENTITY_RESPONSE = "我是 Krill AI 客服助手，可以协助解答产品使用、订单和常见问题。请问有什么可以帮您？"
-GREETING_RESPONSE = "您好，我是 Krill AI 客服助手。请问有什么可以帮您？"
+VAGUE_RE = re.compile(r"^(不能用|用不了|不行|报错了|有问题|怎么办|help|你好|退款)[!！?？。\s]*$", re.I)
+IDENTITY_RESPONSE = "我是智能客服助手，可以协助解答产品使用、订单和常见问题。请问有什么可以帮您？"
 
 
 def is_current(record: dict[str, Any], today: date) -> bool:
@@ -78,20 +72,42 @@ def select_evidence(
     return customer, internal[:5]
 
 
-def decide_route(query: str, customer: list[Evidence], internal: list[Evidence]) -> PolicyDecision:
+def decide_route(
+    query: str,
+    customer: list[Evidence],
+    internal: list[Evidence],
+    understanding: QueryUnderstanding,
+) -> PolicyDecision:
     normalized = query.strip()
     internal_ids = tuple(item.document_id for item in internal)
-    if IDENTITY_RE.fullmatch(normalized):
+    if understanding.intent is Intent.GREETING_IDENTITY and not (ACCOUNT_SPECIFIC_RE.search(normalized) or LIVE_STATE_RE.search(normalized)):
         return PolicyDecision(
             route=Route.ANSWER,
-            reason="标准身份说明，不需要检索知识库",
+            reason="语义理解为问候或身份询问，不需要检索知识库",
             customer_message=IDENTITY_RESPONSE,
         )
-    if GREETING_RE.fullmatch(normalized):
+    if understanding.intent is Intent.ACCOUNT_SPECIFIC:
         return PolicyDecision(
-            route=Route.ANSWER,
-            reason="标准问候，不需要检索知识库",
-            customer_message=GREETING_RESPONSE,
+            route=Route.ESCALATE,
+            reason="语义理解为需要账户、订单或财务权限",
+            customer_message="这个问题涉及你的账户或订单状态，需要人工客服核验。请准备账号 ID、相关订单号和必要的错误截图；不要发送密码、API Key 或完整支付凭证。",
+            internal_document_ids=internal_ids,
+        )
+    if understanding.intent is Intent.LIVE_STATUS:
+        return PolicyDecision(
+            route=Route.ESCALATE,
+            reason="语义理解为需要实时服务状态",
+            customer_message="这个问题需要查询实时服务状态，我目前只有静态知识库，无法可靠确认。请转人工客服或查看官方状态通知，并提供发生时间、客户端和完整报错。",
+            internal_document_ids=internal_ids,
+        )
+    if understanding.intent in {Intent.OUT_OF_SCOPE, Intent.UNCLEAR} and not (ACCOUNT_SPECIFIC_RE.search(normalized) or LIVE_STATE_RE.search(normalized)):
+        return PolicyDecision(
+            route=Route.CLARIFY,
+            reason=f"语义理解结果为 {understanding.intent.value}",
+            customer_message=(
+                understanding.clarification_question
+                or "我还没有理解你的具体需求，请换一种方式描述，并补充相关产品、操作目标和遇到的现象。"
+            ),
         )
     if ACCOUNT_SPECIFIC_RE.search(normalized):
         return PolicyDecision(
@@ -107,7 +123,7 @@ def decide_route(query: str, customer: list[Evidence], internal: list[Evidence])
             customer_message="这个问题需要查询实时服务状态，我目前只有静态知识库，无法可靠确认。请转人工客服或查看官方状态通知，并提供发生时间、客户端和完整报错。",
             internal_document_ids=internal_ids,
         )
-    if len(normalized) < 4 or VAGUE_RE.fullmatch(normalized):
+    if VAGUE_RE.fullmatch(normalized):
         return PolicyDecision(
             route=Route.CLARIFY,
             reason="问题信息不足",
@@ -118,7 +134,7 @@ def decide_route(query: str, customer: list[Evidence], internal: list[Evidence])
         return PolicyDecision(
             route=Route.CLARIFY,
             reason="知识库没有足够相关且可公开的证据支持回答",
-            customer_message="我暂时没有从知识库中找到足够可靠的答案。请再详细说明你使用的产品或客户端、想完成的操作、已经尝试的步骤，以及完整报错文字（请先遮盖 API Key、密码和个人信息）。",
+            customer_message="我理解了你的问题，但暂时没有从知识库中找到足够可靠的答案。请再详细说明你使用的产品或客户端、想完成的操作、已经尝试的步骤，以及完整报错文字（请先遮盖 API Key、密码和个人信息）。",
             internal_document_ids=internal_ids,
         )
     return PolicyDecision(

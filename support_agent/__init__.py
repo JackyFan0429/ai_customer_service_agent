@@ -1,4 +1,4 @@
-"""Krill customer-support agent."""
+"""AI customer-support agent."""
 
 from .agent import CustomerAgent
 from .config import AgentConfig

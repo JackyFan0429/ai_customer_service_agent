@@ -4,10 +4,11 @@ import unittest
 from datetime import date
 from pathlib import Path
 
-from krill_agent.agent import CustomerAgent
-from krill_agent.config import AgentConfig
-from krill_agent.models import Route
-from krill_agent.policy import IDENTITY_RESPONSE, select_evidence
+from support_agent.agent import CustomerAgent
+from support_agent.config import AgentConfig
+from support_agent.models import Intent, QueryUnderstanding, Route
+from support_agent.policy import IDENTITY_RESPONSE, select_evidence
+from support_agent.providers import LocalProvider
 
 
 def record(**overrides):
@@ -16,12 +17,12 @@ def record(**overrides):
         "document_type": "official_knowledge",
         "authority": "official_public_website",
         "precedence": "P1",
-        "title": "Codex Base URL 配置",
-        "text": "在 Codex 设置中填写官方页面显示的 Base URL，然后重新登录。",
-        "products": ["codex"],
-        "clients": ["codex_cli"],
+        "title": "ClientA Base URL 配置",
+        "text": "在 ClientA 设置中填写官方页面显示的 Base URL，然后重新登录。",
+        "products": ["clienta"],
+        "clients": ["clienta_cli"],
         "categories": ["configuration_integration"],
-        "keywords": ["Codex", "Base URL", "配置"],
+        "keywords": ["ClientA", "Base URL", "配置"],
         "source_url": "https://example.test/setup",
         "review_after": "2026-09-08",
         "audience": "customer_safe",
@@ -37,6 +38,9 @@ class StubProvider:
 
     def __init__(self):
         self.evidence = []
+
+    def understand(self, query, context):
+        return LocalProvider().understand(query, context)
 
     def generate(self, query, evidence, max_chars):
         self.evidence = evidence
@@ -66,7 +70,7 @@ class AgentTests(unittest.TestCase):
             generation_policy="historical_troubleshooting_evidence_only",
         )
         agent = self.make_agent([history, record()], provider)
-        response = agent.respond("Codex Base URL 怎么配置？")
+        response = agent.respond("ClientA Base URL 怎么配置？")
         self.assertEqual(response.route, Route.ANSWER)
         self.assertEqual(provider.evidence[0].precedence, "P1")
 
@@ -81,7 +85,7 @@ class AgentTests(unittest.TestCase):
             generation_policy="may_inform_internal_routing_not_disclose_verbatim",
         )
         agent = self.make_agent([record(), internal], provider)
-        response = agent.respond("Codex Base URL 怎么配置？")
+        response = agent.respond("ClientA Base URL 怎么配置？")
         self.assertTrue(provider.evidence)
         self.assertFalse(any(item.audience == "agent_internal" for item in provider.evidence))
         self.assertFalse(any(item["document_id"] == "official:internal" for item in response.citations))
@@ -93,7 +97,7 @@ class AgentTests(unittest.TestCase):
             authority="official_internal_document",
         )
         agent = self.make_agent([safe_internal], provider)
-        response = agent.respond("Codex Base URL 怎么配置？")
+        response = agent.respond("ClientA Base URL 怎么配置？")
         self.assertEqual(response.route, Route.ANSWER)
         self.assertIsNone(response.citations[0]["source_url"])
 
@@ -140,7 +144,7 @@ class AgentTests(unittest.TestCase):
             generation_policy="historical_troubleshooting_evidence_only",
         )
         agent = self.make_agent([record(), history])
-        response = agent.respond("Codex Base URL 怎么配置？")
+        response = agent.respond("ClientA Base URL 怎么配置？")
         self.assertEqual(len(response.citations), 1)
         self.assertEqual(response.citations[0]["document_id"], "official:setup")
 
@@ -166,10 +170,25 @@ class AgentTests(unittest.TestCase):
         self.assertEqual(response.answer, IDENTITY_RESPONSE)
         self.assertEqual(provider.evidence, [])
 
+    def test_semantic_identity_paraphrase_is_not_tied_to_literal_case(self):
+        provider = StubProvider()
+        provider.understand = lambda query, context: QueryUnderstanding(
+            intent=Intent.GREETING_IDENTITY,
+            normalized_query="询问客服助手身份",
+            needs_knowledge_base=False,
+            clarification_question="",
+            confidence=0.98,
+        )
+        agent = self.make_agent([record()], provider)
+        response = agent.respond("你好呀，方便先说说您是什么助手、能做哪些事情吗？")
+        self.assertEqual(response.route, Route.ANSWER)
+        self.assertEqual(response.answer, IDENTITY_RESPONSE)
+        self.assertEqual(provider.evidence, [])
+
     def test_out_of_domain_question_clarifies_without_generation(self):
         provider = StubProvider()
         agent = self.make_agent([record()], provider)
-        response = agent.respond("怎么在月球上用 Krill 煮咖啡？")
+        response = agent.respond("怎么在月球上用 Support 煮咖啡？")
         self.assertEqual(response.route, Route.CLARIFY)
         self.assertIn("没有从知识库中找到", response.answer)
         self.assertIn("已经尝试的步骤", response.answer)
@@ -177,29 +196,29 @@ class AgentTests(unittest.TestCase):
 
     def test_error_code_must_appear_in_evidence(self):
         provider = StubProvider()
-        claude_without_401 = record(
-            title="Claude Code connection setup",
-            text="Configure Claude Code using the current setup guide.",
-            products=["claude"],
-            clients=["claude_code"],
-            keywords=["Claude", "Code", "connection"],
+        clientb_without_401 = record(
+            title="ClientB Code connection setup",
+            text="Configure ClientB Code using the current setup guide.",
+            products=["clientb"],
+            clients=["clientb_code"],
+            keywords=["ClientB", "Code", "connection"],
         )
-        agent = self.make_agent([claude_without_401], provider)
-        response = agent.respond("Claude Code 报 401 怎么办？")
+        agent = self.make_agent([clientb_without_401], provider)
+        response = agent.respond("ClientB Code 报 401 怎么办？")
         self.assertEqual(response.route, Route.CLARIFY)
         self.assertEqual(provider.evidence, [])
 
     def test_matching_error_code_can_reach_provider(self):
         provider = StubProvider()
-        claude_with_401 = record(
-            title="Claude Code 401 error",
-            text="A Claude Code 401 error can indicate invalid authentication configuration.",
-            products=["claude"],
-            clients=["claude_code"],
-            keywords=["Claude", "Code", "401", "authentication"],
+        clientb_with_401 = record(
+            title="ClientB Code 401 error",
+            text="A ClientB Code 401 error can indicate invalid authentication configuration.",
+            products=["clientb"],
+            clients=["clientb_code"],
+            keywords=["ClientB", "Code", "401", "authentication"],
         )
-        agent = self.make_agent([claude_with_401], provider)
-        response = agent.respond("Claude Code 报 401 怎么办？")
+        agent = self.make_agent([clientb_with_401], provider)
+        response = agent.respond("ClientB Code 报 401 怎么办？")
         self.assertEqual(response.route, Route.ANSWER)
         self.assertTrue(provider.evidence)
 

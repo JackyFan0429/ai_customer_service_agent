@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 
 
-WORD_RE = re.compile(r"[a-z][a-z0-9_.+-]*|\d{3}|[\u4e00-\u9fff]", re.I)
+WORD_RE = re.compile(r"[a-z][a-z0-9_.+-]*|\d{3,}|[\u4e00-\u9fff]", re.I)
 LATIN_OR_CODE_RE = re.compile(r"[a-z][a-z0-9_.+-]*|\d{3,}", re.I)
 GENERIC_QUERY_TERMS = {
     "你好",
@@ -56,7 +56,7 @@ def meaningful_query_terms(text: str) -> set[str]:
 def critical_query_terms(text: str) -> set[str]:
     """Return exact error/status tokens that must occur in supporting evidence."""
     return {
-        item.casefold()
+        item.casefold().rstrip(".+-")
         for item in LATIN_OR_CODE_RE.findall(str(text))
         if item.isdigit() or any(character.isdigit() for character in item)
     }
@@ -156,8 +156,8 @@ def search(
         document_coverage_terms = meaningful_query_terms(searchable_text(row))
         matched_coverage_terms = coverage_terms.intersection(document_coverage_terms)
         query_term_coverage = len(matched_coverage_terms) / max(1, len(coverage_terms))
-        document_text = searchable_text(row).casefold()
-        matched_critical_terms = {item for item in critical_terms if item in document_text}
+        # Compare complete identifiers: 401 != 1401, E401 != E4012.
+        matched_critical_terms = critical_terms.intersection(critical_query_terms(searchable_text(row)))
         results.append({
             "score": round(score, 6),
             "lexical_score": round(lexical, 6),

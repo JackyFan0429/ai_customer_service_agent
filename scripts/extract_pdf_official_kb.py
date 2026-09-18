@@ -15,6 +15,7 @@ import json
 import re
 import unicodedata
 from collections import Counter
+from datetime import date, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -40,24 +41,20 @@ RESTRICTED_RE = re.compile(
 )
 
 PRODUCT_RULES = {
-    "codex": ("codex", "gpt-5", "responses"),
-    "claude": ("claude", "anthropic", "opus", "sonnet"),
-    "openai_gpt": ("openai", "gpt", "chat completions"),
-    "deepseek": ("deepseek",),
-    "gemini": ("gemini",),
-    "grok": ("grok",),
-    "image_generation": ("生图", "图片", "image-2", "gpt-image"),
+    "clienta": ("clienta",),
+    "clientb": ("clientb",),
+    "model_a": ("modela", "模型a", "模型 a"),
+    "model_b": ("modelb", "模型b", "模型 b"),
+    "image_generation": ("生图", "图片", "image"),
 }
 
 CLIENT_RULES = {
-    "codex_cli": ("codex cli",),
-    "codex_desktop": ("codex desktop", "codex app"),
-    "claude_code": ("claude code",),
-    "cherry_studio": ("cherry studio",),
-    "openclaw": ("openclaw",),
-    "opencode": ("opencode",),
-    "newapi": ("newapi",),
-    "cc_switch": ("cc-switch",),
+    "clienta_cli": ("clienta cli",),
+    "clienta_desktop": ("clienta desktop",),
+    "clientb_code": ("clientb code",),
+    "clientc": ("clientc",),
+    "clientd": ("clientd",),
+    "web_client": ("web client", "网页客户端"),
 }
 
 CATEGORY_RULES = {
@@ -83,6 +80,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", required=True, help="Official JSONL output")
     parser.add_argument("--audit", required=True, help="Outdated/restricted audit JSON")
     parser.add_argument("--report", required=True, help="Extraction report JSON")
+    parser.add_argument("--snapshot-date", required=True, type=date.fromisoformat, help="Extraction date; this alone does not renew policy validity")
+    parser.add_argument("--verified-at", type=date.fromisoformat, help="Only supply after verifying the current policy with its authoritative owner")
     return parser.parse_args()
 
 
@@ -142,7 +141,15 @@ def classify_policy(section_id: str, text: str) -> tuple[str, str]:
     return "customer_safe", "include"
 
 
-def extract(pdf_path: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+def review_deadline(snapshot_date: date, verified_at: date | None, volatility: str) -> str:
+    if verified_at is None:
+        return (snapshot_date - timedelta(days=1)).isoformat()
+    if verified_at > snapshot_date:
+        raise ValueError("verified_at cannot be later than snapshot_date")
+    return (verified_at + timedelta(days=7 if volatility == "high" else 30)).isoformat()
+
+
+def extract(pdf_path: Path, *, snapshot_date: date, verified_at: date | None = None) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     source_hash = hashlib.sha256(pdf_path.read_bytes()).hexdigest()
     active_lines: list[dict[str, Any]] = []
     outdated_lines: list[dict[str, Any]] = []
@@ -200,26 +207,27 @@ def extract(pdf_path: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]],
         full_text = f"{section['title']}\n{content}"
         audience, retrieval_policy = classify_policy(section["section_id"], full_text)
         volatility = "high" if HIGH_VOLATILITY_RE.search(full_text) else "medium"
-        review_after = "2026-09-08" if volatility == "high" else "2026-10-01"
+        review_after = review_deadline(snapshot_date, verified_at, volatility)
         section_occurrences[section["section_id"]] += 1
         occurrence = section_occurrences[section["section_id"]]
         occurrence_suffix = "" if occurrence == 1 else f"-part-{occurrence}"
         rows.append(
             {
                 "doc_id": (
-                    f"krill-internal-{section['section_id'].replace('.', '-')}"
-                    f"{occurrence_suffix}-2026-09-01"
+                    f"support-internal-{section['section_id'].replace('.', '-')}"
+                    f"{occurrence_suffix}-{snapshot_date.isoformat()}"
                 ),
                 "section_id": section["section_id"],
                 "section_occurrence": occurrence,
                 "title": section["title"],
                 "content": content,
                 "authority": "official_internal_document",
-                "source_url": f"internal://krillai_ticket_knowledge_base.pdf#pages={min(section['pages'])}-{max(section['pages'])}",
+                "source_url": f"internal://{pdf_path.name}#pages={min(section['pages'])}-{max(section['pages'])}",
                 "source_document": pdf_path.name,
                 "source_sha256": source_hash,
-                "retrieved_at": "2026-09-01",
-                "last_verified_in_document": "2026-07-17",
+                "retrieved_at": snapshot_date.isoformat(),
+                "policy_verified_at": verified_at.isoformat() if verified_at else None,
+                "review_status": "verified_by_operator" if verified_at else "pending_source_verification",
                 "review_after": review_after,
                 "volatility": volatility,
                 "audience": audience,
@@ -268,7 +276,7 @@ def main() -> None:
     pdf_path = Path(args.input).expanduser().resolve()
     if not pdf_path.is_file():
         raise SystemExit(f"PDF not found: {pdf_path}")
-    rows, _, metadata = extract(pdf_path)
+    rows, _, metadata = extract(pdf_path, snapshot_date=args.snapshot_date, verified_at=args.verified_at)
 
     output = Path(args.output).expanduser().resolve()
     audit_path = Path(args.audit).expanduser().resolve()

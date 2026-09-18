@@ -13,6 +13,24 @@ class Route(StrEnum):
     ESCALATE = "escalate"
 
 
+class Intent(StrEnum):
+    GREETING_IDENTITY = "greeting_identity"
+    SUPPORT_QUESTION = "support_question"
+    ACCOUNT_SPECIFIC = "account_specific"
+    LIVE_STATUS = "live_status"
+    OUT_OF_SCOPE = "out_of_scope"
+    UNCLEAR = "unclear"
+
+
+@dataclass(frozen=True)
+class QueryUnderstanding:
+    intent: Intent
+    normalized_query: str
+    needs_knowledge_base: bool
+    clarification_question: str
+    confidence: float
+
+
 @dataclass(frozen=True)
 class Evidence:
     document_id: str
@@ -65,4 +83,3 @@ class AgentResponse:
         data = asdict(self)
         data["route"] = self.route.value
         return data
-

@@ -1,37 +1,37 @@
-# 安全与回答策略
+# Response policy and data boundaries
 
-## 数据边界
+**English** | [简体中文](safety.zh-CN.md)
 
-- 客户问题和知识文本都按不可信数据处理。
-- 不执行知识记录或客户消息中夹带的指令。
-- 不索要密码、API Key、完整支付凭证或其他秘密。
-- 内部 PDF、抽取结果和原始客户数据均由 `.gitignore` 隔离。
+To observe the policy in practice, run the [five-message demo](../README.md#demo-conversation), then inspect the structured CLI output or [evaluation results](evaluation.md).
 
-## 回答资格
+## Data boundaries
 
-以下证据可以进入客户回答：
+Customer queries and retrieved knowledge are treated as untrusted data. Instructions embedded in those records must not be executed. The assistant must not request passwords, API keys, complete payment receipts, or other secrets. Private source documents, derived records, and customer data are excluded by `.gitignore`; the public demo contains only synthetic records.
 
-- 未超过 `review_after` 的 `customer_safe` P1 文档。
-- `conflict_status=no_rule_conflict_detected` 的 P2 历史案例，但只能作为排障线索。
+## Evidence eligible for a customer answer
 
-以下内容不会进入模型输入或客户引用：
+- P1 records with audience `customer_safe` that are still within `review_after`.
+- P2 historical cases with `conflict_status=no_rule_conflict_detected`, used only as troubleshooting clues.
 
-- `agent_internal` 文档正文。
-- `restricted_internal` 文档。
-- 已过复核日期的 P1 文档。
-- 标记为潜在冲突或可能过期的 P2 案例。
+Bodies of `agent_internal` records, `restricted_internal` records, expired P1 documents, and conflicting or potentially outdated P2 cases are excluded from model evidence and customer citations.
 
-## 人工升级
+## Human review
 
-账户、订单、余额、退款、扣费、账号归属和实时服务状态需要 P0 工具或人工权限。Agent 不得假装已经查询这些数据，也不得自行承诺退款、补偿、额度或恢复时间。
+Account-specific requests about orders, balances, refunds, charges, ownership, or live service state require a live tool or human authority. The prototype must not claim to have queried those systems or promise refunds, compensation, quota, or recovery deadlines. General policy questions can still be answered when eligible evidence exists.
 
-## 引用
+Escalation only returns a route and a message. It does not create or assign a real ticket.
 
-引用由编排层根据实际传给生成器的候选证据生成，不依赖模型自行声明。离线 provider 只引用它实际渲染的首条证据；模型 provider 返回经过策略筛选的候选证据集，供审计层进一步核验。这样可以防止模型伪造文档 ID 或引用内部资料。
+## Citations
 
-## 失败方式
+The orchestration layer creates citation metadata from evidence actually provided to the generator. The local provider cites the first record it renders; the model provider cites the policy-filtered context. This avoids letting a model invent citation IDs, but does not verify each sentence against its source.
 
-- 证据不足：请求客户补充产品、客户端、操作步骤和完整报错。
-- 实时事实不可用：明确说明静态知识库无法确认，并升级人工。
-- 模型 API 失败：返回错误给渠道编排层；生产渠道应切换本地安全提示或人工处理。
-- 发现内部或受限内容：排除正文，仅保留必要的内部路由信号。
+## Failure behavior
+
+| Condition | Response |
+| --- | --- |
+| Insufficient evidence | Ask for the product, client, steps and full redacted error. |
+| Live facts unavailable | Explain the static knowledge limitation and request human verification. |
+| Model API failure | Return an error to the channel layer; a production integration would need a fallback. |
+| Internal or restricted material | Exclude the text; retain only permitted internal routing signals. |
+
+The web server has no authentication and is intended for local demonstrations. Both native startup in the tutorial and Compose publish the demo on loopback by default.

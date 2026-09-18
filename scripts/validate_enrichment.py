@@ -62,9 +62,9 @@ def main() -> None:
     evidence_checks = 0
     for row in enriched:
         message_ids = {
-            message.get("telegram_message_id")
+            message.get("message_id")
             for message in row.get("messages", [])
-            if message.get("telegram_message_id") is not None
+            if message.get("message_id") is not None
         }
         evidence = row["enrichment"]["evidence"]
         for key, values in evidence.items():

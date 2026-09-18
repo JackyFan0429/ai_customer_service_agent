@@ -9,7 +9,7 @@ from pathlib import Path
 
 @dataclass(frozen=True)
 class AgentConfig:
-    corpus_path: Path = Path("data/output/retrieval/retrieval_corpus.jsonl")
+    corpus_path: Path = Path(__file__).resolve().parent / "demo/corpus.jsonl"
     provider: str = "local"
     model: str | None = None
     api_key: str | None = None
@@ -22,8 +22,8 @@ class AgentConfig:
     @classmethod
     def from_env(cls, **overrides: object) -> "AgentConfig":
         values: dict[str, object] = {
-            "corpus_path": Path(os.getenv("KRILL_AGENT_CORPUS", cls.corpus_path)),
-            "provider": os.getenv("KRILL_AGENT_PROVIDER", cls.provider),
+            "corpus_path": Path(os.getenv("SUPPORT_AGENT_CORPUS", cls.corpus_path)),
+            "provider": os.getenv("SUPPORT_AGENT_PROVIDER", cls.provider),
             "model": os.getenv("OPENAI_MODEL") or None,
             "api_key": os.getenv("OPENAI_API_KEY") or None,
             "api_base": os.getenv("OPENAI_BASE_URL", cls.api_base).rstrip("/"),
@@ -40,4 +40,3 @@ class AgentConfig:
             raise ValueError("使用 openai provider 时必须设置 OPENAI_API_KEY")
         if self.provider == "openai" and not self.model:
             raise ValueError("使用 openai provider 时必须设置 OPENAI_MODEL 或传入 --model")
-

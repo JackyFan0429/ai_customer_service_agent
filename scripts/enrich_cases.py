@@ -17,25 +17,23 @@ from pathlib import Path
 from typing import Any, Iterable
 
 
-SCHEMA_VERSION = "1.0.0"
+SCHEMA_VERSION = "1.1.0"
 
 PRODUCT_RULES: tuple[tuple[str, tuple[str, ...]], ...] = (
-    ("codex", ("codex",)),
-    ("claude", ("claude", "opus", "sonnet", "haiku", "cc模型")),
-    ("openai_gpt", ("openai", "gpt", "o1", "o3", "o4")),
-    ("gemini", ("gemini", "nano banana", "nanobanana", "banana")),
-    ("grok", ("grok",)),
-    ("deepseek", ("deepseek",)),
-    ("image_generation", ("生图", "绘图", "图生图", "image", "dall-e")),
+    ("clienta", ("clienta",)),
+    ("clientb", ("clientb",)),
+    ("model_a", ("modela", "模型a", "模型 a")),
+    ("model_b", ("modelb", "模型b", "模型 b")),
+    ("image_generation", ("生图", "绘图", "图生图", "image")),
 )
 
 CLIENT_RULES: tuple[tuple[str, tuple[str, ...]], ...] = (
-    ("claude_code", ("claude code", "claudecode")),
-    ("cherry_studio", ("cherry studio", "cherry stuodio", "cherry")),
-    ("cursor", ("cursor",)),
-    ("openclaw", ("openclaw", "小龙虾", "龙虾")),
-    ("lobechat", ("lobechat",)),
-    ("immersive_translate", ("沉浸式翻译",)),
+    ("clienta_cli", ("clienta cli",)),
+    ("clienta_desktop", ("clienta desktop",)),
+    ("clientb_code", ("clientb code", "clientbcode")),
+    ("clientc", ("clientc",)),
+    ("clientd", ("clientd",)),
+    ("web_client", ("web client", "网页客户端")),
 )
 
 CATEGORY_RULES: tuple[tuple[str, tuple[str, ...]], ...] = (
@@ -206,7 +204,7 @@ def candidate_solution_messages(messages: list[dict[str, Any]]) -> list[dict[str
         if ACTIONABLE_SUPPORT_RE.search(content) or len(content) >= 45:
             candidates.append(
                 {
-                    "message_id": message.get("telegram_message_id"),
+                    "message_id": message.get("message_id"),
                     "text": compact(content, 360),
                     "status": "historical_candidate_not_verified",
                 }
@@ -221,7 +219,7 @@ def resolution_evidence(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
         if message.get("role") == "user" and RESOLUTION_RE.search(content):
             evidence.append(
                 {
-                    "message_id": message.get("telegram_message_id"),
+                    "message_id": message.get("message_id"),
                     "text": compact(content, 220),
                 }
             )
@@ -387,8 +385,8 @@ def enrich_case(case: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
 
     quality = quality_assessment(case, problem, errors, candidates, resolutions, combined)
     evidence = {
-        "user_message_ids": [m.get("telegram_message_id") for m in messages if m.get("role") == "user"],
-        "support_message_ids": [m.get("telegram_message_id") for m in messages if m.get("role") == "support"],
+        "user_message_ids": [m.get("message_id") for m in messages if m.get("role") == "user"],
+        "support_message_ids": [m.get("message_id") for m in messages if m.get("role") == "support"],
         "candidate_solution_message_ids": [x["message_id"] for x in candidates],
         "resolution_message_ids": [x["message_id"] for x in resolutions],
     }

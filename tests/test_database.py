@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from krill_agent.database import ConversationDatabase
+from support_agent.database import ConversationDatabase
 
 
 class ConversationDatabaseTests(unittest.TestCase):
@@ -14,7 +14,7 @@ class ConversationDatabaseTests(unittest.TestCase):
 
     def test_conversation_and_messages_persist_across_instances(self):
         conversation = self.database.create_conversation()
-        self.database.add_message(conversation["id"], "user", "How do I configure Codex?")
+        self.database.add_message(conversation["id"], "user", "How do I configure ClientA?")
         self.database.add_message(
             conversation["id"],
             "assistant",

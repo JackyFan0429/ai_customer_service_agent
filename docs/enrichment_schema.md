@@ -25,8 +25,9 @@ without sanitization and explicit review.
 
 ## Evidence rules
 
-- Candidate solutions must point to support-authored Telegram message IDs.
-- Resolution confirmation must point to user-authored Telegram message IDs.
+- Input messages use the channel-neutral `message_id`, `role`, and `content` fields.
+- Candidate solutions must point to support-authored message IDs.
+- Resolution confirmation must point to user-authored message IDs.
 - A `/close` status alone never proves resolution.
 - Suggested diagnostic questions are generated workflow prompts, not claims that
   those questions appeared in the historical conversation.

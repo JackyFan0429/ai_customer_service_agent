@@ -90,7 +90,7 @@ class WebApplication:
 
 def make_handler(application: WebApplication, static_dir: Path) -> type[BaseHTTPRequestHandler]:
     class Handler(BaseHTTPRequestHandler):
-        server_version = "KrillAgent/0.1"
+        server_version = "SupportAgent/0.1"
 
         def log_message(self, format: str, *args: object) -> None:
             print(f"{self.address_string()} - {format % args}")
@@ -142,7 +142,11 @@ def make_handler(application: WebApplication, static_dir: Path) -> type[BaseHTTP
         def do_GET(self) -> None:
             path = urlparse(self.path).path
             if path == "/api/health":
-                self._json(HTTPStatus.OK, {"status": "ok", "provider": application.agent.provider.name})
+                corpus = application.agent.retriever.corpus
+                self._json(HTTPStatus.OK, {
+                    "status": "ok", "provider": application.agent.provider.name,
+                    "synthetic_demo": bool(corpus) and all(row.get("synthetic") for row in corpus),
+                })
                 return
             if path == "/api/conversations":
                 status, payload = application.list_conversations()
@@ -187,9 +191,9 @@ def make_handler(application: WebApplication, static_dir: Path) -> type[BaseHTTP
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--host", default=os.getenv("KRILL_WEB_HOST", "127.0.0.1"))
-    parser.add_argument("--port", type=int, default=int(os.getenv("KRILL_WEB_PORT", "8080")))
-    parser.add_argument("--database", type=Path, default=Path(os.getenv("KRILL_AGENT_DB", "runtime/krill_agent.db")))
+    parser.add_argument("--host", default=os.getenv("SUPPORT_WEB_HOST", "127.0.0.1"))
+    parser.add_argument("--port", type=int, default=int(os.getenv("SUPPORT_WEB_PORT", "8080")))
+    parser.add_argument("--database", type=Path, default=Path(os.getenv("SUPPORT_AGENT_DB", "runtime/support_agent.db")))
     parser.add_argument("--provider", choices=("local", "openai"))
     parser.add_argument("--model")
     parser.add_argument("--corpus", type=Path)
@@ -207,7 +211,7 @@ def main() -> None:
     static_dir = Path(__file__).with_name("static")
     server = ThreadingHTTPServer((args.host, args.port), make_handler(application, static_dir))
     print(
-        f"Krill AI Customer Support is running at http://{args.host}:{args.port} "
+        f"AI Customer Support is running at http://{args.host}:{args.port} "
         f"(provider: {application.agent.provider.name})"
     )
     try:

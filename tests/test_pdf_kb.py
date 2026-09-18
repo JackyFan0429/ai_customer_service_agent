@@ -1,9 +1,18 @@
 import unittest
+from datetime import date
 
-from scripts.extract_pdf_official_kb import classify_policy, line_is_struck, normalize
+from scripts.extract_pdf_official_kb import classify_policy, line_is_struck, normalize, review_deadline
 
 
 class PdfKnowledgeTests(unittest.TestCase):
+    def test_extracting_an_old_pdf_does_not_renew_its_policy(self):
+        self.assertLess(review_deadline(date(2026, 9, 19), None, "high"), "2026-09-19")
+
+    def test_verified_policy_gets_an_explicit_bounded_review_window(self):
+        self.assertEqual(review_deadline(date(2026, 9, 19), date(2026, 9, 19), "high"), "2026-09-26")
+        with self.assertRaises(ValueError):
+            review_deadline(date(2026, 9, 19), date(2026, 9, 20), "high")
+
     def test_strike_intersection_marks_line(self):
         line = {
             "chars": [
@@ -30,4 +39,3 @@ class PdfKnowledgeTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

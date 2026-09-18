@@ -1,52 +1,96 @@
-# 运行与发布
+# Local operation and knowledge maintenance
 
-## 本地验收
+**English** | [简体中文](operations.zh-CN.md)
 
-从仓库根目录运行：
+Start with the [main tutorial](../README.md). The first three steps below use only included synthetic data. Run commands from the repository root with the Python environment activated.
+
+## 1. Make a separate demo corpus
+
+Copy the packaged corpus to a working file:
 
 ```bash
-python3 -m krill_agent.cli --json "Codex Base URL 应该怎么配置？"
-python3 -m krill_agent.cli --json "帮我查一下我的订单为什么还没到账"
-python3 -m unittest tests.test_agent tests.test_providers -v
+python -c "from pathlib import Path; import shutil; Path('runtime').mkdir(exist_ok=True); shutil.copyfile('support_agent/demo/corpus.jsonl', 'runtime/copied_demo.jsonl')"
 ```
 
-预期第一条返回 `answer` 和证据，第二条返回 `escalate` 且不生成账户结论。
+Expected: `runtime/copied_demo.jsonl` contains the same 19 fictional records. Edit this working copy when experimenting, keeping the checked-in corpus unchanged for baseline comparisons.
 
-## 配置原则
+## 2. Run against that file
 
-- 开发和测试默认使用 `local`。
-- 生产模型通过 `OPENAI_MODEL` 显式选择，不在源码中固定。
-- 生产密钥通过部署平台的 Secret 管理注入。
-- `OPENAI_BASE_URL` 仅在明确使用兼容网关时设置。
-- 每次更新官方知识后，依次重跑冲突检查、语料构建和验证脚本。
+```bash
+python -m support_agent.web --provider local --host 127.0.0.1 --port 8081 --corpus runtime/copied_demo.jsonl --database runtime/custom_demo.db
+```
 
-## 发布检查表
+Open [http://127.0.0.1:8081](http://127.0.0.1:8081) and send `ClientA Base URL 怎么配置？`. Expect a fictional setup answer. The copied records retain `synthetic: true`, so the header still labels them as demo data. This command uses a separate database. Press Ctrl+C to stop the server.
 
-1. 完整测试通过。
-2. 官方知识均在 `review_after` 日期内。
-3. 密钥与敏感信息扫描无结果。
-4. 典型问题、模糊问题、账户问题和实时状态问题均通过回归测试。
-5. 生产渠道具备人工升级出口。
-6. 日志不记录 API Key、密码、完整支付凭证和未脱敏客户数据。
+CLI alternative:
 
-## 结构化响应
+```bash
+python -m support_agent.cli --provider local --corpus runtime/copied_demo.jsonl --json "ClientA Base URL 怎么配置？"
+```
 
-`AgentResponse` 包含：
+Web sessions persist in SQLite; CLI history stays in process memory. The web server is a local prototype without authentication. If installed with `pip install -e .`, the console entry points are `support-agent` and `support-agent-web`.
 
-| 字段 | 含义 |
+## 3. Generate a review queue
+
+```bash
+python scripts/review_knowledge.py --corpus runtime/copied_demo.jsonl --as-of 2026-09-19 --output runtime/demo_knowledge_review
+```
+
+Open `runtime/demo_knowledge_review/summary.json` and `review_queue.jsonl`. Some fixtures intentionally simulate outdated sources. The queue records source references, content hashes, review reasons, and fields for reviewer, date and supporting evidence. It does not renew facts or modify the input corpus. Far-future dates in the other synthetic records are for reproducible demonstrations, not real policy management.
+
+## 4. Optional: prepare your own private inputs
+
+This section is a workflow reference, **not a command sequence that can run from the public demo alone**. Supply your own redacted cases and source documents first. Original business data is not included.
+
+- Normalize cases to `data/input/case_kb_preview/canonical_cases.jsonl`. Each message must have `message_id`, `role`, and `content`; map channel-specific IDs to `message_id` before processing.
+- Configure product/client rules in `scripts/enrich_cases.py` and `scripts/extract_pdf_official_kb.py`. Their current labels are fictional examples.
+- Prepare source-attributed official JSONL records under `knowledge/official/` using the [official schema](official_kb_policy.md). Keep the full directory private.
+- Install PDF dependencies with `python -m pip install -e ".[pdf]"` if you will extract a PDF.
+
+Enrich your normalized cases:
+
+```bash
+python scripts/enrich_cases.py --input data/input/case_kb_preview/canonical_cases.jsonl --output data/output/enriched
+```
+
+If extracting a PDF, replace the sample filename and snapshot date with your actual file and extraction date:
+
+```bash
+python scripts/extract_pdf_official_kb.py --input knowledge/official/sources/support_knowledge_base.pdf --snapshot-date 2026-09-19 --output knowledge/official/internal/support_internal_pdf.jsonl --audit knowledge/official/audit/support_internal_pdf_audit.json --report knowledge/official/audit/support_internal_pdf_report.json
+```
+
+`snapshot-date` is the extraction date, not proof that policies are current. Without `--verified-at`, extracted records intentionally expire before the snapshot and await source verification. Only provide a verification date after genuinely reviewing the corresponding policies. A document with mixed validity needs record-level review rather than blanket renewal. Back up prior extraction outputs before replacing them.
+
+## 5. Build and validate a private corpus
+
+After preparing and reviewing the required inputs:
+
+```bash
+python scripts/ingest_official_kb.py --input knowledge/official --output data/output/official_kb
+python scripts/check_case_conflicts.py --cases data/output/enriched/case_summaries.jsonl --official-kb data/output/official_kb/official_kb.jsonl --output data/output/conflicts
+python scripts/build_retrieval_corpus.py --official-kb data/output/official_kb/official_kb.jsonl --cases data/output/enriched/case_summaries.jsonl --conflicts data/output/conflicts/case_conflict_assessments.jsonl --output data/output/retrieval
+python scripts/validate_official_pipeline.py --official-kb data/output/official_kb/official_kb.jsonl --cases data/output/enriched/case_summaries.jsonl --assessments data/output/conflicts/case_conflict_assessments.jsonl --corpus data/output/retrieval/retrieval_corpus.jsonl
+```
+
+The current pipeline validator requires `review_after >= retrieved_at`; deliberately expired, unverified PDF chunks will not pass it. Resolve source verification before using those records as a validated snapshot. Do not alter dates merely to satisfy a check.
+
+After successful validation, select your corpus explicitly:
+
+```bash
+python -m support_agent.web --provider local --corpus data/output/retrieval/retrieval_corpus.jsonl
+```
+
+Review it periodically with `scripts/review_knowledge.py`, as in step 3 but using your private corpus path and the relevant date. A lack of rule-detected conflicts does not prove the advice is current. Historical private processing figures are documented in [data scope](data_scope.md); they are not the size of the public demo.
+
+## Response fields
+
+| Field | Meaning |
 | --- | --- |
-| `answer` | 面向客户的文本 |
-| `route` | `answer`、`clarify` 或 `escalate` |
-| `reason` | 路由原因，供编排层和审计使用 |
-| `citations` | 实际支持回答的公开证据 |
-| `session_id` | 渠道会话标识 |
-| `provider` | 本次使用的生成提供器 |
+| `answer` | Response text. |
+| `route` | `answer`, `clarify`, or `escalate`. |
+| `reason` | Policy reason for the decision. |
+| `citations` | Material provided to generation, or the record rendered by the local provider. |
+| `session_id` | Conversation identifier. |
+| `provider` | Selected provider. |
 
-渠道适配器应根据 `route` 创建人工工单或继续对话，不应解析自然语言来猜测路由。
-
-## 已知限制
-
-- 会话只保存在当前进程内，重启后丢失。
-- 没有实时账户或服务状态工具。
-- 本地 provider 主要用于验证策略和链路，语言质量不等同于模型模式。
-- 混合检索尚未加入向量嵌入和重排模型。
+Human escalation only produces a prompt and routing decision. A channel adapter is needed to create real tickets. Software tests cannot establish customer satisfaction, saved labor, real resolution rates or model costs.

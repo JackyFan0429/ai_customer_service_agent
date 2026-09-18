@@ -1,53 +1,45 @@
-# 系统架构
+# Architecture
 
-## 目标
+**English** | [简体中文](architecture.zh-CN.md)
 
-客服 Agent 在不泄露内部资料、不把历史回答误当作现行政策的前提下，为客户提供可追溯回答，并将需要实时数据或人工权限的问题安全升级。
-
-## 请求流程
+This personal prototype is a program-orchestrated retrieval-augmented support workflow. It does not have live business tools or an autonomous planning loop. Start with the [step-by-step demo](../README.md#python-demo).
 
 ```text
-客户问题
-  → 会话上下文（最多保留 8 个短回合）
-  → BM25 + 字符 n-gram 混合检索
-  → 时效、冲突、受众与最低相关度过滤
-  → 路由决策
-      ├─ answer: 生成回答并返回证据
-      ├─ clarify: 请求补充客户端、步骤和报错
-      └─ escalate: 交由人工或实时工具处理
+Offline: historical cases → rule-based classification and quality tiers
+        → official-source checks → conflict flags → retrieval corpus
+
+Online: customer message + the latest 8 conversation messages
+      → local rules / structured model understanding
+      → standalone query (replace old topics and outdated error codes)
+      → BM25 + character n-gram retrieval
+      → identifier, relevance, expiry, conflict and audience checks
+      → apply a shared evidence-text budget
+      → answer: generate from the standalone query and selected evidence
+        clarify: ask for details, retaining the active unresolved topic
+        escalate: request human verification without executing a ticket action
+      → SQLite for web conversations; process-local memory for the CLI
 ```
 
-## 模块职责
-
-| 模块 | 职责 |
+| Module | Responsibility |
 | --- | --- |
-| `krill_agent/retrieval.py` | 加载语料并执行依赖零外部服务的混合检索 |
-| `krill_agent/policy.py` | 执行 P1/P2、时效、冲突、受众和路由规则 |
-| `krill_agent/prompts.py` | 构建防提示词注入的模型输入 |
-| `krill_agent/providers.py` | 本地确定性回答与 OpenAI Responses API 适配 |
-| `krill_agent/session.py` | 保存有上限的进程内会话历史 |
-| `krill_agent/agent.py` | 编排检索、策略、生成和引用 |
-| `krill_agent/cli.py` | 单次与交互式命令行入口 |
+| `session.py` | Bounded history; infer local context from user messages, not error codes mentioned by the assistant. |
+| `providers.py` | Local extraction and rules; structured understanding and generation through the Responses API. |
+| `retrieval.py` | BM25 and character bigram/trigram cosine similarity; complete identifier matching. |
+| `policy.py` | Source expiry, conflicts, audience filtering, account-specific and live-status escalation. |
+| `prompts.py` | Pass untrusted content as data; enforce a shared evidence-text budget. |
+| `agent.py` | Orchestration, preservation of explicit identifiers, and alignment of evidence with citations. |
+| `database.py` / `web.py` | SQLite persistence, HTTP endpoints, and the page. |
+| `scripts/evaluate_agent.py` | Fixed-date, per-turn acceptance checks and scenario comparisons. |
+| `scripts/review_knowledge.py` | Review deadlines and pending verification queues. |
 
-## 证据层级
+## Evidence precedence
 
-| 层级 | 内容 | 可用于回答的范围 |
-| --- | --- | --- |
-| P0 | 实时账户、订单和服务状态工具 | 当前尚未接入 |
-| P1 | 在复核期限内的官方知识 | 可支持当前事实 |
-| P2 | 已筛选的历史案例 | 仅作排障线索 |
-| P3 | 未解决或低置信材料 | 不进入主检索语料 |
+P0 live tools are not connected. P1 represents official knowledge within its review window. P2 historical cases only provide troubleshooting clues. P3 low-confidence or unresolved material does not enter the primary retrieval corpus. The packaged P1/P2 records are fictional role fixtures, not real policies.
 
-模型只接收通过客户披露规则的证据。`agent_internal` 正文不会被发送给模型，`restricted_internal` 不进入检索语料。
+`restricted_internal` material should be excluded when building a corpus and is also rejected at response time. The bodies of `agent_internal` records are not given to the model or customer; the workflow currently retains only candidate IDs for internal routing signals.
 
-## Provider 边界
+## Limits to verify when extending the demo
 
-默认 `local` provider 便于离线验收。`openai` provider 使用 Responses API，发送 `instructions` 和文本 `input`，关闭响应存储，并限制输出长度。API Key 只从运行环境读取。
+Local rules cover a narrow set of short error-code changes and unresolved follow-ups. Long conversations can lose context beyond the message window; complex ellipsis and corrections need additional evaluation. Model understanding needs its own live-model evaluation. Ranking weights and top-K have not been tuned on production traffic.
 
-## 后续接入点
-
-- Telegram webhook 适配器。
-- 持久化会话和客户授权状态。
-- P0 账户、订单、余额与服务状态工具。
-- 人工工单创建与状态回写。
-- 离线评估、线上抽检和反馈闭环。
+Citations identify material visible during generation. The local provider cites the record it actually renders; this does not establish support for every possible generated claim. Evidence budgets count text characters, not tokens.

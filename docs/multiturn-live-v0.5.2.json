@@ -1,0 +1,1001 @@
+{
+  "version": "0.5.2",
+  "created_at": "2026-10-18T11:48:11+00:00",
+  "data": "Locally authored synthetic dialogue inspired by export patterns; no original customer messages or credentials.",
+  "model_identity": "Configured and returned provider model name; not independent identity verification.",
+  "summary": {
+    "generations": 13,
+    "real_model": 13,
+    "fallbacks": 0,
+    "revisions": 1,
+    "api_calls": 41,
+    "failed_api_calls": 0
+  },
+  "runs": [
+    {
+      "run_id": 21,
+      "ticket_id": 12,
+      "customer_message": "我用 Claude Code，模型 claude-opus-4-8，标准线路。今天 22:30（澳洲悉尼时间）请求返回 HTTP 503，完整错误是 upstream unavailable。我已经重启客户端并重试过，失败请求会扣费吗？",
+      "answer": "目前还不能确认你这次 503 请求是否扣费，需要匹配到对应的计费记录后才能判断。\n\n查到你当前账户余额为 $18.5000，最近 24 小时返回的 12 条请求记录均成功，但都是 gpt-6.1-sol，没有匹配到你反馈的 claude-opus-4-8 失败请求，因此不能据此认定未扣费。标准线路当前状态显示正常，也不能排除你当时遇到的故障。\n\n你已经重启并重试过，不用重复操作，接下来需要人工继续核查。你提供的悉尼时间今天 22:30、客户端、模型、线路及完整报错已经足够作为排查线索，无需重复提供；如果有请求编号，可以补充，没有也可以根据现有信息继续排查。",
+      "provider": "openai",
+      "state": "sent",
+      "route": "answer_and_handoff",
+      "intents": [
+        "technical",
+        "balance"
+      ],
+      "elapsed_ms": 18633,
+      "fallback": false,
+      "revision": false,
+      "warnings": [],
+      "history_messages": 0,
+      "includes_human": false,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 378,
+            "completion_tokens": 47,
+            "total_tokens": 425
+          },
+          "elapsed_ms": 6188
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 2485,
+            "completion_tokens": 198,
+            "total_tokens": 2683
+          },
+          "elapsed_ms": 8759
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 2529,
+            "completion_tokens": 13,
+            "total_tokens": 2542
+          },
+          "elapsed_ms": 3667,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "tools": [
+        "search_kb",
+        "get_account_overview",
+        "get_recent_requests",
+        "check_platform_status"
+      ]
+    },
+    {
+      "run_id": 22,
+      "ticket_id": 13,
+      "customer_message": "我用不了这么多了，想申请退还一部分账户余额，留 $5 继续用。已经有一部分花掉了，这种情况怎么办？",
+      "answer": "明白，你想申请退还部分账户余额，并希望保留 $5 继续使用。这个金额是你的保留诉求，具体能否按此办理，需要人工核验。\n\n目前查到你的账户余额为 $18.5000；订单 LM-DEMO-0003（轻享周卡，实付 ¥99.00）的退款状态为「待处理」。账户余额和订单实付金额都不等于已批准的退款金额。\n\n已经消费过的情况下，剩余余额能否部分退款、已消费部分如何处理，以及是否收取手续费，都需要人工核验，目前无法确认可退金额、退款结果或到账时间。\n\n本工单已收到你的诉求，无需重复提交订单或工单，后续会结合你已有的人工处理记录核验。",
+      "provider": "openai",
+      "state": "sent",
+      "route": "answer_and_handoff",
+      "intents": [
+        "balance",
+        "refund"
+      ],
+      "elapsed_ms": 25005,
+      "fallback": false,
+      "revision": true,
+      "warnings": [],
+      "history_messages": 0,
+      "includes_human": false,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 358,
+            "completion_tokens": 16,
+            "total_tokens": 374
+          },
+          "elapsed_ms": 3760
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1291,
+            "completion_tokens": 166,
+            "total_tokens": 1457
+          },
+          "elapsed_ms": 6011
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1303,
+            "completion_tokens": 13,
+            "total_tokens": 1316
+          },
+          "elapsed_ms": 3561,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1478,
+            "completion_tokens": 187,
+            "total_tokens": 1665
+          },
+          "elapsed_ms": 8508
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1324,
+            "completion_tokens": 13,
+            "total_tokens": 1337
+          },
+          "elapsed_ms": 3151,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "tools": [
+        "search_kb",
+        "get_account_overview",
+        "get_orders",
+        "get_user_ticket_history"
+      ]
+    },
+    {
+      "run_id": 23,
+      "ticket_id": 12,
+      "customer_message": "还是一样，我没有请求编号。客户端、模型、线路和完整错误都发过了，重启也试过，请按已有信息继续。",
+      "answer": "明白，问题仍然一样；没有请求编号也无需补交，客户端、模型、线路、发生时间和完整报错都已提供，也不用再重复重启或重试。\n\n本次查询仍只返回最近 24 小时的 12 条 gpt-6.1-sol 成功记录，未匹配到你反馈的 claude-opus-4-8 503 请求，因此还不能确认这次失败是否扣费。当前余额为 $18.5000；标准线路状态显示正常，也不能排除你遇到的故障。\n\n接下来交由人工根据已有信息继续核验：悉尼时间 10 月 18 日 22:30、Claude Code、claude-opus-4-8、标准线路，以及 HTTP 503 / upstream unavailable，重点核对对应请求日志和计费记录。",
+      "provider": "openai",
+      "state": "sent",
+      "route": "answer_and_handoff",
+      "intents": [
+        "technical",
+        "balance"
+      ],
+      "elapsed_ms": 16905,
+      "fallback": false,
+      "revision": false,
+      "warnings": [],
+      "history_messages": 2,
+      "includes_human": false,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 666,
+            "completion_tokens": 18,
+            "total_tokens": 684
+          },
+          "elapsed_ms": 3514
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 2737,
+            "completion_tokens": 196,
+            "total_tokens": 2933
+          },
+          "elapsed_ms": 8877
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 2779,
+            "completion_tokens": 13,
+            "total_tokens": 2792
+          },
+          "elapsed_ms": 4498,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "tools": [
+        "search_kb",
+        "get_account_overview",
+        "get_recent_requests",
+        "check_platform_status"
+      ]
+    },
+    {
+      "run_id": 24,
+      "ticket_id": 12,
+      "customer_message": "你说的那 12 条成功记录是我的 claude-opus-4-8 请求吗，能据此确定这次没扣费吗？",
+      "answer": "不是，那 12 条是你账户下的 **gpt-6.1-sol 成功记录**，不是你反馈的 claude-opus-4-8 请求，**不能据此确定这次 503 没扣费**。\n\n目前尚未匹配到这次失败请求及对应计费记录。查询结果中“0 条失败”只代表已返回的这 12 条记录，并不代表你没有遇到故障。当前余额为 $18.5000，也不能单凭余额判断这次是否扣费。\n\n还需要人工根据你已提供的发生时间、模型、线路和完整报错继续核对请求日志与计费记录。你已说明没有请求编号，无需重复提供信息或再次重启。",
+      "provider": "openai",
+      "state": "sent",
+      "route": "answer",
+      "intents": [
+        "technical",
+        "balance"
+      ],
+      "elapsed_ms": 15410,
+      "fallback": false,
+      "revision": false,
+      "warnings": [],
+      "history_messages": 4,
+      "includes_human": false,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 949,
+            "completion_tokens": 16,
+            "total_tokens": 965
+          },
+          "elapsed_ms": 3792
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 2773,
+            "completion_tokens": 176,
+            "total_tokens": 2949
+          },
+          "elapsed_ms": 8132
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 2795,
+            "completion_tokens": 13,
+            "total_tokens": 2808
+          },
+          "elapsed_ms": 3473,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "tools": [
+        "search_kb",
+        "get_account_overview",
+        "get_recent_requests",
+        "check_platform_status"
+      ]
+    },
+    {
+      "run_id": 25,
+      "ticket_id": 13,
+      "customer_message": "好，那改为申请退还剩余全部余额。会收手续费吗？",
+      "answer": "明白，你现在希望改为申请退还剩余全部余额，不再保留 $5。无需重复提交订单或工单，人工会结合已有记录核验你的最新诉求。\n\n关于手续费，目前没有可确认的收费规则或费率，是否收取、收取多少都需要人工核验。\n\n当前账户余额为 $18.5000；订单 LM-DEMO-0003（轻享周卡，实付 ¥99.00）的退款状态仍为「待处理」。余额和订单实付金额都不代表已批准的退款金额；剩余余额能否全退、已消费部分如何处理，以及最终退款金额、结果和到账时间，目前都还无法确认。",
+      "provider": "openai",
+      "state": "sent",
+      "route": "answer_and_handoff",
+      "intents": [
+        "balance",
+        "refund"
+      ],
+      "elapsed_ms": 16500,
+      "fallback": false,
+      "revision": false,
+      "warnings": [],
+      "history_messages": 2,
+      "includes_human": false,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 621,
+            "completion_tokens": 16,
+            "total_tokens": 637
+          },
+          "elapsed_ms": 5483
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1647,
+            "completion_tokens": 164,
+            "total_tokens": 1811
+          },
+          "elapsed_ms": 7422
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1657,
+            "completion_tokens": 13,
+            "total_tokens": 1670
+          },
+          "elapsed_ms": 3584,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "tools": [
+        "search_kb",
+        "get_account_overview",
+        "get_orders",
+        "get_user_ticket_history"
+      ]
+    },
+    {
+      "run_id": 26,
+      "ticket_id": 12,
+      "customer_message": "好的，我刚才又试了一下，现在应该好了。",
+      "answer": "好的，方便确认一下，现在是否已经能正常收到回复、不再出现 503 报错了？如果已正常使用，就不用继续排障了。\n\n此前失败请求是否扣费仍需人工核对计费记录，不能因现在能用了就认定之前未扣费；你无需重复提供信息。",
+      "provider": "openai",
+      "state": "sent",
+      "route": "answer",
+      "intents": [
+        "resolution_check"
+      ],
+      "elapsed_ms": 15893,
+      "fallback": false,
+      "revision": false,
+      "warnings": [],
+      "history_messages": 6,
+      "includes_human": false,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1191,
+            "completion_tokens": 17,
+            "total_tokens": 1208
+          },
+          "elapsed_ms": 5710
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1369,
+            "completion_tokens": 81,
+            "total_tokens": 1450
+          },
+          "elapsed_ms": 5292
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1296,
+            "completion_tokens": 13,
+            "total_tokens": 1309
+          },
+          "elapsed_ms": 4887,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "tools": []
+    },
+    {
+      "run_id": 27,
+      "ticket_id": 13,
+      "customer_message": "好的",
+      "answer": "好的，按你最新的诉求，申请退还剩余全部余额，不再保留 $5，无需重复提交订单或工单。\n\n订单 LM-DEMO-0003（轻享周卡，实付 ¥99.00）的退款状态目前仍为「待处理」。后续需由人工结合已有记录核验，是否收取手续费、最终退款金额、结果及到账时间暂时还无法确认。",
+      "provider": "openai",
+      "state": "sent",
+      "route": "handoff",
+      "intents": [
+        "greeting",
+        "refund"
+      ],
+      "elapsed_ms": 15154,
+      "fallback": false,
+      "revision": false,
+      "warnings": [],
+      "history_messages": 4,
+      "includes_human": false,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 840,
+            "completion_tokens": 37,
+            "total_tokens": 877
+          },
+          "elapsed_ms": 5766
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1579,
+            "completion_tokens": 104,
+            "total_tokens": 1683
+          },
+          "elapsed_ms": 5198
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1529,
+            "completion_tokens": 13,
+            "total_tokens": 1542
+          },
+          "elapsed_ms": 4178,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "tools": [
+        "search_kb",
+        "get_orders",
+        "get_user_ticket_history"
+      ]
+    },
+    {
+      "run_id": 28,
+      "ticket_id": 12,
+      "customer_message": "确认，已经可以正常用了。我不再追查这次扣费，可以结束这个工单，谢谢。",
+      "answer": "好的，感谢确认已恢复正常使用。尊重你的决定，本次不再继续排障或追查扣费，你也无需补充信息。\n\n已收到你结束工单的请求；目前我无法直接确认工单已关闭。后续如有其他问题，欢迎随时联系。",
+      "provider": "openai",
+      "state": "sent",
+      "route": "answer",
+      "intents": [
+        "technical"
+      ],
+      "elapsed_ms": 22072,
+      "fallback": false,
+      "revision": false,
+      "warnings": [],
+      "history_messages": 8,
+      "includes_human": false,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1348,
+            "completion_tokens": 16,
+            "total_tokens": 1364
+          },
+          "elapsed_ms": 3758
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 2821,
+            "completion_tokens": 77,
+            "total_tokens": 2898
+          },
+          "elapsed_ms": 6362
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 2744,
+            "completion_tokens": 13,
+            "total_tokens": 2757
+          },
+          "elapsed_ms": 11940,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "tools": [
+        "search_kb",
+        "get_recent_requests",
+        "check_platform_status"
+      ]
+    },
+    {
+      "run_id": 29,
+      "ticket_id": 13,
+      "customer_message": "那现在到哪一步了？还需要我重新提交订单或再开工单吗？",
+      "answer": "刚查到，订单 LM-DEMO-0003（轻享周卡，实付 ¥99.00）的退款状态仍为「待处理」，目前还需人工核验，尚未确认退款批准或完成。\n\n不用重新提交订单，也不用再开工单。本工单已收到你最新的诉求：申请退还剩余全部余额，不再保留 $5，后续会结合已有工单记录处理。\n\n是否收取手续费、最终退款金额、退款结果及到账时间，都还需人工核验确认。",
+      "provider": "openai",
+      "state": "sent",
+      "route": "handoff",
+      "intents": [
+        "refund"
+      ],
+      "elapsed_ms": 13801,
+      "fallback": false,
+      "revision": false,
+      "warnings": [],
+      "history_messages": 6,
+      "includes_human": false,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1015,
+            "completion_tokens": 16,
+            "total_tokens": 1031
+          },
+          "elapsed_ms": 3026
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1881,
+            "completion_tokens": 130,
+            "total_tokens": 2011
+          },
+          "elapsed_ms": 6147
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1857,
+            "completion_tokens": 13,
+            "total_tokens": 1870
+          },
+          "elapsed_ms": 4618,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "tools": [
+        "search_kb",
+        "get_orders",
+        "get_user_ticket_history"
+      ]
+    },
+    {
+      "run_id": 30,
+      "ticket_id": 13,
+      "customer_message": "那客服刚才登记的就是剩余全部余额那笔吧？现在有没有结果，还是没批准？",
+      "answer": "是的，客服刚才登记的是你最新的诉求：申请退还剩余全部余额，不再保留 $5。登记不代表退款已批准。\n\n刚查询到，订单 LM-DEMO-0003（轻享周卡，实付 ¥99.00）的退款状态仍为「待处理」，目前还在等待人工核验，暂无已批准或完成退款的结果。\n\n当前账户余额是 $18.5000，但这不等于已批准的退款金额。最终可退金额、已消费部分如何处理、是否收手续费及到账时间，都尚未确认。\n\n你不需要重新提交订单或另开工单，人工会结合已有记录跟进。",
+      "provider": "openai",
+      "state": "sent",
+      "route": "answer_and_handoff",
+      "intents": [
+        "balance",
+        "refund"
+      ],
+      "elapsed_ms": 16586,
+      "fallback": false,
+      "revision": false,
+      "warnings": [],
+      "history_messages": 9,
+      "includes_human": true,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1308,
+            "completion_tokens": 16,
+            "total_tokens": 1324
+          },
+          "elapsed_ms": 3492
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 2229,
+            "completion_tokens": 164,
+            "total_tokens": 2393
+          },
+          "elapsed_ms": 7337
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 2239,
+            "completion_tokens": 13,
+            "total_tokens": 2252
+          },
+          "elapsed_ms": 5749,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "tools": [
+        "search_kb",
+        "get_account_overview",
+        "get_orders",
+        "get_user_ticket_history"
+      ]
+    },
+    {
+      "run_id": 31,
+      "ticket_id": 12,
+      "customer_message": "确认，已经可以正常用了。我不再追查这次扣费，可以结束这个工单，谢谢。",
+      "answer": "收到，感谢确认已恢复正常使用！尊重你的决定，本次不再继续排障或追查扣费，问题已标记为解决。后续如有新情况，可以继续在本工单留言。",
+      "provider": "openai",
+      "state": "sent",
+      "route": "answer",
+      "intents": [
+        "resolved"
+      ],
+      "elapsed_ms": 11268,
+      "fallback": false,
+      "revision": false,
+      "warnings": [],
+      "history_messages": 10,
+      "includes_human": false,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1498,
+            "completion_tokens": 16,
+            "total_tokens": 1514
+          },
+          "elapsed_ms": 3966
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1664,
+            "completion_tokens": 59,
+            "total_tokens": 1723
+          },
+          "elapsed_ms": 3990
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1569,
+            "completion_tokens": 13,
+            "total_tokens": 1582
+          },
+          "elapsed_ms": 3307,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "tools": []
+    },
+    {
+      "run_id": 32,
+      "ticket_id": 13,
+      "customer_message": "你还记得人工客服刚才怎么说的吗？那条 AI 消息已经撤回了，请按客服确认的内容和现在查到的进度回答，不用让我再提交订单。",
+      "answer": "记得，人工客服刚才确认的是：已收到你申请退还剩余全部余额的诉求，不再保留 $5；继续在本工单跟进，已收到的信息无需重复提交，退款仍未批准。\n\n现在查到，订单 LM-DEMO-0003（轻享周卡，实付 ¥99.00）的退款状态仍为「待处理」，暂无批准或完成的结果。手续费、最终可退金额和到账时间仍需人工核验，订单实付金额不代表获批退款金额。\n\n撤回的 AI 消息不作为依据。你不用重新提交订单或再开工单，继续等待本工单的人工核验即可。",
+      "provider": "openai",
+      "state": "sent",
+      "route": "handoff",
+      "intents": [
+        "account",
+        "refund"
+      ],
+      "elapsed_ms": 19214,
+      "fallback": false,
+      "revision": false,
+      "warnings": [],
+      "history_messages": 13,
+      "includes_human": true,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1535,
+            "completion_tokens": 16,
+            "total_tokens": 1551
+          },
+          "elapsed_ms": 3478
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 2444,
+            "completion_tokens": 163,
+            "total_tokens": 2607
+          },
+          "elapsed_ms": 11296
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 2453,
+            "completion_tokens": 13,
+            "total_tokens": 2466
+          },
+          "elapsed_ms": 4418,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "tools": [
+        "search_kb",
+        "get_orders",
+        "get_user_ticket_history",
+        "get_account_overview"
+      ]
+    },
+    {
+      "run_id": 33,
+      "ticket_id": 14,
+      "customer_message": "我用不了这么多了，想申请退还一部分账户余额，留 $5 继续用。已经有一部分花掉了，这种情况怎么办？",
+      "answer": "明白，你希望退还部分账户余额，保留 $5 继续使用；已经消费了一部分的情况，需要由人工核验是否可退、可退范围及已消费部分如何处理。\n\n目前查到：\n- 账户余额为 $18.5000。\n- 订单 LM-DEMO-0003（轻享周卡）实付 ¥99.00，退款状态为「待处理」。\n\n本工单已收到你“保留 $5、申请部分退款”的诉求，无需重复提交订单或工单，人工会结合已有记录核验。账户余额和订单实付都不代表已批准的退款金额；具体退款金额、是否收取手续费及到账时间目前尚不能确认，以人工核验结果为准。",
+      "provider": "openai",
+      "state": "sent",
+      "route": "answer_and_handoff",
+      "intents": [
+        "balance",
+        "refund"
+      ],
+      "elapsed_ms": 14332,
+      "fallback": false,
+      "revision": false,
+      "warnings": [],
+      "history_messages": 0,
+      "includes_human": false,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 358,
+            "completion_tokens": 16,
+            "total_tokens": 374
+          },
+          "elapsed_ms": 2923
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1297,
+            "completion_tokens": 180,
+            "total_tokens": 1477
+          },
+          "elapsed_ms": 7830
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1323,
+            "completion_tokens": 13,
+            "total_tokens": 1336
+          },
+          "elapsed_ms": 3565,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "tools": [
+        "search_kb",
+        "get_account_overview",
+        "get_orders",
+        "get_user_ticket_history"
+      ]
+    }
+  ],
+  "notes": [
+    "Run 22 used one application-requested revision for a legitimate retained-balance quote; the comma-attribution check was subsequently fixed.",
+    "Run 28 failed to close the ticket despite a clear natural-language recovery confirmation; the recovery matcher was subsequently fixed.",
+    "API call counts exclude startup connection checks. An API success does not by itself establish correct business behavior."
+  ],
+  "acceptance": {
+    "automated_tests": {
+      "passed": 172,
+      "total": 172
+    },
+    "synthetic_workflows": {
+      "passed": 23,
+      "total": 23
+    },
+    "initial_defects": [
+      {
+        "run_id": 22,
+        "finding": "Comma-separated retained-amount quotation caused an unnecessary revision.",
+        "fixed_and_retested_by": 33
+      },
+      {
+        "run_id": 28,
+        "finding": "Natural explicit recovery confirmation did not close the ticket.",
+        "fixed_and_retested_by": 31
+      }
+    ],
+    "final_retest_runs": [
+      31,
+      32,
+      33
+    ],
+    "final_retest_result": "All used the configured real API model, passed content review, were automatically sent, and needed neither local fallback nor revision.",
+    "human_draft_run": 30,
+    "human_draft_history_messages": 9,
+    "actual_wait_seconds": 60,
+    "resume_ai_run": 32,
+    "resume_ai_history_messages": 13,
+    "realtime": [
+      "customer messages",
+      "human reply",
+      "private draft visible only to staff",
+      "staff publish",
+      "retraction placeholder",
+      "unsent input preserved",
+      "timely human reply cancels queued draft",
+      "auto reply after resume",
+      "ticket resolution"
+    ],
+    "browser_errors_warnings_during_final_retests": 0,
+    "scope": "Synthetic demo business data only; no real refund. Calls are to the service configured by the user; the model name is provider-reported."
+  }
+}

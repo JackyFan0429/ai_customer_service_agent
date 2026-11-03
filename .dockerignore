@@ -14,3 +14,7 @@ knowledge/official/internal
 knowledge/official/sources
 knowledge/official/audit
 tests
+dist
+build
+*.egg-info
+.venv

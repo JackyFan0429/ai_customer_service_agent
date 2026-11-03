@@ -4,21 +4,23 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ai-customer-service-agent"
-version = "0.2.0"
-description = "Personal evidence-grounded customer support prototype"
+version = "0.5.3"
+description = "Local customer portal and evidence-grounded AI support workbench"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = []
 
 [project.optional-dependencies]
+models = ["certifi"]
 pdf = ["pdfplumber>=0.11,<0.12"]
 
 [project.scripts]
 support-agent = "support_agent.cli:main"
 support-agent-web = "support_agent.web:main"
+support-agent-portal = "support_agent.portal:main"
 
 [tool.setuptools.packages.find]
 include = ["support_agent*"]
 
 [tool.setuptools.package-data]
-support_agent = ["static/*.html", "static/*.css", "static/*.js", "static/*.svg", "demo/*.jsonl"]
+support_agent = ["static/*.html", "static/*.css", "static/*.js", "static/*.svg", "demo/*.jsonl", "desk/static/*.html", "desk/static/*.css", "desk/static/*.js", "desk/static/*.svg", "desk/data/*.json"]

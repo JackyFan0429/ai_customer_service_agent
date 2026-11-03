@@ -1,0 +1,7 @@
+[
+  {"id":"gpt-6.1-sol","vendor":"OpenAI","purpose":"通用问答与编码","origin":"原始 JSON 中的模型名称；运行数据为模拟"},
+  {"id":"gpt-6-sol","vendor":"OpenAI","purpose":"推理与长任务排障样本","origin":"原始 JSON 中的模型名称；运行数据为模拟"},
+  {"id":"claude-opus-4-8","vendor":"Anthropic","purpose":"Claude Code 与渠道故障样本","origin":"原始 JSON 中的模型名称；运行数据为模拟"},
+  {"id":"grok-imagine-video-1.5","vendor":"xAI","purpose":"视频接口与参数兼容样本","origin":"原始 JSON 中的模型名称；未接入真实视频服务"},
+  {"id":"Gemini","vendor":"Google","purpose":"模型渠道维护样本","origin":"原始 JSON 中的产品名称；不推断具体版本"}
+]

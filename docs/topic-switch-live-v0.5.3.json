@@ -1,0 +1,1062 @@
+{
+  "version": "0.5.3",
+  "created_at": "2026-10-18T12:08:50+00:00",
+  "data": "Locally authored synthetic dialogue based on observed export patterns. No original customer data, service endpoint or API key.",
+  "model_identity": "Configured and provider-reported name; not independent identity authentication.",
+  "summary": {
+    "before_fix": {
+      "runs": 5,
+      "model_replies": 2,
+      "policy_replies": 2,
+      "fallbacks": 1,
+      "revisions": 2,
+      "api_calls": 15,
+      "failed_api_calls": 0
+    },
+    "after_fix": {
+      "runs": 8,
+      "model_replies": 7,
+      "policy_replies": 1,
+      "fallbacks": 0,
+      "revisions": 0,
+      "api_calls": 22,
+      "failed_api_calls": 0
+    }
+  },
+  "runs": [
+    {
+      "run_id": 34,
+      "ticket_id": 15,
+      "phase": "before_fix",
+      "message": "我的轻享周卡还在有效期，当前周期还剩多少额度，什么时候刷新？账户明明还有余额，为什么额度用完后不能继续用？",
+      "answer": "你的「轻享周卡」仍在有效期内，但当前周期额度已用完：\n\n- 当前周期总额度：$600.0000\n- 已使用：$600.0000，剩余：$0.0000\n- 下次刷新：2026-10-21 10:48（UTC）\n- 套餐到期：2026-11-08 10:48（UTC）\n\n你当前的账户余额是 $18.5000。套餐有效期与周期额度是两回事：系统优先扣除有效套餐的当前周期额度；如果余额兜底关闭，额度用完后就不会自动扣账户余额继续使用。\n\n本次查询未显示你的余额兜底设置，因此暂时不能确认无法继续使用是否由此导致。你可以等待下次额度刷新，或请人工核查余额兜底设置、协助调整套餐。",
+      "provider": "openai",
+      "source": "model",
+      "state": "sent",
+      "route": "answer",
+      "intents": [
+        "quota",
+        "balance"
+      ],
+      "actions": [],
+      "tools": [
+        "search_kb",
+        "get_subscriptions",
+        "get_account_overview"
+      ],
+      "fallback": false,
+      "revision": true,
+      "topic": null,
+      "history_messages": 0,
+      "includes_human": false,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 356,
+            "completion_tokens": 18,
+            "total_tokens": 374
+          },
+          "elapsed_ms": 4910
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1074,
+            "completion_tokens": 229,
+            "total_tokens": 1303
+          },
+          "elapsed_ms": 8542
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1149,
+            "completion_tokens": 13,
+            "total_tokens": 1162
+          },
+          "elapsed_ms": 4943,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1314,
+            "completion_tokens": 213,
+            "total_tokens": 1527
+          },
+          "elapsed_ms": 23893
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1133,
+            "completion_tokens": 13,
+            "total_tokens": 1146
+          },
+          "elapsed_ms": 4762,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "run_id": 35,
+      "ticket_id": 15,
+      "phase": "before_fix",
+      "message": "先不谈套餐额度和余额了。换一个问题：我在 Codex 使用 gpt-6.1-sol，Base URL 应该怎么配置？我已经保存配置并完全退出重开过，现在模型名称显示 Custom，这能说明接通了吗？",
+      "answer": "先看 Codex 配置：**模型名称显示 Custom，不能单独证明已经接通**，还需要实际发送请求验证。\n\nBase URL 应填写服务方提供的真实 API 接入地址，并选择匹配的协议、填写 API Key，模型设为 `gpt-6.1-sol`。目前资料中的 `https://api.lumen.example/v1` **只是演示占位地址，不提供真实模型推理服务**，不能用于验证连通；现有资料没有可确认的正式地址。\n\n你已经保存并完全退出重开，不用重复这一步。接下来可以发送一条最小请求，例如“只回复 OK”，看能否正常收到回复。\n\n你现在填写的 Base URL 是什么？只发地址即可，不要发送 API Key；如果测试报错，也可以把完整报错一并发来。",
+      "provider": "openai",
+      "source": "model",
+      "state": "sent",
+      "route": "answer_and_handoff",
+      "intents": [
+        "quota",
+        "balance",
+        "refund",
+        "configuration"
+      ],
+      "actions": [],
+      "tools": [
+        "search_kb",
+        "get_subscriptions",
+        "get_account_overview",
+        "get_orders",
+        "get_user_ticket_history"
+      ],
+      "fallback": false,
+      "revision": false,
+      "topic": null,
+      "history_messages": 2,
+      "includes_human": false,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 683,
+            "completion_tokens": 16,
+            "total_tokens": 699
+          },
+          "elapsed_ms": 15648
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 2171,
+            "completion_tokens": 199,
+            "total_tokens": 2370
+          },
+          "elapsed_ms": 7602
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 2216,
+            "completion_tokens": 13,
+            "total_tokens": 2229
+          },
+          "elapsed_ms": 3466,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "run_id": 36,
+      "ticket_id": 15,
+      "phase": "before_fix",
+      "message": "回到最开始那个问题，先别讲模型配置了。那个什么时候刷新，能提前重置吗？",
+      "answer": "你的「轻享周卡」当前周期额度为 $600.0000，已用 $600.0000，剩余 $0.0000。下一次刷新时间为 2026-10-21（UTC），套餐到期时间为 2026-11-08（UTC）。\n\n本周期额度已经用完；套餐仍有效不代表当前周期还有可用额度。可以等待下次刷新，或请人工协助调整套餐。\n\n本演示保留 Codex、Claude Code 和 GPT / Claude 模型名称。配置流程为：选择对应协议与模型，填写 Base URL 和 Key，保存后重启客户端并用最小请求验证。演示 Base URL 为 https://api.lumen.example/v1，模型示例为 gpt-6.1-sol；该域名是占位地址，不提供真实模型推理服务。Claude Code 的协议和渠道需与实际服务端匹配，不能仅更换模型名。\n\n账号修改或人工接管请求需要客服核验，我不会直接重置密码或修改账号。请不要提供密码或完整 API Key。",
+      "provider": "local",
+      "source": "local",
+      "state": "sent",
+      "route": "answer_and_handoff",
+      "intents": [
+        "quota",
+        "configuration",
+        "account"
+      ],
+      "actions": [],
+      "tools": [
+        "search_kb",
+        "get_subscriptions",
+        "get_account_overview"
+      ],
+      "fallback": true,
+      "revision": true,
+      "topic": null,
+      "history_messages": 4,
+      "includes_human": false,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 966,
+            "completion_tokens": 16,
+            "total_tokens": 982
+          },
+          "elapsed_ms": 6291
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1689,
+            "completion_tokens": 171,
+            "total_tokens": 1860
+          },
+          "elapsed_ms": 9377
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1706,
+            "completion_tokens": 13,
+            "total_tokens": 1719
+          },
+          "elapsed_ms": 3698,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1871,
+            "completion_tokens": 165,
+            "total_tokens": 2036
+          },
+          "elapsed_ms": 7206
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1700,
+            "completion_tokens": 13,
+            "total_tokens": 1713
+          },
+          "elapsed_ms": 13181,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "warnings": [
+        "模型草稿未通过质检，已改用有查询依据的本地基准回复",
+        "规则质检：新增数字未出现在当前问题、公开对话或本轮查询证据中，需要复核"
+      ]
+    },
+    {
+      "run_id": 37,
+      "ticket_id": 16,
+      "phase": "before_fix",
+      "message": "我的余额变成负数了，能帮我核验是否可以回正吗？我记得 Key 没有开启余额兜底，为什么还会出现这种情况？",
+      "answer": "查询到你当前的账户余额是 $-0.1800。\n\n这笔负余额符合演示平台的回正条件，已列为待审核操作；批准执行后才能确认余额恢复。\n\n本演示保留 Codex、Claude Code 和 GPT / Claude 模型名称。配置流程为：选择对应协议与模型，填写 Base URL 和 Key，保存后重启客户端并用最小请求验证。演示 Base URL 为 https://api.lumen.example/v1，模型示例为 gpt-6.1-sol；该域名是占位地址，不提供真实模型推理服务。Claude Code 的协议和渠道需与实际服务端匹配，不能仅更换模型名。",
+      "provider": "local",
+      "source": "policy",
+      "state": "superseded",
+      "route": "answer",
+      "intents": [
+        "balance",
+        "configuration"
+      ],
+      "actions": [
+        {
+          "type": "balance_fix",
+          "expected_balance_units": -1800,
+          "reason": "满足演示规则，等待批准执行"
+        }
+      ],
+      "tools": [
+        "search_kb",
+        "get_account_overview",
+        "check_balance_adjustment"
+      ],
+      "fallback": false,
+      "revision": false,
+      "topic": null,
+      "history_messages": 0,
+      "includes_human": false,
+      "review": null,
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 357,
+            "completion_tokens": 18,
+            "total_tokens": 375
+          },
+          "elapsed_ms": 3573
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "run_id": 38,
+      "ticket_id": 16,
+      "phase": "before_fix",
+      "message": "先别处理余额回正，换个问题：我在 Codex 用 gpt-6.1-sol，已经保存配置并完全退出重开了，模型名还是 Custom，这能证明连接成功吗？",
+      "answer": "查询到你当前的账户余额是 $-0.1800。\n\n这笔负余额符合演示平台的回正条件，已列为待审核操作；批准执行后才能确认余额恢复。\n\n本演示保留 Codex、Claude Code 和 GPT / Claude 模型名称。配置流程为：选择对应协议与模型，填写 Base URL 和 Key，保存后重启客户端并用最小请求验证。演示 Base URL 为 https://api.lumen.example/v1，模型示例为 gpt-6.1-sol；该域名是占位地址，不提供真实模型推理服务。Claude Code 的协议和渠道需与实际服务端匹配，不能仅更换模型名。\n\n查到订单 LM-DEMO-0002（轻享月卡，实付 ¥299.00），退款状态为「尚无退款处理记录」。\n\n本工单已收到你的退款诉求，无需重复提交；这部分交由人工核验。不能承诺退款金额、结果或到账时间。\n\n你已有其他等待人工的工单，本次会结合已有记录处理。\n\n部分或剩余余额退款、已消费部分的处理及手续费都需要人工核验；当前没有可确认的费率，不把账户余额或订单实付金额当作批准的退款金额。",
+      "provider": "local",
+      "source": "policy",
+      "state": "superseded",
+      "route": "answer_and_handoff",
+      "intents": [
+        "balance",
+        "refund",
+        "configuration"
+      ],
+      "actions": [
+        {
+          "type": "balance_fix",
+          "expected_balance_units": -1800,
+          "reason": "满足演示规则，等待批准执行"
+        },
+        {
+          "type": "refund_request",
+          "order_number": "LM-DEMO-0002"
+        }
+      ],
+      "tools": [
+        "search_kb",
+        "get_account_overview",
+        "check_balance_adjustment",
+        "get_orders",
+        "get_user_ticket_history"
+      ],
+      "fallback": false,
+      "revision": false,
+      "topic": null,
+      "history_messages": 1,
+      "includes_human": false,
+      "review": null,
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 440,
+            "completion_tokens": 16,
+            "total_tokens": 456
+          },
+          "elapsed_ms": 4564
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "run_id": 39,
+      "ticket_id": 16,
+      "phase": "after_fix",
+      "message": "先别处理余额回正换个问题Codex 配置显示 Custom，我已经保存配置并完全退出重开了，这能证明连通吗？",
+      "answer": "不能。Codex 显示 **Custom** 只是自定义配置的界面标签，不能证明已连通，也不能证明实际使用的是 gpt-6.1-sol。\n\n你已经保存配置并完全退出重开，无需重复。下一步直接发送一条最小请求，例如“只回复 OK”，看是否正常返回；要确认实际使用的模型，还需核对请求记录中的模型信息，不能只看界面名称。\n\n如果报错，把完整报错发来即可，不要发送完整 Key。另外，如果你填写的是演示地址 `https://api.lumen.example/v1`，它只是占位地址，不提供真实推理服务。",
+      "provider": "openai",
+      "source": "model",
+      "state": "sent",
+      "route": "answer",
+      "intents": [
+        "configuration"
+      ],
+      "actions": [],
+      "tools": [
+        "search_kb"
+      ],
+      "fallback": false,
+      "revision": false,
+      "topic": {
+        "current_intents": [
+          "configuration"
+        ],
+        "excluded_intents": [
+          "balance"
+        ],
+        "referenced_previous_topic": false,
+        "clarification_required": false
+      },
+      "history_messages": 2,
+      "includes_human": false,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 690,
+            "completion_tokens": 16,
+            "total_tokens": 706
+          },
+          "elapsed_ms": 3407
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1066,
+            "completion_tokens": 157,
+            "total_tokens": 1223
+          },
+          "elapsed_ms": 8567
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1031,
+            "completion_tokens": 13,
+            "total_tokens": 1044
+          },
+          "elapsed_ms": 5064,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "run_id": 40,
+      "ticket_id": 16,
+      "phase": "after_fix",
+      "message": "回到最开始那个问题，先别讲配置。现在可以继续处理吗？",
+      "answer": "余额已回正至 $0.0000，已核对数据库写入结果。",
+      "provider": "local",
+      "source": "policy",
+      "state": "sent",
+      "route": "answer",
+      "intents": [
+        "balance"
+      ],
+      "actions": [
+        {
+          "type": "balance_fix",
+          "expected_balance_units": -1800,
+          "reason": "满足演示规则，等待批准执行"
+        }
+      ],
+      "tools": [
+        "search_kb",
+        "get_account_overview",
+        "check_balance_adjustment"
+      ],
+      "fallback": false,
+      "revision": false,
+      "topic": {
+        "current_intents": [
+          "balance"
+        ],
+        "excluded_intents": [
+          "configuration"
+        ],
+        "referenced_previous_topic": true,
+        "clarification_required": false
+      },
+      "history_messages": 4,
+      "includes_human": false,
+      "review": null,
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 939,
+            "completion_tokens": 16,
+            "total_tokens": 955
+          },
+          "elapsed_ms": 11836
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "run_id": 41,
+      "ticket_id": 16,
+      "phase": "after_fix",
+      "message": "先不谈余额了，换个问题：我的套餐当前还有多少额度，下一次什么时候刷新？",
+      "answer": "你的「轻享月卡」当前周期额度为 **$600.0000**，已用 **$180.0000**，剩余 **$420.0000**。\n\n下一次额度刷新时间：**2026-10-21 10:48（UTC）**。\n套餐到期时间：2026-11-08 10:48（UTC），与额度刷新时间不同。",
+      "provider": "openai",
+      "source": "model",
+      "state": "sent",
+      "route": "answer",
+      "intents": [
+        "quota"
+      ],
+      "actions": [],
+      "tools": [
+        "search_kb",
+        "get_subscriptions"
+      ],
+      "fallback": false,
+      "revision": false,
+      "topic": {
+        "current_intents": [
+          "quota"
+        ],
+        "excluded_intents": [
+          "balance"
+        ],
+        "referenced_previous_topic": false,
+        "clarification_required": false
+      },
+      "history_messages": 6,
+      "includes_human": false,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1010,
+            "completion_tokens": 16,
+            "total_tokens": 1026
+          },
+          "elapsed_ms": 3433
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1647,
+            "completion_tokens": 100,
+            "total_tokens": 1747
+          },
+          "elapsed_ms": 5625
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1555,
+            "completion_tokens": 13,
+            "total_tokens": 1568
+          },
+          "elapsed_ms": 3428,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "run_id": 42,
+      "ticket_id": 16,
+      "phase": "after_fix",
+      "message": "回到最开始那个问题，先别讲套餐。现在还需要我再申请一次吗？",
+      "answer": "不用再申请一次余额回正。本次查询确认，你当前的账户余额是 **$0.0000**，无需重复申请。",
+      "provider": "openai",
+      "source": "model",
+      "state": "sent",
+      "route": "answer",
+      "intents": [
+        "balance"
+      ],
+      "actions": [],
+      "tools": [
+        "search_kb",
+        "get_account_overview"
+      ],
+      "fallback": false,
+      "revision": false,
+      "topic": {
+        "current_intents": [
+          "balance"
+        ],
+        "excluded_intents": [
+          "quota"
+        ],
+        "referenced_previous_topic": true,
+        "clarification_required": false
+      },
+      "history_messages": 8,
+      "includes_human": false,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1227,
+            "completion_tokens": 16,
+            "total_tokens": 1243
+          },
+          "elapsed_ms": 3151
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1529,
+            "completion_tokens": 41,
+            "total_tokens": 1570
+          },
+          "elapsed_ms": 3858
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1378,
+            "completion_tokens": 13,
+            "total_tokens": 1391
+          },
+          "elapsed_ms": 14194,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "run_id": 43,
+      "ticket_id": 17,
+      "phase": "after_fix",
+      "message": "我的轻享周卡还有多少周期额度，余额还有多少？额度用完为什么不能继续用？下次刷新时间请按北京时间告诉我。",
+      "answer": "你的「轻享周卡」当前情况如下：\n\n- **本周期额度**：$600.0000，已全部用完，剩余 **$0.0000**。\n- **账户余额**：**$18.5000**。\n- **下次额度刷新时间**：北京时间 **2026年10月21日 18:48（UTC+8）**。\n\n额度用完后不能继续使用，是因为你使用的 Key「开发环境」（末四位 3f8a）**余额兜底已关闭**，不会自动扣账户余额继续请求。套餐目前仍有效，但不代表本周期还有可用额度。\n\n你可以等待下次刷新，或请人工协助调整套餐。",
+      "provider": "openai",
+      "source": "model",
+      "state": "sent",
+      "route": "answer",
+      "intents": [
+        "quota",
+        "balance"
+      ],
+      "actions": [],
+      "tools": [
+        "search_kb",
+        "get_subscriptions",
+        "get_api_keys",
+        "get_account_overview"
+      ],
+      "fallback": false,
+      "revision": false,
+      "topic": {
+        "current_intents": [
+          "quota",
+          "balance"
+        ],
+        "excluded_intents": [],
+        "referenced_previous_topic": false,
+        "clarification_required": false
+      },
+      "history_messages": 0,
+      "includes_human": false,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 537,
+            "completion_tokens": 18,
+            "total_tokens": 555
+          },
+          "elapsed_ms": 4280
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1478,
+            "completion_tokens": 175,
+            "total_tokens": 1653
+          },
+          "elapsed_ms": 7564
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1462,
+            "completion_tokens": 13,
+            "total_tokens": 1475
+          },
+          "elapsed_ms": 3575,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "run_id": 44,
+      "ticket_id": 17,
+      "phase": "after_fix",
+      "message": "先不谈套餐额度和余额了，换个问题：Codex 使用 gpt-6.1-sol，我已经保存配置并完全退出重开，显示 Custom 能证明接通吗？",
+      "answer": "不能。**Codex 显示 Custom 只是自定义配置的界面标签**，不能单独证明请求已接通，也不能证明实际使用了 `gpt-6.1-sol`。\n\n你已经保存配置并完全退出重开，无需重复。下一步发一个最小请求，例如“只回复 OK”，检查能否正常返回；正常返回可以验证请求链路，但确认实际模型还需要结合请求记录或服务端返回信息。\n\n另外，如果你填写的是演示地址 `https://api.lumen.example/v1`，它只是占位地址，**不提供真实模型推理服务**，需要换成实际服务地址，并匹配相应协议、模型和 Key。\n\n你可以把这次测试的返回结果或报错发来，我帮你判断；不要发送完整 Key。",
+      "provider": "openai",
+      "source": "model",
+      "state": "sent",
+      "route": "answer",
+      "intents": [
+        "configuration"
+      ],
+      "actions": [],
+      "tools": [
+        "search_kb"
+      ],
+      "fallback": false,
+      "revision": false,
+      "topic": {
+        "current_intents": [
+          "configuration"
+        ],
+        "excluded_intents": [
+          "balance",
+          "quota"
+        ],
+        "referenced_previous_topic": false,
+        "clarification_required": false
+      },
+      "history_messages": 2,
+      "includes_human": false,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 820,
+            "completion_tokens": 16,
+            "total_tokens": 836
+          },
+          "elapsed_ms": 4295
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1356,
+            "completion_tokens": 192,
+            "total_tokens": 1548
+          },
+          "elapsed_ms": 8981
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1356,
+            "completion_tokens": 13,
+            "total_tokens": 1369
+          },
+          "elapsed_ms": 4200,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "run_id": 45,
+      "ticket_id": 17,
+      "phase": "after_fix",
+      "message": "回到最开始那个问题，先别讲模型配置。那个什么时候刷新，能提前重置吗？请继续用北京时间。",
+      "answer": "你的「轻享周卡」下次额度刷新时间是 **北京时间 2026年10月21日 18:48（UTC+8）**。\n\n本周期额度 $600.0000 已全部用完，剩余 $0.0000；套餐仍有效，到期时间为北京时间 2026年11月8日 18:48（UTC+8）。\n\n**目前没有提前重置周期的自动操作**。你可以等待下次刷新；如果希望提前调整套餐，需要由人工管理员核验，暂时不能保证能提前重置。\n\n另外，「开发环境」Key（末四位 3f8a）的余额兜底仍关闭，额度用尽后不会自动扣账户余额继续请求。",
+      "provider": "openai",
+      "source": "model",
+      "state": "sent",
+      "route": "answer",
+      "intents": [
+        "quota"
+      ],
+      "actions": [],
+      "tools": [
+        "search_kb",
+        "get_subscriptions",
+        "get_api_keys"
+      ],
+      "fallback": false,
+      "revision": false,
+      "topic": {
+        "current_intents": [
+          "quota"
+        ],
+        "excluded_intents": [
+          "configuration"
+        ],
+        "referenced_previous_topic": false,
+        "clarification_required": false
+      },
+      "history_messages": 4,
+      "includes_human": false,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1080,
+            "completion_tokens": 16,
+            "total_tokens": 1096
+          },
+          "elapsed_ms": 5871
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1805,
+            "completion_tokens": 174,
+            "total_tokens": 1979
+          },
+          "elapsed_ms": 14090
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1787,
+            "completion_tokens": 13,
+            "total_tokens": 1800
+          },
+          "elapsed_ms": 4616,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "run_id": 46,
+      "ticket_id": 17,
+      "phase": "after_fix",
+      "message": "再切回刚才的模型配置问题，我已经按你说的发了最小请求，现在可以正常用了，谢谢。",
+      "answer": "不客气！既然最小请求已正常返回、现在也能正常使用，当前模型配置问题就算解决了，无需继续排查。\n\n再确认一下：只是模型配置问题已解决，还是本工单中的所有问题都已解决？确认全部完成后再关闭工单，避免遗漏。",
+      "provider": "openai",
+      "source": "model",
+      "state": "sent",
+      "route": "answer",
+      "intents": [
+        "resolution_check"
+      ],
+      "actions": [],
+      "tools": [],
+      "fallback": false,
+      "revision": false,
+      "topic": {
+        "current_intents": [
+          "resolution_check"
+        ],
+        "excluded_intents": [],
+        "referenced_previous_topic": false,
+        "clarification_required": false
+      },
+      "history_messages": 6,
+      "includes_human": false,
+      "review": {
+        "passed": true,
+        "issues": []
+      },
+      "calls": [
+        {
+          "stage": "support_intents",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1339,
+            "completion_tokens": 16,
+            "total_tokens": 1355
+          },
+          "elapsed_ms": 4624
+        },
+        {
+          "stage": "support_reply",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1485,
+            "completion_tokens": 81,
+            "total_tokens": 1566
+          },
+          "elapsed_ms": 6065
+        },
+        {
+          "stage": "support_quality",
+          "attempt": 1,
+          "ok": true,
+          "response_model": "gpt-6-astra",
+          "usage": {
+            "prompt_tokens": 1374,
+            "completion_tokens": 13,
+            "total_tokens": 1387
+          },
+          "elapsed_ms": 4491,
+          "content_review": {
+            "passed": true,
+            "issues": []
+          }
+        }
+      ],
+      "warnings": []
+    }
+  ],
+  "acceptance": {
+    "tested_window_local": "2026-10-18 23:02–23:08 Australia/Sydney",
+    "automated_tests": {
+      "passed": 188,
+      "total": 188
+    },
+    "business_scenarios": {
+      "passed": 29,
+      "total": 29
+    },
+    "browser": {
+      "customer_and_staff_independent_sessions": true,
+      "automatic_reply_without_manual_refresh": true,
+      "approval_result_synced_without_manual_refresh": true,
+      "errors_and_warnings_since": "2026-10-18T12:02:00Z",
+      "error_and_warning_count": 0
+    },
+    "demo_balance_verification": {
+      "user_id": 2,
+      "balance_units": 0,
+      "balance_fix_count": 1,
+      "order_refund_status": [
+        {
+          "number": "LM-DEMO-0002",
+          "refund_status": "none"
+        }
+      ]
+    },
+    "multi_topic_resolution": {
+      "ticket_id": 17,
+      "status": "waiting_customer",
+      "closed": false
+    },
+    "scope": "Synthetic local business accounts and data. The balance correction uses a fixed verified template and admin approval; it is not a model fallback. No real payment or refund performed."
+  }
+}

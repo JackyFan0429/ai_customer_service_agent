@@ -1,301 +1,281 @@
-# 智能客服 Agent 与知识库治理
+# Lumen · 本地 AI 客服与业务演示平台
 
-[English](README.md) | **简体中文**
+[English](README.md) | **简体中文** · v0.5.3
 
-按照本教程，你可以在本机运行一个个人客服原型：检索知识、回答有依据的问题、追问缺失信息，并将账户类请求引导至人工核验。项目尚未接入真实客服业务。
+这是一个可以在自己电脑上运行的完整客服练习项目：客户网站、SQLite 业务数据库、工单系统、管理员工作台，以及“查询 → 草稿 → 质检 → 审核/自动发送 → 转人工”的客服流程。
 
-默认 `local` 模式使用 **19 条虚构知识记录**，**不需要 API Key，也不会调用模型 API**。ClientA、ClientB Code、ClientC、ClientD 和 ModelA 都是虚构标签。示例知识和回答主要使用简体中文。
+**本地业务网站始终可以独立运行。** 不配置模型、不填写 API Key，也能登录、模拟业务请求、管理账号、创建和处理工单。接入真实模型是可选功能，用来增强分诊、回复措辞和质检。
 
-[获取文件](#get-the-files) · [Python 本机运行](#python-demo) · [Docker 运行](#docker-demo) · [复现示例对话](#demo-conversation) · [测试与评测](#verification) · [常见问题](#troubleshooting)
+项目参考 `last30days.json` 中可观察的处理模式；模型和客户端名称保留原名，账号、订单、用量和业务政策采用合成演示数据。运行项目不需要原始 JSON，也不会自动上传它。“学习”采用案例整理、知识检索、规则配置和评测，目前没有进行模型权重微调。
 
-<a id="get-the-files"></a>
-## 1. 获取项目文件
+## 先选一种运行方式
 
-克隆仓库并进入目录：
+| 你想做什么 | 选择 | 需要什么 |
+|---|---|---|
+| 先体验网站、数据库、账号和完整工单流程 | **方式一：本地独立运行** | Python 3.11+，无需模型服务 |
+| 让真实语言模型参与客服分诊、措辞和质检 | **方式二：接入真实回复模型** | 同上，再准备自己的 Base URL、API Key、模型 ID |
 
-```bash
-git clone https://github.com/JackyFan0429/ai_customer_service_agent.git
-cd ai_customer_service_agent
-```
+两种方式使用同一个网站和数据库。切换模型模式不会清空已有账号、工单和业务记录。客户网站的“模型目录”始终只模拟业务请求，与实际生成客服回复的模型配置分开。
 
-也可以下载仓库 ZIP，解压后在该目录打开终端。已经有本地项目的读者，直接进入已有目录即可。**以下命令都在同时包含 `README.md`、`support_agent/` 和 `compose.yaml` 的项目根目录执行。**
+## 开始之前
 
-接下来选择 **Python 或 Docker 中的一条路径**。两者默认都使用 `8080` 端口，切换运行方式前请先停止另一种方式启动的服务。
+1. 解压项目，进入包含 `README.zh-CN.md`、`support_agent/`、`scripts/` 的项目根目录。
+2. 安装 **Python 3.11 或更新版本**。在终端执行 `python3 --version` 检查。
+3. 以下命令均在项目根目录执行。运行网站只使用 Python 标准库，**不用先装 npm、数据库服务或 pip 依赖**。
 
-<a id="python-demo"></a>
-## 2A. 使用 Python 在本机运行
+macOS / Linux 可以在终端输入 `cd `，拖入解压后的文件夹，再按回车。Windows 在项目文件夹打开 PowerShell，先用 `py -3 --version` 检查 Python；下文命令里的 `python3` 可以替换为 `py -3`。
 
-### A1. 创建 Python 环境
+## 方式一：本地独立运行（推荐先体验）
 
-准备带有 `venv` 支持的 **Python 3.11 或更新版本**。CI 使用 Python 3.13。只有克隆仓库和后面的基线复现需要 Git。
-
-**macOS / Linux：**
+直接执行：
 
 ```bash
-python3 --version
-python3 -m venv .venv
-source .venv/bin/activate
-python --version
+python3 scripts/start_demo.py --provider local
 ```
 
-**Windows PowerShell：**
+程序自动创建数据库、6 个账号和 6 张演示工单，并打开浏览器。通常访问 [http://127.0.0.1:8080](http://127.0.0.1:8080)；8080 被占用时，启动脚本尝试后面最多 9 个端口，**以终端实际打印的地址为准**。
+
+- 不需要 `.env`、API Key 或互联网；即使已有真实模型配置，`--provider local` 也明确选择离线引擎。
+- 终端保持打开，按 **Ctrl+C** 停止网站。
+- macOS 也可双击 `start-demo.command`，默认进入本地模式；接入真实模型使用下文的终端命令。
+- 不想自动打开浏览器：在启动命令末尾加 `--no-browser`。
+
+需要固定端口、不自动打开浏览器时，也可以使用模块入口：
+
+```bash
+python3 -m support_agent.portal --provider local --host 127.0.0.1 --port 8080
+```
+
+模块入口不会自动换端口。端口占用时改成 `--port 8081`，然后访问对应地址。
+
+### 用这些账号登录
+
+六个预设账号的初始密码都是 **`Demo123!`**，登录页可以直接选择身份。
+
+| 身份 | 邮箱 | 主要用途 |
+|---|---|---|
+| 管理员 Alex | `admin@lumen.test` | 工单处理、AI 开关、账号/套餐/余额管理；可切换个人空间 |
+| 客服顾言 | `support1@lumen.test` | 人工回复、发送 AI 建议、撤回 AI 回复；可切换个人空间 |
+| 客服许晴 | `support2@lumen.test` | 同上；没有 AI 全局开关和财务管理权限 |
+| 林晓 | `alice@lumen.test` | 小额负余额、Claude 请求失败 |
+| 陈宇 | `ben@lumen.test` | 套餐额度用尽、退款申请 |
+| 周宁 | `cora@lumen.test` | 发票、客户端配置、模拟模型请求 |
+
+普通客户只能看到自己的业务数据和公开工单对话；草稿、工具结果和交接备注仅客服/管理员工作台可见。管理员和两位客服点击**左下角头像**，可以切换个人空间与对应工作台。个人空间使用该账号自己的工单和余额，不会冒充其他客户；切换回工作台后恢复工作权限。
+
+### 五分钟跑通自动回复和人工协作
+
+1. 用 **周宁** 登录，进入“模型目录”，模拟一次 503 请求，再点击“就这次请求咨询客服”。模拟请求只写本地数据库。
+2. 提交工单后留在当前页面：先显示“AI 正在查询并生成回复”，然后自动出现答复。**默认自动发送，不用换管理员、不用手动刷新**。缺少业务证据、最终质检未通过或需要批准的操作会交给人工；模型暂时不可用时，通过质检的本地答复仍可自动发送，并明确标注来源。
+3. 为了同时观察双方，在另一个浏览器或独立隐私窗口登录 **顾言 / 许晴**。打开该工单并发送人工回复。双方的消息、状态都会实时同步。
+4. 客户再发一个问题。客服界面显示“人工 15 分钟内进行过回答，因此 AI 不插话，只给建议”。**等待 1 分钟无人回复后**，内部 AI 建议才出现，客户看不到草稿。人工在这一分钟内回复会取消任务；客户继续补充会重新计时并使旧建议失效。
+5. 客服点击“发送这条建议”，客户立即看到消息；点击已发送 AI 消息旁的“撤回 AI 回复”，客户自动看到“该条 AI 消息已撤回”。撤回保留审计记录，不会撤销已经执行的余额/订单操作。
+
+显式点击“人工接管”会持续暂停自动发送，直到点击“恢复 AI”。普通人工回复的保护窗口默认 15 分钟，结束后的下一条客户消息可恢复自动答复；已经生成的内部建议始终需要人工发送。手动点击“重新生成”也只生成内部建议。
+
+同一个浏览器的普通标签页共享登录会话。体验两个账号请使用不同浏览器或独立隐私窗口；不要在共享会话的第二个标签页登录另一个账号。
+
+### 管理员专属功能
+
+- 顶部的“关闭 / 开启 AI 自动发送”是全局开关。关闭立即阻止尚未发出的自动回复，新问题等待人工；人工介入后的延迟建议仍可生成。重新开启不会自动发送旧草稿。
+- “客户与账号 → 管理账号 → 编辑账号与余额”：修改本地余额、额度、姓名、状态或重置演示密码；余额变动写入账本。
+- “新增套餐”与每张套餐卡片的“修改套餐”：设置名称、周期总额度、已用额度、刷新/到期时间和状态。启用新套餐会停用该账号原来的生效套餐，历史记录保留。客户页面及后续工具查询会同步使用新数据。
+- 客服可看工单和只读客户资料，不能操作账号、套餐、余额、退款审批、知识、全局配置。含余额回正的建议只能由管理员批准。
+- 管理员还可维护知识、处理模拟退款、运行场景评测。所有操作只修改本地业务数据。
+
+### 页面如何实时更新
+
+客户、客服和管理员页面通过 SSE 接收变更通知，再按当前登录权限读取最新数据，通常无需等待固定刷新周期。消息、撤回、工单列表、AI 开关、套餐和余额都自动同步。模型生成在后台执行，不会阻塞页面读取；正在输入的文字、编辑中的同一份草稿和滚动位置会保留。
+
+连接断开会显示重连状态并每 5 秒尝试补同步；重新连接后读取最新状态。编辑弹窗打开时会暂缓页面重绘，关闭弹窗后补上更新，避免覆盖尚未保存的内容。服务程序必须保持运行；生成速度还取决于模型服务响应。
+
+## 方式二：接入真实回复模型（终端逐项输入）
+
+**不用创建或编辑 `.env`。** 在项目根目录打开终端，只执行这一条：
+
+```bash
+python3 scripts/start_demo.py --provider openai
+```
+
+Windows PowerShell 使用：
 
 ```powershell
-py -3 --version
-py -3 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python --version
+py -3 scripts/start_demo.py --provider openai
 ```
 
-如果 PowerShell 阻止激活脚本，将后续命令中的 `python` 换成 `.\.venv\Scripts\python.exe` 即可，无需修改执行策略。
+当前终端没有完整配置时，程序会停下来逐项询问。**每填完一项就按 Enter**，填完后先进行真实模型验证，通过后自动启动网站、打开浏览器：
 
-Web 和 CLI 演示可以直接从源码目录运行，只使用 Python 标准库。**首次运行演示不需要执行 `pip install`。** 完整测试所需的额外依赖在后面单独安装。
+| 终端会问什么 | 你应该填什么 |
+|---|---|
+| **API 地址（Base URL）** | 服务商提供的 API 地址，例如 `https://your-service.example/v1`；使用 OpenAI 官方地址时直接按 Enter |
+| **API Key** | 粘贴该服务商给你的密钥，再按 Enter。**不会显示字符或星号，这是正常的，不是没有输入进去** |
+| **模型 ID** | 服务商控制台列出的、你的账号能使用的实际模型名；原样输入，不能留空 |
+| **接口类型** | 服务商文档写 `/chat/completions` 就输入 `1`；写 `/responses` 就输入 `2`。直接回车默认选 `2` |
 
-### A2. 启动 Web 演示
-
-```bash
-python -m support_agent.web --provider local --host 127.0.0.1 --port 8080
-```
-
-保持此终端开启。正常启动时应看到：
+这是终端提示的样子，**不需要把下面整段当命令执行**：
 
 ```text
-AI Customer Support is running at http://127.0.0.1:8080 (provider: local)
+真实回复模型 · 临时连接设置
+API 地址（Base URL，回车使用 https://api.openai.com/v1）：
+API Key（输入隐藏，粘贴后按 Enter）：
+模型 ID（按服务商提供的名称原样输入）：
+接口类型：1 = Chat Completions（/chat/completions）；2 = Responses（/responses）。
+选择接口 [1/2，回车默认 2]：
 ```
 
-在浏览器打开 **[http://127.0.0.1:8080](http://127.0.0.1:8080)**，页面右上角应显示 `local · 虚构演示资料`。
+输入空密钥、空模型名或错误格式时，会提示重新输入。随时按 **Ctrl+C** 可以取消，不会留下连接配置。不必先跑检查命令再跑启动命令；普通体验直接使用上面的一条启动命令即可。
 
-也可以打开 **[健康检查地址](http://127.0.0.1:8080/api/health)**，直接确认后端状态：
+### 地址和接口怎么选
 
-```json
-{"status": "ok", "provider": "local", "synthetic_demo": true}
+Base URL 填服务商给你的 **API 前缀**，是否需要 `/v1` 以它的说明为准；不要在末尾重复填写 `/chat/completions` 或 `/responses`，程序会自动拼接。
+
+| 选择 | 实际请求地址示例 |
+|---|---|
+| `1`：Chat Completions | `https://your-service.example/v1/chat/completions` |
+| `2`：Responses | `https://your-service.example/v1/responses` |
+
+使用 OpenAI 官方 Responses API：地址直接回车，填写自己的 Key 和可用模型 ID，接口选 `2`。其他兼容服务根据服务商文档选择。模型名称按原样发送，不会自动替换。
+
+所选服务和模型需要支持对应协议的 **strict JSON Schema 结构化输出**。Chat Completions 适配器还使用 `max_completion_tokens` 和 `store=false`。仅提供普通文本聊天、Anthropic 原生 Messages 或 Gemini 原生接口的地址不能直接接入。协议格式说明见 [OpenAI 官方结构化输出文档](https://developers.openai.com/api/docs/guides/structured-outputs)。
+
+### 配置只用于本次运行
+
+- 交互输入只保存在当前 Python 进程内存中，供本次网站运行复用；**不写 `.env`、代码、数据库、配置缓存或 Shell 启动文件**，也不回写上层终端的环境变量。
+- 停止程序后再次运行、重新打开终端、换到另一个项目位置启动，都需要重新输入。网站的账号和工单仍会保存在原数据库；模型连接信息不会一起保存。
+- 如果你自己已在当前终端设置 `OPENAI_BASE_URL`、`OPENAI_API_KEY`、`OPENAI_MODEL`，程序会复用已有值，只询问缺少的项目；接口可用 `OPENAI_API_MODE` 指定。这属于你主动提供的环境变量，不是程序记住了上次的输入。
+- API Key 不进入浏览器页面或正常日志；隐藏输入不会作为 Shell 命令写入命令历史。项目不会把连接配置上传到云端保存。**调用真实模型时，仍需向你指定的 API 地址发送鉴权信息和本轮所需数据**。
+- v0.3.2 不再读取 `.env`，也不再支持 `--env-file`。已有文件不会被修改或删除。
+
+### 启动后怎么确认在使用模型
+
+从 v0.5.0 开始，**启动真实模型模式会先发送分诊、生成回复和质检三次短请求**，可能产生服务商费用。全部通过才打开网站，终端显示：
+
+```text
+真实模型验证通过：你的模型名 · 分诊 / 回复 / 质检均成功（未使用本地回退）
 ```
 
-如果之前配置过自定义语料，在启动命令后加上 `--corpus support_agent/demo/corpus.jsonl`，即可明确选择随包演示资料。
+如果证书、网络、鉴权、协议或结构化输出失败，会明确报错并停止真实模型模式启动，不会仅凭配置把它标为已接入。本地模式不做联网检查，仍可独立运行。初始演示工单由离线规则生成，请新建工单验证真实模型。
 
-### A3. 体验对话，然后停止或重启
+- 客户消息旁显示实际回复来源：服务商返回的模型名、本地规则回复或业务规则回复。人工审核发送会额外标注。
+- 客服工单的“模型调用”显示配置模型、服务商返回的模型名、协议、分诊/生成/质检结果与耗时，以及使用了多少条历史消息、是否包含人工客服回复。
+- 页头“模型已验证”表示最近调用通过；运行期间调用失败或内容检查未通过，会显示“模型回复已降级”。运行中确需降级时，通过质检的本地回复仍可自动发送，来源会明确标注。
+- 业务查询缺失、最终回复质检未通过、人工保护、全局开关关闭和余额审批仍独立限制发送。余额操作使用固定模板，不声称由模型生成。
 
-按[第 3 节](#demo-conversation)发送示例消息。在启动服务的终端按 **Ctrl+C** 停止服务，再运行同一条命令即可重启。未指定其他数据库时，会话保存在 `runtime/support_agent.db`；重启后刷新浏览器，点击原会话可确认历史仍在。
+从 v0.5.1 开始，生成与复核使用相同的当前业务查询结果、客户问题和对话历史。复核基于完整证据，不要求逐句照抄简短基准。模型答复若被内容检查拦下，会根据反馈最多修订一次，再重新质检；仍不通过才采用本地基准。客服面板区分“API 调用成功”和“内容复核通过”，并显示脱敏后的拦截理由。正常回复使用三次模型调用，内容修订额外增加最多两次。
 
-### A4. 可选：使用命令行对话
+v0.5.3 增加同一工单的话题切换记录：暂时不问的事项不会触发查询或操作，切回最初问题会重新读取当前数据，多项旧问题指代不清时先确认。套餐查询包含 Key 余额兜底状态及带时区的刷新时间；“完全退出客户端”不会触发退款，“重置额度”不会触发账号重置。
 
-另开一个终端，进入项目根目录，并按照 A1 激活环境。先试一条返回结构化结果的问题：
+v0.5.2 修复了多轮追问中引用已知时间、错误码或用户希望保留的金额导致的误回退。金额仍按当前业务证据核验；退款进度追问会保留未完成主题并重新查询订单，简短致谢不会清空上下文。具体回归场景和真实模型验收结果见[验证记录](docs/verification.zh-CN.md)。
+
+**对话上下文：** 分诊、生成和质检都接收同一工单最近的客户、AI 与人工客服公开消息（最多 24 条历史消息，约 16,000 字）。旧消息超限会截断并在客服端标注；撤回原文、未发送草稿、内部备注、其他账号的工单不进入上下文。已提供的客户端或报错不再作为新问题机械追问。“现在应该好了”先确认恢复，“确认，已经可以正常用了”才标记解决；客户仍提到待核实事项时不提前关闭；人工接管时仍只生成内部建议。
+
+**macOS 证书问题：** 部分 python.org 安装的 Python 缺少默认 CA 文件。程序会使用已安装的 `certifi` 提供可信根证书，并继续校验 TLS 证书与主机名。如仍提示 `tls_certificate`，运行 `python3 -m pip install -U certifi` 后重试；使用虚拟环境时在对应环境执行，也可安装 `python3 -m pip install -e ".[models]"`。自定义 `SSL_CERT_FILE` / `SSL_CERT_DIR` 会被尊重，不会关闭证书校验。
+
+升级需要停止旧服务、重新启动、重新载入浏览器一次；已有旧草稿不会追溯发送。之后正常消息自动更新。
+
+### 可选：只检查连接、其他启动参数
+
+只想确认服务能否调用，不启动网站：
 
 ```bash
-python -m support_agent.cli --provider local --json "ClientA Base URL 怎么配置？"
+python3 scripts/start_demo.py --provider openai --check-model
 ```
 
-预期结果包括 `route: "answer"`、带有虚构演示标记的配置说明，以及 `document_id: "demo:setup"` 的引用。
+同样会在终端询问缺少的配置，然后用合成示例完成分诊、回复和质检三次短请求，可能产生费用；不发送已有工单内容，不创建数据库。检查通过后程序退出，**本次输入不会被保留**。之后另行启动网站会重新询问，因此第一次体验建议直接使用本节开头的一条启动命令。
 
-需要连续追问时，进入交互模式：
+不自动打开浏览器：给启动命令加 `--no-browser`。固定端口、使用模块入口也支持相同的交互输入：
 
 ```bash
-python -m support_agent.cli --provider local
+python3 -m support_agent.portal --provider openai --port 8080
 ```
 
-逐条输入第 3 节的消息，最后输入 `exit` 退出。CLI 历史只保存在当前进程中；分别执行多条单次问答命令不会共享上下文。
+熟悉命令行的用户可以传 `--base-url`、`--model`、`--api-mode`；优先级为 **命令行 > 当前进程环境变量 > 缺失时交互输入**。Key 没有命令行参数，避免进入进程参数和命令历史。非交互任务可加 `--no-input` 并由当前进程环境提供配置；缺少配置会直接报错，不会挂起等待或从管道读取密钥。
 
-<a id="docker-demo"></a>
-## 2B. 使用 Docker 运行
+启动脚本的相对数据库路径基于项目根目录，模块入口则基于当前工作目录。真实模型只接收本轮问题、有限对话背景和限定的业务证据，没有数据库写工具；原始 JSON 与候选训练文本不会自动发送。
 
-这条路径不要求宿主机安装 Python。请安装带有 Compose 插件的 Docker，并**启动 Docker 引擎**。桌面版安装方式需要先打开应用并等待引擎就绪；如命令不可用，可参考[官方 Compose 安装说明](https://docs.docker.com/compose/install/)。
+## 数据保存与重新体验
 
-### B1. 检查 Docker
+从 v0.3.x 升级时，先用 Ctrl+C 停止旧服务，再运行新版本代码并重新载入浏览器一次。启动会迁移旧数据库、补入两位客服，并将旧默认策略调整为自动回复 / 15 分钟 / 1 分钟，保留账号、工单、账本与套餐；以后重启不会覆盖管理员保存的 AI 开关。旧草稿不会追溯自动发送，可由人工发送或重新生成。
+
+默认数据库为 `runtime/lumen_desk.db`，重启后数据仍在。两个模式默认共用它。使用新解压目录时，可用 `--database /旧项目的绝对路径/runtime/lumen_desk.db` 继续原有数据；升级前可自行备份该数据库。想重新体验初始账号和工单，指定一个**尚不存在的新数据库文件**即可，不需要删除旧数据：
 
 ```bash
-docker version
-docker compose version
+python3 scripts/start_demo.py --provider local --database runtime/fresh_demo.db
 ```
 
-`docker version` 应同时显示 **Client** 和 **Server** 信息。只有客户端版本，不代表引擎已经启动。
+账号、退款、发票、用量、余额回正都只是本地演示状态，没有真实付款、发票邮件或外部客户后台。模拟成功请求固定消耗演示额度；本版不执行周期续费或定时额度重置。
 
-### B2. 构建并启动
+## 常见问题
 
-在项目根目录执行，确保 `8080` 端口没有被其他服务占用：
+| 现象 | 检查方法 |
+|---|---|
+| 找不到 `python3` 或版本过低 | 安装 Python 3.11+；Windows 使用 `py -3` |
+| `No module named support_agent` / 找不到脚本 | 先进入包含 `support_agent/` 的项目根目录 |
+| 浏览器打不开 | 保持终端运行，复制终端打印的完整地址；可换 `--port 8090` |
+| 提示缺少配置且没有出现输入提示 | 请在 Terminal / PowerShell 等交互终端直接运行启动命令，不要通过管道；自动化须提供进程环境变量 |
+| Key 输入后屏幕没有字符 | 这是隐藏输入的正常行为，粘贴完按 Enter 即可 |
+| 换地址/模型后没生效 | 停止后重新输入；若使用了命令行或环境变量，请修改对应值。旧 `.env` 不再读取 |
+| 连接检查 HTTP 401 / 403 | 核对服务商地址、密钥和模型访问权限 |
+| 连接检查 HTTP 404 / 405 | 核对 Base URL 前缀、接口模式和模型 ID；不要重复填写接口后缀 |
+| 连接检查 HTTP 400 / 422 或结构化输出失败 | 确认模型支持所选协议、strict JSON Schema 及适配器参数；只支持普通聊天的网关不够 |
+| TLS / CERTIFICATE_VERIFY_FAILED | 安装或更新 `certifi` 后重试；企业证书使用可信 `SSL_CERT_FILE`，不要关闭证书校验 |
+| HTTP 429 / 网络失败 | 检查服务商额度、限流和网络；可先用 `--provider local` 继续体验 |
+| 客户没看到 AI 回复 | 查看“正在生成 / 已转人工”状态；管理员检查 AI 开关、质检或余额审批；人工介入时保护窗口内只生成内部建议 |
+| 实时状态显示正在重连 | 保持启动终端运行、检查本机地址；连接恢复后自动补同步；首次升级代码需重启服务并重新载入旧页面 |
+| 客服无法修改套餐/余额或找不到 AI 开关 | 属于管理员权限，请登录管理员并切换到管理员工作台 |
+| 更换模型后旧草稿没变化 | 配置只影响新生成；新建工单或点击“重新生成” |
+| 模型目录有某名称，却不能用它生成客服回复 | 目录是历史技术名称与业务模拟；实际调用以服务商对你账号开放的模型 ID 为准 |
+
+## JSON、知识和评测
+
+日志分析范围共 4,357 条消息，含 735 条 AI 草稿/回复记录、574 条标记工具调用的记录。它们用于归纳工作方式，不等同于成功解决工单的数量。完整映射见[实现说明](docs/desk-guide.zh-CN.md)。
+
+如果你有自己的原始导出，可以在本地运行：
 
 ```bash
-docker compose up --build -d
-docker compose ps
+python3 scripts/import_support_export.py --input /path/to/last30days.json
 ```
 
-首次构建需要联网获取 Python 基础镜像及打包工具。服务名为 `support-agent`，健康状态最终应变为 `healthy`；刚启动时可能短暂显示 `starting`。默认 provider 为 `local`，不需要 `.env` 文件或 API Key。
+候选案例写入被 Git 忽略的 `data/output/chat_export/`，默认未复核，不会自动进入知识库、模型服务或发布 ZIP。自动脱敏保留模型名，遮盖可识别的密钥、邮箱、URL 和编号；自由文本姓名及间接身份仍需人工复核。日志中的草稿、内部备注、未知角色内容不会直接作为标准答案。
 
-打开 **[http://127.0.0.1:8080](http://127.0.0.1:8080)**，按[第 3 节](#demo-conversation)操作。页面与健康检查地址的结果应和 Python 路径相同。Compose 默认仅将端口发布到本机回环地址。
+无法仅凭日志恢复原系统的完整提示词或隐藏配置。先用本项目的合成场景验证流程，再用人工复核的数据评估理解和答复质量，之后才考虑微调。
 
-### B3. 查看日志并在容器内试一次问答
+## 测试、打包和可选 Docker
+
+核心功能测试无需额外依赖：
 
 ```bash
-docker compose logs --tail=50 support-agent
-docker compose exec support-agent python -m support_agent.cli --provider local --json "ClientA Base URL 怎么配置？"
+python3 -m unittest discover -s tests -p 'test_desk.py'
+python3 -m unittest discover -s tests -p 'test_live_workflow.py'
+python3 -m unittest discover -s tests -p 'test_portal*.py'
+python3 -m unittest discover -s tests -p 'test_model_connection.py'
+python3 scripts/evaluate_desk.py
+python3 scripts/package_demo.py
 ```
 
-CLI 命令应返回 `route: "answer"`，引用为 `demo:setup`。
-
-### B4. 验证会话保留，并停止服务
-
-先在浏览器发送一条消息，再执行：
+完整旧版测试包含 PDF 导入，需先安装可选依赖：
 
 ```bash
-docker compose restart support-agent
+python3 -m pip install '.[pdf]'
+python3 -m unittest discover -s tests
+python3 scripts/evaluate_agent.py
 ```
 
-刷新页面、选择原会话，应仍能看到历史消息。数据库位于宿主机项目目录的 `runtime/support_agent.db`，通过挂载映射到容器的 `/app/runtime`。
+ZIP 生成在 `dist/`，只包含源码、文档和合成数据。数据库、会话、原始 JSON、未复核候选数据、`.env` 和 Git 历史不在包内。模型适配器使用模拟响应测试，真实服务要用自己的配置执行连接检查和客服评测。[验证记录](docs/verification.zh-CN.md)区分了已测内容与限制；29 个合成场景通过率不是线上解决率。
 
-停止并移除本次演示容器：
+已有 Docker 的用户也可从项目根目录运行 `docker compose up --build`，停止用 `docker compose down`。此 Compose 配置固定运行本地模式，不向容器传入模型密钥；真实模型请使用上面的 Python 终端交互方式。访问端口由 `SUPPORT_HOST_PORT` 控制，默认 8080。不要与 Python 服务同时占用同一端口。Docker 配置已同步，本次未执行 Docker 构建。
 
-```bash
-docker compose down
-```
+## 继续阅读与代码入口
 
-这个命令会保留宿主机的 `runtime/` 目录和数据库。之后执行 `docker compose up -d` 即可再次启动；修改应用代码后，用 `docker compose up --build -d` 重新构建。
+| 文件/目录 | 用途 |
+|---|---|
+| `support_agent/portal.py` | 新网站 HTTP/API 入口与连接检查 |
+| `support_agent/desk/config.py` | 终端隐藏输入、环境变量、命令行与内存配置 |
+| `support_agent/providers.py` | Responses / Chat Completions 请求适配 |
+| `support_agent/desk/` | 业务数据库、工具、工作流、管理功能和前端 |
+| `support_agent/desk/data/` | 合成知识、模型目录、流程配置和评测场景 |
+| [实现说明](docs/desk-guide.zh-CN.md) | JSON 模式映射、数据设计、权限、扩展点 |
+| [验证与截图](docs/verification.zh-CN.md) | 自动检查与浏览器实测记录 |
+| [原版 RAG 文档](README.rag.zh-CN.md) | 保留的 CLI、知识治理管线及 48 场景基线；入口与新网站不同 |
 
-### B5. 可选：更换端口
-
-如果 `8080` 已被占用，在 `compose.yaml` 同级创建 `.env` 文件，填写：
-
-```dotenv
-SUPPORT_HOST_PORT=8081
-```
-
-如果已有 `.env`，修改其中的端口设置即可，不要覆盖其他配置。然后执行：
-
-```bash
-docker compose up -d
-```
-
-改为访问 **[http://127.0.0.1:8081](http://127.0.0.1:8081)**。`SUPPORT_HOST_PORT` 只改变宿主机端口，容器内部仍使用 `8080`。Compose 会读取 `.env` 做[配置变量替换](https://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/)。
-
-<a id="demo-conversation"></a>
-## 3. 按顺序复现示例对话
-
-点击 **New conversation**，在**同一个会话里逐条发送**以下消息。原样复制问题可以复现本地规则模式的行为。
-
-| 步骤 | 发送的消息 | 预期行为 |
-| --- | --- | --- |
-| 1 | `ClientA Base URL 怎么配置？` | `answer`：返回虚构配置说明，引用 `demo:setup`。 |
-| 2 | `ClientB Code 401` | `answer`：提供鉴权检查建议，引用 `demo:401`。 |
-| 3 | `现在变成 503 了` | `answer`：保留客户端上下文，改用 503 的处理依据，引用 `demo:503`。 |
-| 4 | `还是不行` | `clarify`：结合当前主题询问已尝试步骤和新现象。 |
-| 5 | `帮我退款` | `escalate`：提示人工核验，不声称已经退款。 |
-
-浏览器显示回答正文和引用标题；`answer`、`clarify`、`escalate` 是 JSON 响应中的 `route` 值。`.example` 结尾的地址均为虚构地址，不能接入真实服务。此处的人工升级只表示路由和提示，不会创建真实客服工单。
-
-<a id="verification"></a>
-## 4. 运行测试并复现评测
-
-以下是可选的开发者验证步骤，使用 **A1 创建的 Python 环境**。即使 Web 演示通过 Docker 启动，以下命令也在宿主机的项目根目录执行；轻量运行镜像不包含测试集和评测脚本。
-
-### 4.1 安装测试依赖并运行软件测试
-
-```bash
-python -m pip install -e ".[pdf]"
-python -m unittest discover -s tests -v
-```
-
-完整测试需要可选的 PDF 依赖。预期看到 **59 项测试**和 `OK`。涉及模型 API 的测试使用模拟响应，不会调用付费模型。
-
-### 4.2 运行固定合成场景
-
-```bash
-python scripts/evaluate_agent.py --output runtime/evaluation.json --fail-on-regression evals/results/after.json
-```
-
-预期 **48/48 个场景**、**63/63 轮对话**和 **14/14 个多轮场景**通过，`failures: []`。打开 `runtime/evaluation.json` 可查看逐轮回答、检查结果和引用 ID。这条命令不需要 PDF 依赖，也不需要启动 Web 服务。
-
-### 4.3 复现修复前的基线
-
-先确保终端可以使用 Git，再执行：
-
-```bash
-python scripts/reproduce_baseline.py
-```
-
-脚本在临时目录还原修复前的逻辑并核对文件哈希，结果写入 `runtime/reproduced_before.json`。**39/48 是基线的预期结果**，其中包含 9 个已知失败场景；出现这些失败不表示基线复现失败。
-
-| 指标 | 修复前 | 当前版本 |
-| --- | --- | --- |
-| 完整场景 | 39/48 | 48/48 |
-| 完整轮次 | 53/63 | 63/63 |
-| 路由正确 | 56/63 | 63/63 |
-| 多轮场景 | 9/14 | 14/14 |
-| 应升级召回 | 9/9 | 9/9 |
-
-这些数字来自**合成开发回归集**，标签由 AI 编写、待项目本人复核，不代表独立盲测的模型准确率、线上解决率或满意度。评分使用明确词组与证据 ID；分母和限制见[评测说明](docs/evaluation.zh-CN.md)。
-
-## 5. 可选：接入模型 API
-
-建议先完成本地演示。这一步会将问题及筛选后的证据发送到配置的模型 API，可能产生费用。随包演示仅含合成资料，现有评测报告没有验证真实模型效果、Token 消耗或 API 成本。
-
-**Python，macOS / Linux：**
-
-```bash
-export OPENAI_API_KEY="replace-with-your-key"
-export OPENAI_MODEL="replace-with-your-model-id"
-python -m support_agent.web --provider openai --host 127.0.0.1 --port 8080
-```
-
-**Python，Windows PowerShell：**
-
-```powershell
-$env:OPENAI_API_KEY = "replace-with-your-key"
-$env:OPENAI_MODEL = "replace-with-your-model-id"
-python -m support_agent.web --provider openai --host 127.0.0.1 --port 8080
-```
-
-将占位符替换为自己的密钥和模型 ID；如端口相同，先停止已运行的服务。当前 provider 使用 **Responses API**，自定义 `OPENAI_BASE_URL` 需要支持该接口，只有 Chat Completions 接口的服务不能直接替换。
-
-**Docker：**参考 `.env.example`，在 `compose.yaml` 同级创建或编辑 `.env`：
-
-```dotenv
-SUPPORT_HOST_PORT=8080
-SUPPORT_AGENT_PROVIDER=openai
-OPENAI_API_KEY=replace-with-your-key
-OPENAI_MODEL=replace-with-your-model-id
-OPENAI_BASE_URL=https://api.openai.com/v1
-```
-
-然后重建容器实例：
-
-```bash
-docker compose up -d --force-recreate
-```
-
-页面状态栏应显示配置的 provider。恢复为 `SUPPORT_AGENT_PROVIDER=local` 后再次重建容器实例，即可回到离线演示。`.env` 被 Git 忽略且不会打入镜像。**直接运行 Python 时不会自动加载 `.env`**，请使用上面的终端环境变量命令。
-
-## 6. 配置速查
-
-| 变量 | 用途 | 默认值 |
-| --- | --- | --- |
-| `SUPPORT_AGENT_PROVIDER` | `local` 或 `openai`，命令行 `--provider` 优先 | `local` |
-| `SUPPORT_AGENT_CORPUS` | 自定义检索 JSONL 路径 | 包内 `support_agent/demo/corpus.jsonl` |
-| `SUPPORT_AGENT_DB` | SQLite 数据库路径 | `runtime/support_agent.db` |
-| `SUPPORT_WEB_HOST` / `SUPPORT_WEB_PORT` | Python Web 监听地址和端口 | `127.0.0.1` / `8080` |
-| `SUPPORT_HOST_PORT` | 仅用于 Compose 的宿主机端口 | `8080` |
-| `OPENAI_API_KEY` / `OPENAI_MODEL` | 模型密钥和模型 ID | 未设置 |
-| `OPENAI_BASE_URL` | Responses API 地址 | `https://api.openai.com/v1` |
-
-Compose 转发 provider 和 API 配置，容器内路径使用 Dockerfile 中的固定设置。接入私有资料时，可先按[本机知识导入流程](docs/operations.zh-CN.md)操作；仅设置宿主机语料路径，不会自动将文件挂载进容器。
-
-<a id="troubleshooting"></a>
-## 7. 常见问题
-
-| 现象 | 处理方法 |
-| --- | --- |
-| `No module named support_agent` | 在解压后的项目根目录执行，使用 A1 的环境，确认存在 `support_agent/`。 |
-| Python 低于 3.11 | 安装受支持的版本，用该解释器重新创建 `.venv`。 |
-| `Address already in use` | 停止旧服务，或 Python 加 `--port 8081`、Compose 设置 `SUPPORT_HOST_PORT=8081`，浏览器也访问新端口。 |
-| Docker 无法连接 daemon | 启动 Docker 引擎，确认 `docker version` 包含 Server 信息。 |
-| 容器退出或不健康 | 执行 `docker compose logs --tail=50 support-agent`，检查端口和 `.env`、终端中的 provider 配置。 |
-| 测试提示缺少 `pdfplumber` | 使用运行测试的同一个 Python 执行 `python -m pip install -e ".[pdf]"`。 |
-| 提示缺少模型密钥或模型 ID | Python 演示使用 `--provider local`；Compose 使用 `SUPPORT_AGENT_PROVIDER=local`。本地模式不需要模型密钥。 |
-| 找不到自定义语料 | 公开仓库不含私有数据集，选择 `support_agent/demo/corpus.jsonl` 使用随包资料。 |
-| 评测提示报告不可比较 | 复现时保持题目、语料和评分器不变；有意修改后应重新建立基线，不能当作同一实验直接比较。 |
-| 英文 README 下回答仍是中文 | 当前演示语料和提示词主要为中文，这是预期行为；翻译文档不会改变应用语言。 |
-
-## 8. 项目能力与数据范围
-
-工作流结合 BM25、字符 n-gram 检索，以及来源优先级、时效、冲突、受众和完整错误标识检查；支持有限的本地追问处理及 SQLite 会话持久化。它不查询真实账户、不执行退款、不创建真实工单，也没有使用 embedding 或自主业务工具循环。
-
-公开仓库只附带合成演示资料。**1,659 条案例**、**1,086 条检索记录**是另行保管的既往私有快照规模，不是下载包内的数据量。介绍项目时请结合[数据范围](docs/data_scope.zh-CN.md)说明。
-
-[架构](docs/architecture.zh-CN.md) · [知识维护流程](docs/operations.zh-CN.md) · [评测](docs/evaluation.zh-CN.md) · [回答策略](docs/safety.zh-CN.md) · [项目讲解](docs/interview.zh-CN.md)
+这是面向本机的个人项目，内置公开的演示密码，不应直接暴露到公网。真实支付、邮件发票、附件/OCR、生产部署和模型参数微调不属于本版实现。

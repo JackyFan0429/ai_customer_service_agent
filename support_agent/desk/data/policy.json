@@ -1,0 +1,11 @@
+{
+  "reply_mode": "auto",
+  "human_cooldown_minutes": 15,
+  "human_suggestion_delay_seconds": 60,
+  "handoff_reminder_hours": 12,
+  "max_tool_calls": 8,
+  "auto_balance_fix": false,
+  "balance_fix_limit_units": 10000,
+  "balance_fix_cooldown_days": 7,
+  "policy_version": "lumen-demo-v2"
+}

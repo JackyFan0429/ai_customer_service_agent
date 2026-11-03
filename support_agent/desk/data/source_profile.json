@@ -1,0 +1,71 @@
+{
+  "message_count": 4357,
+  "new_ticket_count": 487,
+  "ai_run_count": 735,
+  "runs_with_tools": 574,
+  "photo_count": 292,
+  "range": {
+    "start_utc": "2026-09-14T12:32:07.732517+00:00",
+    "end_exclusive_utc": "2026-10-14T12:32:07.732517+00:00"
+  },
+  "event_counts": {
+    "drafts": 102,
+    "auto_replies": 464,
+    "handoff_reminders": 26,
+    "held_drafts": 169,
+    "human_cooldown_events": 164,
+    "generation_failures": 44
+  },
+  "route_counts": {
+    "答复 + 部分转人工": 191,
+    "直接答复": 487,
+    "整单转人工": 29,
+    "请用户补充信息": 28
+  },
+  "candidate_case_count": 540,
+  "reviewed_case_count": 0,
+  "limitations": [
+    "自动发送不等于问题已解决",
+    "图片仅有类型标记，无图片内容",
+    "草稿、内部备注与未知发言人不作为标准答案",
+    "本项目未做模型参数微调"
+  ],
+  "patterns": [
+    {
+      "name": "先查数据再答复",
+      "basis": "回复记录的工具调用计数与查询事件",
+      "implementation": "当前工单用户绑定的数据库查询工具"
+    },
+    {
+      "name": "答复与部分转人工",
+      "basis": "答复 + 部分转人工路由",
+      "implementation": "多意图拆分与待人工事项"
+    },
+    {
+      "name": "草稿审核与自动回复",
+      "basis": "九月草稿与后续自动回复事件",
+      "implementation": "默认自动发送；管理员全局开关；人工内部建议需确认发送"
+    },
+    {
+      "name": "人工介入后不插话",
+      "basis": "人工 30 分钟内回复的抑制事件",
+      "implementation": "按本项目需求设为 15 分钟保护；新消息等待 60 秒无人回复才生成内部建议"
+    },
+    {
+      "name": "质检与修订",
+      "basis": "事实、遗漏诉求、转人工与操作承诺的质检记录",
+      "implementation": "规则质检与可选模型审查"
+    },
+    {
+      "name": "转人工超时提醒",
+      "basis": "等待超过 12 小时的提示",
+      "implementation": "本地维护任务与提醒事件"
+    },
+    {
+      "name": "受约束的余额回正",
+      "basis": "eligible 核验及执行结果事件",
+      "implementation": "金额、来源、冷却期、幂等和发送时重验"
+    }
+  ],
+  "source_sha256": "be3c232b1ab05d0bfac618b1b4970b97795833454b2902788646c8ab170d5c55"
+}

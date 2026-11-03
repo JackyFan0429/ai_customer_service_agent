@@ -14,3 +14,7 @@ __pycache__/
 .env.*
 !.env.example
 runtime/
+dist/
+build/
+*.egg-info/
+.venv/

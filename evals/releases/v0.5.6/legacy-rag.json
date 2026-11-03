@@ -1,0 +1,3504 @@
+{
+  "label": "v0.5.6-compatibility",
+  "generated_at": "2026-11-03T16:17:50.250975+00:00",
+  "provider": "local",
+  "model": null,
+  "knowledge_version": "synthetic-v2-neutral",
+  "as_of_dates": [
+    "2026-09-19"
+  ],
+  "dataset_sha256": "757caaf9a3f99f03ded282ea4525906addc935e9bb9bcf4eb5fb4c08de1034fe",
+  "corpus_sha256": "f8dac25b6755cc1c9604afc2c061324f4a92c4f41da0df4df46cdfc2657379b0",
+  "grader_sha256": "73a32acb44073e11faaba4a7bdbcd1318fe5e11eed04526a9308e28919355951",
+  "implementation_files": {
+    "support_agent/__init__.py": "b682b120972995994e537cc0e9807df9ff0c26f943f09e1966927cbdf4135c60",
+    "support_agent/agent.py": "aaf18c25741fd750f785b3d5f3b86569d8f976035983bcbd56d18f27aa00e324",
+    "support_agent/cli.py": "2212e30595758c6b146875a899eb7804f452ce36d2c0ec352219a08e2e1aa650",
+    "support_agent/config.py": "dbaa7eb1a9d3b824691b7b2f56e708c5c0b2771dd913888ee6ca0bde7efaca96",
+    "support_agent/database.py": "0e9ca6dccd02571557dad5b8caaae2b49c41e3b00284ee6f3559aa556cf2211f",
+    "support_agent/models.py": "53f0896fdafc70e79a042d1027a4c598870ccc0e18bf7ea1723c801aa5a5cd0d",
+    "support_agent/policy.py": "740e4d4e7c951ea8eda9a361172d02478cbcfddce817aa15dd3e90060b9c7845",
+    "support_agent/portal.py": "e5c4a6f15d6f704ba52342f21e5190f90d134c19f27825d09aa6c5d844b5d434",
+    "support_agent/prompts.py": "90f90cd03fae5b9753af240a386b9e0fe08d0843f10a04766228aedc53340623",
+    "support_agent/providers.py": "257eed54b75a8d6cbe7661ba95c39da72307ad1cc5c366eb735e87e15f2c7448",
+    "support_agent/retrieval.py": "684db977363cc2fc4fdfeaaf5e1853fe0e1237dd399a356d419ecb059c71a88f",
+    "support_agent/session.py": "a322c7772ee1274cda3c996b500add83cbdf35927ba840c3ed5f224233b62267",
+    "support_agent/web.py": "bfec49b13d4e16f7c3b2e68f6261f403627ef89e3231ce10227bed2d7778850c"
+  },
+  "scope": "Synthetic development regression suite; AI-authored labels await owner review. Not a held-out or production sample. Text checks are lexical acceptance rules, not factuality verification.",
+  "api_cost": null,
+  "api_tokens": null,
+  "metrics": {
+    "scenario_pass": {
+      "numerator": 48,
+      "denominator": 48,
+      "rate": 1.0
+    },
+    "turn_pass": {
+      "numerator": 63,
+      "denominator": 63,
+      "rate": 1.0
+    },
+    "route_accuracy": {
+      "numerator": 63,
+      "denominator": 63,
+      "rate": 1.0
+    },
+    "answerable_acceptance": {
+      "numerator": 33,
+      "denominator": 33,
+      "rate": 1.0
+    },
+    "evidence_rule_violation": {
+      "numerator": 0,
+      "denominator": 33,
+      "rate": 0.0
+    },
+    "escalation_recall": {
+      "numerator": 9,
+      "denominator": 9,
+      "rate": 1.0
+    },
+    "multi_turn_success": {
+      "numerator": 14,
+      "denominator": 14,
+      "rate": 1.0
+    }
+  },
+  "categories": {
+    "code_boundaries": {
+      "scenario_pass": {
+        "numerator": 6,
+        "denominator": 6,
+        "rate": 1.0
+      },
+      "turn_pass": {
+        "numerator": 6,
+        "denominator": 6,
+        "rate": 1.0
+      },
+      "route_accuracy": {
+        "numerator": 6,
+        "denominator": 6,
+        "rate": 1.0
+      },
+      "answerable_acceptance": {
+        "numerator": 1,
+        "denominator": 1,
+        "rate": 1.0
+      },
+      "evidence_rule_violation": {
+        "numerator": 0,
+        "denominator": 1,
+        "rate": 0.0
+      },
+      "escalation_recall": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "multi_turn_success": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      }
+    },
+    "configuration": {
+      "scenario_pass": {
+        "numerator": 3,
+        "denominator": 3,
+        "rate": 1.0
+      },
+      "turn_pass": {
+        "numerator": 3,
+        "denominator": 3,
+        "rate": 1.0
+      },
+      "route_accuracy": {
+        "numerator": 3,
+        "denominator": 3,
+        "rate": 1.0
+      },
+      "answerable_acceptance": {
+        "numerator": 3,
+        "denominator": 3,
+        "rate": 1.0
+      },
+      "evidence_rule_violation": {
+        "numerator": 0,
+        "denominator": 3,
+        "rate": 0.0
+      },
+      "escalation_recall": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "multi_turn_success": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      }
+    },
+    "conversation": {
+      "scenario_pass": {
+        "numerator": 4,
+        "denominator": 4,
+        "rate": 1.0
+      },
+      "turn_pass": {
+        "numerator": 4,
+        "denominator": 4,
+        "rate": 1.0
+      },
+      "route_accuracy": {
+        "numerator": 4,
+        "denominator": 4,
+        "rate": 1.0
+      },
+      "answerable_acceptance": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "evidence_rule_violation": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "escalation_recall": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "multi_turn_success": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      }
+    },
+    "error_codes": {
+      "scenario_pass": {
+        "numerator": 5,
+        "denominator": 5,
+        "rate": 1.0
+      },
+      "turn_pass": {
+        "numerator": 5,
+        "denominator": 5,
+        "rate": 1.0
+      },
+      "route_accuracy": {
+        "numerator": 5,
+        "denominator": 5,
+        "rate": 1.0
+      },
+      "answerable_acceptance": {
+        "numerator": 5,
+        "denominator": 5,
+        "rate": 1.0
+      },
+      "evidence_rule_violation": {
+        "numerator": 0,
+        "denominator": 5,
+        "rate": 0.0
+      },
+      "escalation_recall": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "multi_turn_success": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      }
+    },
+    "escalation": {
+      "scenario_pass": {
+        "numerator": 6,
+        "denominator": 6,
+        "rate": 1.0
+      },
+      "turn_pass": {
+        "numerator": 6,
+        "denominator": 6,
+        "rate": 1.0
+      },
+      "route_accuracy": {
+        "numerator": 6,
+        "denominator": 6,
+        "rate": 1.0
+      },
+      "answerable_acceptance": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "evidence_rule_violation": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "escalation_recall": {
+        "numerator": 6,
+        "denominator": 6,
+        "rate": 1.0
+      },
+      "multi_turn_success": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      }
+    },
+    "knowledge_policy": {
+      "scenario_pass": {
+        "numerator": 8,
+        "denominator": 8,
+        "rate": 1.0
+      },
+      "turn_pass": {
+        "numerator": 8,
+        "denominator": 8,
+        "rate": 1.0
+      },
+      "route_accuracy": {
+        "numerator": 8,
+        "denominator": 8,
+        "rate": 1.0
+      },
+      "answerable_acceptance": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0
+      },
+      "evidence_rule_violation": {
+        "numerator": 0,
+        "denominator": 2,
+        "rate": 0.0
+      },
+      "escalation_recall": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "multi_turn_success": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      }
+    },
+    "multi_turn": {
+      "scenario_pass": {
+        "numerator": 14,
+        "denominator": 14,
+        "rate": 1.0
+      },
+      "turn_pass": {
+        "numerator": 29,
+        "denominator": 29,
+        "rate": 1.0
+      },
+      "route_accuracy": {
+        "numerator": 29,
+        "denominator": 29,
+        "rate": 1.0
+      },
+      "answerable_acceptance": {
+        "numerator": 20,
+        "denominator": 20,
+        "rate": 1.0
+      },
+      "evidence_rule_violation": {
+        "numerator": 0,
+        "denominator": 20,
+        "rate": 0.0
+      },
+      "escalation_recall": {
+        "numerator": 3,
+        "denominator": 3,
+        "rate": 1.0
+      },
+      "multi_turn_success": {
+        "numerator": 14,
+        "denominator": 14,
+        "rate": 1.0
+      }
+    },
+    "policy": {
+      "scenario_pass": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0
+      },
+      "turn_pass": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0
+      },
+      "route_accuracy": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0
+      },
+      "answerable_acceptance": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0
+      },
+      "evidence_rule_violation": {
+        "numerator": 0,
+        "denominator": 2,
+        "rate": 0.0
+      },
+      "escalation_recall": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "multi_turn_success": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      }
+    }
+  },
+  "failures": [],
+  "results": [
+    {
+      "id": "setup",
+      "category": "configuration",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientA Base URL 怎么配置？",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:setup"
+            ],
+            "allowed_evidence": [
+              "demo:setup"
+            ],
+            "required_points": [
+              [
+                "保存"
+              ],
+              [
+                "重新启动"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientA Base URL 配置：在演示客户端设置中填写 https://api.example/v1，保存配置后重新启动客户端。此地址仅用于演示，不能连接真实服务。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:setup",
+                "title": "ClientA Base URL 配置",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/setup",
+                "score": 1.049088
+              }
+            ],
+            "session_id": "setup",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.786
+        }
+      ]
+    },
+    {
+      "id": "setup_polite",
+      "category": "configuration",
+      "passed": true,
+      "turns": [
+        {
+          "query": "你好，想问一下 ClientA Base URL 配置",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:setup"
+            ],
+            "allowed_evidence": [
+              "demo:setup"
+            ],
+            "required_points": [
+              [
+                "api.example"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientA Base URL 配置：在演示客户端设置中填写 https://api.example/v1，保存配置后重新启动客户端。此地址仅用于演示，不能连接真实服务。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:setup",
+                "title": "ClientA Base URL 配置",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/setup",
+                "score": 1.002287
+              }
+            ],
+            "session_id": "setup_polite",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.213
+        }
+      ]
+    },
+    {
+      "id": "auth",
+      "category": "error_codes",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientB Code 报 401 怎么办？",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:401"
+            ],
+            "allowed_evidence": [
+              "demo:401"
+            ],
+            "required_points": [
+              [
+                "鉴权"
+              ],
+              [
+                "不要发送"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientB Code 报 401 时，先检查鉴权配置与环境变量是否一致，再重新启动客户端。不要发送完整 API Key。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:401",
+                "title": "ClientB Code 401 鉴权错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/401",
+                "score": 1.016818
+              }
+            ],
+            "session_id": "auth",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.318
+        }
+      ]
+    },
+    {
+      "id": "unavailable",
+      "category": "error_codes",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientB Code 503",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:503"
+            ],
+            "allowed_evidence": [
+              "demo:503"
+            ],
+            "required_points": [
+              [
+                "稍后重试"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientB Code 报 503 时，可以稍后重试并记录发生时间。若持续出现，请提供脱敏报错给人工客服；本资料不能确认实时服务状态。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:503",
+                "title": "ClientB Code 503 服务错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/503",
+                "score": 1.125636
+              }
+            ],
+            "session_id": "unavailable",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.255
+        }
+      ]
+    },
+    {
+      "id": "rate_limit",
+      "category": "error_codes",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientC Client 429",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:429"
+            ],
+            "allowed_evidence": [
+              "demo:429"
+            ],
+            "required_points": [
+              [
+                "降低并发"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientC Client 报 429 时，请降低并发并增加重试间隔。本记录不说明真实套餐额度。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:429",
+                "title": "ClientC Client 429 限流错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/429",
+                "score": 1.178379
+              }
+            ],
+            "session_id": "rate_limit",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.184
+        }
+      ]
+    },
+    {
+      "id": "path_error",
+      "category": "error_codes",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientD Client 404",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:404"
+            ],
+            "allowed_evidence": [
+              "demo:404"
+            ],
+            "required_points": [
+              [
+                "请求路径"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientD Client 报 404 时，检查请求路径与配置说明是否一致。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:404",
+                "title": "ClientD Client 404 路径错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/404",
+                "score": 1.183804
+              }
+            ],
+            "session_id": "path_error",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.137
+        }
+      ]
+    },
+    {
+      "id": "prefixed_code",
+      "category": "error_codes",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientC Client E401",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:e401"
+            ],
+            "allowed_evidence": [
+              "demo:e401"
+            ],
+            "required_points": [
+              [
+                "凭据"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientC Client E401：重新加载演示凭据配置，再记录脱敏错误文字。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:e401",
+                "title": "ClientC Client E401 演示认证错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/e401",
+                "score": 1.187614
+              }
+            ],
+            "session_id": "prefixed_code",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.406
+        }
+      ]
+    },
+    {
+      "id": "network",
+      "category": "configuration",
+      "passed": true,
+      "turns": [
+        {
+          "query": "网络超时怎么排查？",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:network"
+            ],
+            "allowed_evidence": [
+              "demo:network"
+            ],
+            "required_points": [
+              [
+                "代理"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】网络超时可以先检查网络连接和代理设置，再用脱敏请求复现，记录客户端与发生时间。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:network",
+                "title": "网络超时排查",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/network",
+                "score": 0.952278
+              }
+            ],
+            "session_id": "network",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.149
+        }
+      ]
+    },
+    {
+      "id": "invoice_policy",
+      "category": "policy",
+      "passed": true,
+      "turns": [
+        {
+          "query": "发票申请流程是什么？",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:invoice"
+            ],
+            "allowed_evidence": [
+              "demo:invoice"
+            ],
+            "required_points": [
+              [
+                "人工核验"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】发票申请流程：在演示控制台提交申请，核对抬头与订单号，由人工核验。该流程不代表已为任何账户开具发票。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:invoice",
+                "title": "发票申请流程",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/invoice",
+                "score": 1.006815
+              }
+            ],
+            "session_id": "invoice_policy",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.147
+        }
+      ]
+    },
+    {
+      "id": "refund_policy",
+      "category": "policy",
+      "passed": true,
+      "turns": [
+        {
+          "query": "退款政策是什么？",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:refund"
+            ],
+            "allowed_evidence": [
+              "demo:refund"
+            ],
+            "required_points": [
+              [
+                "人工核验"
+              ],
+              [
+                "不承诺"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】退款政策说明：提交申请后由人工核验订单与适用条件；本演示不承诺退款金额或到账时间。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:refund",
+                "title": "退款政策说明",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/refund",
+                "score": 0.925129
+              }
+            ],
+            "session_id": "refund_policy",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.115
+        }
+      ]
+    },
+    {
+      "id": "substring_401_1401",
+      "category": "code_boundaries",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientB Code 401",
+          "expected": {
+            "route": "clarify",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户",
+              "检查演示客户端版本"
+            ]
+          },
+          "actual": {
+            "answer": "我理解了你的问题，但暂时没有从知识库中找到足够可靠的答案。请再详细说明你使用的产品或客户端、想完成的操作、已经尝试的步骤，以及完整报错文字（请先遮盖 API Key、密码和个人信息）。",
+            "route": "clarify",
+            "reason": "知识库没有足够相关且可公开的证据支持回答",
+            "citations": [],
+            "session_id": "substring_401_1401",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.127
+        }
+      ]
+    },
+    {
+      "id": "substring_401_e401",
+      "category": "code_boundaries",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientC Client 401",
+          "expected": {
+            "route": "clarify",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "我理解了你的问题，但暂时没有从知识库中找到足够可靠的答案。请再详细说明你使用的产品或客户端、想完成的操作、已经尝试的步骤，以及完整报错文字（请先遮盖 API Key、密码和个人信息）。",
+            "route": "clarify",
+            "reason": "知识库没有足够相关且可公开的证据支持回答",
+            "citations": [],
+            "session_id": "substring_401_e401",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.107
+        }
+      ]
+    },
+    {
+      "id": "substring_e401_e4012",
+      "category": "code_boundaries",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientC Client E401",
+          "expected": {
+            "route": "clarify",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "我理解了你的问题，但暂时没有从知识库中找到足够可靠的答案。请再详细说明你使用的产品或客户端、想完成的操作、已经尝试的步骤，以及完整报错文字（请先遮盖 API Key、密码和个人信息）。",
+            "route": "clarify",
+            "reason": "知识库没有足够相关且可公开的证据支持回答",
+            "citations": [],
+            "session_id": "substring_e401_e4012",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.194
+        }
+      ]
+    },
+    {
+      "id": "unknown_code",
+      "category": "code_boundaries",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientB Code 502",
+          "expected": {
+            "route": "clarify",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "我理解了你的问题，但暂时没有从知识库中找到足够可靠的答案。请再详细说明你使用的产品或客户端、想完成的操作、已经尝试的步骤，以及完整报错文字（请先遮盖 API Key、密码和个人信息）。",
+            "route": "clarify",
+            "reason": "知识库没有足够相关且可公开的证据支持回答",
+            "citations": [],
+            "session_id": "unknown_code",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.235
+        }
+      ]
+    },
+    {
+      "id": "no_code_evidence",
+      "category": "code_boundaries",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientA Base URL 418",
+          "expected": {
+            "route": "clarify",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "我理解了你的问题，但暂时没有从知识库中找到足够可靠的答案。请再详细说明你使用的产品或客户端、想完成的操作、已经尝试的步骤，以及完整报错文字（请先遮盖 API Key、密码和个人信息）。",
+            "route": "clarify",
+            "reason": "知识库没有足够相关且可公开的证据支持回答",
+            "citations": [],
+            "session_id": "no_code_evidence",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.308
+        }
+      ]
+    },
+    {
+      "id": "real_1401",
+      "category": "code_boundaries",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientB Code 1401",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:1401"
+            ],
+            "allowed_evidence": [
+              "demo:1401"
+            ],
+            "required_points": [
+              [
+                "客户端版本"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientB Code 1401 是演示专用客户端错误，请检查演示客户端版本。本记录没有其他错误码的处理依据。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:1401",
+                "title": "ClientB Code 1401 演示错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/1401",
+                "score": 1.146713
+              }
+            ],
+            "session_id": "real_1401",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.216
+        }
+      ]
+    },
+    {
+      "id": "expired_official",
+      "category": "knowledge_policy",
+      "passed": true,
+      "turns": [
+        {
+          "query": "套餐额度是多少？",
+          "expected": {
+            "route": "clarify",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户",
+              "888"
+            ]
+          },
+          "actual": {
+            "answer": "我理解了你的问题，但暂时没有从知识库中找到足够可靠的答案。请再详细说明你使用的产品或客户端、想完成的操作、已经尝试的步骤，以及完整报错文字（请先遮盖 API Key、密码和个人信息）。",
+            "route": "clarify",
+            "reason": "知识库没有足够相关且可公开的证据支持回答",
+            "citations": [],
+            "session_id": "expired_official",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.123
+        }
+      ]
+    },
+    {
+      "id": "missing_review",
+      "category": "knowledge_policy",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ModelA 定价是多少？",
+          "expected": {
+            "route": "clarify",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户",
+              "321"
+            ]
+          },
+          "actual": {
+            "answer": "我理解了你的问题，但暂时没有从知识库中找到足够可靠的答案。请再详细说明你使用的产品或客户端、想完成的操作、已经尝试的步骤，以及完整报错文字（请先遮盖 API Key、密码和个人信息）。",
+            "route": "clarify",
+            "reason": "知识库没有足够相关且可公开的证据支持回答",
+            "citations": [],
+            "session_id": "missing_review",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.099
+        }
+      ]
+    },
+    {
+      "id": "review_boundary",
+      "category": "knowledge_policy",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientD 配置说明",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:expiry_boundary"
+            ],
+            "allowed_evidence": [
+              "demo:expiry_boundary"
+            ],
+            "required_points": [
+              [
+                "保存"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientD 配置需要保存设置后重启。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:expiry_boundary",
+                "title": "ClientD 配置说明",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/expiry_boundary",
+                "score": 1.157515
+              }
+            ],
+            "session_id": "review_boundary",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.12
+        }
+      ]
+    },
+    {
+      "id": "internal_only",
+      "category": "knowledge_policy",
+      "passed": true,
+      "turns": [
+        {
+          "query": "内部审批流程",
+          "expected": {
+            "route": "clarify",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "我理解了你的问题，但暂时没有从知识库中找到足够可靠的答案。请再详细说明你使用的产品或客户端、想完成的操作、已经尝试的步骤，以及完整报错文字（请先遮盖 API Key、密码和个人信息）。",
+            "route": "clarify",
+            "reason": "知识库没有足够相关且可公开的证据支持回答",
+            "citations": [],
+            "session_id": "internal_only",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.091
+        }
+      ]
+    },
+    {
+      "id": "restricted_only",
+      "category": "knowledge_policy",
+      "passed": true,
+      "turns": [
+        {
+          "query": "付款内部流程",
+          "expected": {
+            "route": "clarify",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "我理解了你的问题，但暂时没有从知识库中找到足够可靠的答案。请再详细说明你使用的产品或客户端、想完成的操作、已经尝试的步骤，以及完整报错文字（请先遮盖 API Key、密码和个人信息）。",
+            "route": "clarify",
+            "reason": "知识库没有足够相关且可公开的证据支持回答",
+            "citations": [],
+            "session_id": "restricted_only",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.105
+        }
+      ]
+    },
+    {
+      "id": "history_only",
+      "category": "knowledge_policy",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientC 网络超时",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:history"
+            ],
+            "allowed_evidence": [
+              "demo:history"
+            ],
+            "required_points": [
+              [
+                "历史案例"
+              ],
+              [
+                "代理"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "以下是历史案例中的排障线索，不能用于确认当前套餐或服务状态：\n\nClientC 网络超时历史案例中，用户在检查代理设置后重新启动客户端。此处仅保留排障线索。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:history",
+                "title": "ClientC 网络超时历史案例",
+                "precedence": "P2",
+                "authority": "historical_case",
+                "source_url": "https://support.example/history",
+                "score": 0.919651
+              }
+            ],
+            "session_id": "history_only",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.112
+        }
+      ]
+    },
+    {
+      "id": "conflicting_history",
+      "category": "knowledge_policy",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientC 网络超时",
+          "expected": {
+            "route": "clarify",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "我理解了你的问题，但暂时没有从知识库中找到足够可靠的答案。请再详细说明你使用的产品或客户端、想完成的操作、已经尝试的步骤，以及完整报错文字（请先遮盖 API Key、密码和个人信息）。",
+            "route": "clarify",
+            "reason": "知识库没有足够相关且可公开的证据支持回答",
+            "citations": [],
+            "session_id": "conflicting_history",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.102
+        }
+      ]
+    },
+    {
+      "id": "stale_history",
+      "category": "knowledge_policy",
+      "passed": true,
+      "turns": [
+        {
+          "query": "套餐额度",
+          "expected": {
+            "route": "clarify",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户",
+              "999"
+            ]
+          },
+          "actual": {
+            "answer": "我理解了你的问题，但暂时没有从知识库中找到足够可靠的答案。请再详细说明你使用的产品或客户端、想完成的操作、已经尝试的步骤，以及完整报错文字（请先遮盖 API Key、密码和个人信息）。",
+            "route": "clarify",
+            "reason": "知识库没有足够相关且可公开的证据支持回答",
+            "citations": [],
+            "session_id": "stale_history",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.072
+        }
+      ]
+    },
+    {
+      "id": "account_order",
+      "category": "escalation",
+      "passed": true,
+      "turns": [
+        {
+          "query": "帮我查一下我的订单为什么还没到账",
+          "expected": {
+            "route": "escalate",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [
+              [
+                "人工"
+              ],
+              [
+                "不要发送密码"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "这个问题涉及你的账户或订单状态，需要人工客服核验。请准备账号 ID、相关订单号和必要的错误截图；不要发送密码、API Key 或完整支付凭证。",
+            "route": "escalate",
+            "reason": "需要查询或修改客户账户、订单或财务状态",
+            "citations": [],
+            "session_id": "account_order",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.098
+        }
+      ]
+    },
+    {
+      "id": "personal_refund",
+      "category": "escalation",
+      "passed": true,
+      "turns": [
+        {
+          "query": "帮我退款",
+          "expected": {
+            "route": "escalate",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [
+              [
+                "人工"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "这个问题涉及你的账户或订单状态，需要人工客服核验。请准备账号 ID、相关订单号和必要的错误截图；不要发送密码、API Key 或完整支付凭证。",
+            "route": "escalate",
+            "reason": "需要查询或修改客户账户、订单或财务状态",
+            "citations": [],
+            "session_id": "personal_refund",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.096
+        }
+      ]
+    },
+    {
+      "id": "personal_invoice",
+      "category": "escalation",
+      "passed": true,
+      "turns": [
+        {
+          "query": "我的发票什么时候能开好？",
+          "expected": {
+            "route": "escalate",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [
+              [
+                "人工"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "这个问题涉及你的账户或订单状态，需要人工客服核验。请准备账号 ID、相关订单号和必要的错误截图；不要发送密码、API Key 或完整支付凭证。",
+            "route": "escalate",
+            "reason": "需要查询或修改客户账户、订单或财务状态",
+            "citations": [],
+            "session_id": "personal_invoice",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.101
+        }
+      ]
+    },
+    {
+      "id": "balance",
+      "category": "escalation",
+      "passed": true,
+      "turns": [
+        {
+          "query": "帮我查一下我的账户余额",
+          "expected": {
+            "route": "escalate",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [
+              [
+                "人工"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "这个问题涉及你的账户或订单状态，需要人工客服核验。请准备账号 ID、相关订单号和必要的错误截图；不要发送密码、API Key 或完整支付凭证。",
+            "route": "escalate",
+            "reason": "需要查询或修改客户账户、订单或财务状态",
+            "citations": [],
+            "session_id": "balance",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.09
+        }
+      ]
+    },
+    {
+      "id": "live_outage",
+      "category": "escalation",
+      "passed": true,
+      "turns": [
+        {
+          "query": "今天服务是不是挂了？",
+          "expected": {
+            "route": "escalate",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [
+              [
+                "实时"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "这个问题需要查询实时服务状态，我目前只有静态知识库，无法可靠确认。请转人工客服或查看官方状态通知，并提供发生时间、客户端和完整报错。",
+            "route": "escalate",
+            "reason": "需要实时服务状态，静态知识库无法确认",
+            "citations": [],
+            "session_id": "live_outage",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.128
+        }
+      ]
+    },
+    {
+      "id": "live_recovery",
+      "category": "escalation",
+      "passed": true,
+      "turns": [
+        {
+          "query": "现在服务恢复了吗？",
+          "expected": {
+            "route": "escalate",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [
+              [
+                "实时"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "这个问题需要查询实时服务状态，我目前只有静态知识库，无法可靠确认。请转人工客服或查看官方状态通知，并提供发生时间、客户端和完整报错。",
+            "route": "escalate",
+            "reason": "需要实时服务状态，静态知识库无法确认",
+            "citations": [],
+            "session_id": "live_recovery",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.11
+        }
+      ]
+    },
+    {
+      "id": "identity",
+      "category": "conversation",
+      "passed": true,
+      "turns": [
+        {
+          "query": "你好，你是谁",
+          "expected": {
+            "route": "answer",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [
+              [
+                "客服助手"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "我是智能客服助手，可以协助解答产品使用、订单和常见问题。请问有什么可以帮您？",
+            "route": "answer",
+            "reason": "语义理解为问候或身份询问，不需要检索知识库",
+            "citations": [],
+            "session_id": "identity",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.02
+        }
+      ]
+    },
+    {
+      "id": "greeting",
+      "category": "conversation",
+      "passed": true,
+      "turns": [
+        {
+          "query": "您好",
+          "expected": {
+            "route": "answer",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [
+              [
+                "客服助手"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "我是智能客服助手，可以协助解答产品使用、订单和常见问题。请问有什么可以帮您？",
+            "route": "answer",
+            "reason": "语义理解为问候或身份询问，不需要检索知识库",
+            "citations": [],
+            "session_id": "greeting",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.017
+        }
+      ]
+    },
+    {
+      "id": "vague",
+      "category": "conversation",
+      "passed": true,
+      "turns": [
+        {
+          "query": "用不了",
+          "expected": {
+            "route": "clarify",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [
+              [
+                "完整报错"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "请补充你使用的产品或客户端、操作步骤，以及完整报错文字（请先遮盖 API Key、密码和个人信息）。",
+            "route": "clarify",
+            "reason": "问题信息不足",
+            "citations": [],
+            "session_id": "vague",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.146
+        }
+      ]
+    },
+    {
+      "id": "out_of_domain",
+      "category": "conversation",
+      "passed": true,
+      "turns": [
+        {
+          "query": "如何在月球上煮咖啡？",
+          "expected": {
+            "route": "clarify",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "我理解了你的问题，但暂时没有从知识库中找到足够可靠的答案。请再详细说明你使用的产品或客户端、想完成的操作、已经尝试的步骤，以及完整报错文字（请先遮盖 API Key、密码和个人信息）。",
+            "route": "clarify",
+            "reason": "知识库没有足够相关且可公开的证据支持回答",
+            "citations": [],
+            "session_id": "out_of_domain",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.164
+        }
+      ]
+    },
+    {
+      "id": "switch_full_code",
+      "category": "multi_turn",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientB Code 401",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:401"
+            ],
+            "allowed_evidence": [
+              "demo:401"
+            ],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientB Code 报 401 时，先检查鉴权配置与环境变量是否一致，再重新启动客户端。不要发送完整 API Key。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:401",
+                "title": "ClientB Code 401 鉴权错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/401",
+                "score": 1.133752
+              }
+            ],
+            "session_id": "switch_full_code",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.199
+        },
+        {
+          "query": "ClientB Code 503",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:503"
+            ],
+            "allowed_evidence": [
+              "demo:503"
+            ],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户",
+              "鉴权配置"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientB Code 报 503 时，可以稍后重试并记录发生时间。若持续出现，请提供脱敏报错给人工客服；本资料不能确认实时服务状态。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:503",
+                "title": "ClientB Code 503 服务错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/503",
+                "score": 1.125636
+              }
+            ],
+            "session_id": "switch_full_code",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.193
+        }
+      ]
+    },
+    {
+      "id": "switch_short_code",
+      "category": "multi_turn",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientB Code 401",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:401"
+            ],
+            "allowed_evidence": [
+              "demo:401"
+            ],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientB Code 报 401 时，先检查鉴权配置与环境变量是否一致，再重新启动客户端。不要发送完整 API Key。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:401",
+                "title": "ClientB Code 401 鉴权错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/401",
+                "score": 1.133752
+              }
+            ],
+            "session_id": "switch_short_code",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.178
+        },
+        {
+          "query": "现在变成 503 了",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:503"
+            ],
+            "allowed_evidence": [
+              "demo:503"
+            ],
+            "required_points": [
+              [
+                "稍后重试"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户",
+              "鉴权配置"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientB Code 报 503 时，可以稍后重试并记录发生时间。若持续出现，请提供脱敏报错给人工客服；本资料不能确认实时服务状态。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:503",
+                "title": "ClientB Code 503 服务错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/503",
+                "score": 1.125636
+              }
+            ],
+            "session_id": "switch_short_code",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.253
+        }
+      ]
+    },
+    {
+      "id": "unresolved_auth",
+      "category": "multi_turn",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientB Code 401",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:401"
+            ],
+            "allowed_evidence": [
+              "demo:401"
+            ],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientB Code 报 401 时，先检查鉴权配置与环境变量是否一致，再重新启动客户端。不要发送完整 API Key。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:401",
+                "title": "ClientB Code 401 鉴权错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/401",
+                "score": 1.133752
+              }
+            ],
+            "session_id": "unresolved_auth",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.119
+        },
+        {
+          "query": "还是不行",
+          "expected": {
+            "route": "clarify",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [
+              [
+                "401"
+              ],
+              [
+                "已经尝试"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "关于“ClientB Code 401”，请补充已经尝试的步骤、执行后的变化，以及当前完整报错（请先遮盖 API Key 和个人信息），以便继续排查。",
+            "route": "clarify",
+            "reason": "语义理解结果为 unclear",
+            "citations": [],
+            "session_id": "unresolved_auth",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.027
+        }
+      ]
+    },
+    {
+      "id": "unresolved_after_restart",
+      "category": "multi_turn",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientA Base URL 配置",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:setup"
+            ],
+            "allowed_evidence": [
+              "demo:setup"
+            ],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientA Base URL 配置：在演示客户端设置中填写 https://api.example/v1，保存配置后重新启动客户端。此地址仅用于演示，不能连接真实服务。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:setup",
+                "title": "ClientA Base URL 配置",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/setup",
+                "score": 1.135029
+              }
+            ],
+            "session_id": "unresolved_after_restart",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.132
+        },
+        {
+          "query": "已经重启了，还是不行",
+          "expected": {
+            "route": "clarify",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [
+              [
+                "ClientA"
+              ],
+              [
+                "已经尝试"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "关于“ClientA Base URL 配置”，请补充已经尝试的步骤、执行后的变化，以及当前完整报错（请先遮盖 API Key 和个人信息），以便继续排查。",
+            "route": "clarify",
+            "reason": "语义理解结果为 unclear",
+            "citations": [],
+            "session_id": "unresolved_after_restart",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.025
+        }
+      ]
+    },
+    {
+      "id": "new_code_missing",
+      "category": "multi_turn",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientB Code 401",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:401"
+            ],
+            "allowed_evidence": [
+              "demo:401"
+            ],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientB Code 报 401 时，先检查鉴权配置与环境变量是否一致，再重新启动客户端。不要发送完整 API Key。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:401",
+                "title": "ClientB Code 401 鉴权错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/401",
+                "score": 1.133752
+              }
+            ],
+            "session_id": "new_code_missing",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.176
+        },
+        {
+          "query": "现在报 503",
+          "expected": {
+            "route": "clarify",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户",
+              "鉴权配置"
+            ]
+          },
+          "actual": {
+            "answer": "我理解了你的问题，但暂时没有从知识库中找到足够可靠的答案。请再详细说明你使用的产品或客户端、想完成的操作、已经尝试的步骤，以及完整报错文字（请先遮盖 API Key、密码和个人信息）。",
+            "route": "clarify",
+            "reason": "知识库没有足够相关且可公开的证据支持回答",
+            "citations": [],
+            "session_id": "new_code_missing",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.162
+        }
+      ]
+    },
+    {
+      "id": "topic_switch",
+      "category": "multi_turn",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientB Code 401",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:401"
+            ],
+            "allowed_evidence": [
+              "demo:401"
+            ],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientB Code 报 401 时，先检查鉴权配置与环境变量是否一致，再重新启动客户端。不要发送完整 API Key。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:401",
+                "title": "ClientB Code 401 鉴权错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/401",
+                "score": 1.133752
+              }
+            ],
+            "session_id": "topic_switch",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.194
+        },
+        {
+          "query": "发票申请流程是什么？",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:invoice"
+            ],
+            "allowed_evidence": [
+              "demo:invoice"
+            ],
+            "required_points": [
+              [
+                "抬头"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户",
+              "鉴权配置"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】发票申请流程：在演示控制台提交申请，核对抬头与订单号，由人工核验。该流程不代表已为任何账户开具发票。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:invoice",
+                "title": "发票申请流程",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/invoice",
+                "score": 1.006815
+              }
+            ],
+            "session_id": "topic_switch",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.191
+        }
+      ]
+    },
+    {
+      "id": "followup_account",
+      "category": "multi_turn",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientB Code 401",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:401"
+            ],
+            "allowed_evidence": [
+              "demo:401"
+            ],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientB Code 报 401 时，先检查鉴权配置与环境变量是否一致，再重新启动客户端。不要发送完整 API Key。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:401",
+                "title": "ClientB Code 401 鉴权错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/401",
+                "score": 1.133752
+              }
+            ],
+            "session_id": "followup_account",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.116
+        },
+        {
+          "query": "帮我查一下我的账户",
+          "expected": {
+            "route": "escalate",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [
+              [
+                "人工"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "这个问题涉及你的账户或订单状态，需要人工客服核验。请准备账号 ID、相关订单号和必要的错误截图；不要发送密码、API Key 或完整支付凭证。",
+            "route": "escalate",
+            "reason": "需要查询或修改客户账户、订单或财务状态",
+            "citations": [],
+            "session_id": "followup_account",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.104
+        }
+      ]
+    },
+    {
+      "id": "followup_live",
+      "category": "multi_turn",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientB Code 503",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:503"
+            ],
+            "allowed_evidence": [
+              "demo:503"
+            ],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientB Code 报 503 时，可以稍后重试并记录发生时间。若持续出现，请提供脱敏报错给人工客服；本资料不能确认实时服务状态。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:503",
+                "title": "ClientB Code 503 服务错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/503",
+                "score": 1.125636
+              }
+            ],
+            "session_id": "followup_live",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.124
+        },
+        {
+          "query": "现在服务恢复了吗？",
+          "expected": {
+            "route": "escalate",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [
+              [
+                "实时"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "这个问题需要查询实时服务状态，我目前只有静态知识库，无法可靠确认。请转人工客服或查看官方状态通知，并提供发生时间、客户端和完整报错。",
+            "route": "escalate",
+            "reason": "需要实时服务状态，静态知识库无法确认",
+            "citations": [],
+            "session_id": "followup_live",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.108
+        }
+      ]
+    },
+    {
+      "id": "three_code_changes",
+      "category": "multi_turn",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientB Code 401",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:401"
+            ],
+            "allowed_evidence": [
+              "demo:401"
+            ],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientB Code 报 401 时，先检查鉴权配置与环境变量是否一致，再重新启动客户端。不要发送完整 API Key。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:401",
+                "title": "ClientB Code 401 鉴权错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/401",
+                "score": 1.133752
+              }
+            ],
+            "session_id": "three_code_changes",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.244
+        },
+        {
+          "query": "现在是 503",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:503"
+            ],
+            "allowed_evidence": [
+              "demo:503"
+            ],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientB Code 报 503 时，可以稍后重试并记录发生时间。若持续出现，请提供脱敏报错给人工客服；本资料不能确认实时服务状态。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:503",
+                "title": "ClientB Code 503 服务错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/503",
+                "score": 1.125636
+              }
+            ],
+            "session_id": "three_code_changes",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.236
+        },
+        {
+          "query": "又变成 1401",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:1401"
+            ],
+            "allowed_evidence": [
+              "demo:1401"
+            ],
+            "required_points": [
+              [
+                "客户端版本"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientB Code 1401 是演示专用客户端错误，请检查演示客户端版本。本记录没有其他错误码的处理依据。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:1401",
+                "title": "ClientB Code 1401 演示错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/1401",
+                "score": 1.146713
+              }
+            ],
+            "session_id": "three_code_changes",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.24
+        }
+      ]
+    },
+    {
+      "id": "clarify_then_detail",
+      "category": "multi_turn",
+      "passed": true,
+      "turns": [
+        {
+          "query": "用不了",
+          "expected": {
+            "route": "clarify",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "请补充你使用的产品或客户端、操作步骤，以及完整报错文字（请先遮盖 API Key、密码和个人信息）。",
+            "route": "clarify",
+            "reason": "问题信息不足",
+            "citations": [],
+            "session_id": "clarify_then_detail",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.092
+        },
+        {
+          "query": "ClientB Code 报 401",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:401"
+            ],
+            "allowed_evidence": [
+              "demo:401"
+            ],
+            "required_points": [
+              [
+                "鉴权"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientB Code 报 401 时，先检查鉴权配置与环境变量是否一致，再重新启动客户端。不要发送完整 API Key。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:401",
+                "title": "ClientB Code 401 鉴权错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/401",
+                "score": 1.118737
+              }
+            ],
+            "session_id": "clarify_then_detail",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.11
+        }
+      ]
+    },
+    {
+      "id": "same_code_followup",
+      "category": "multi_turn",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientC Client 429",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:429"
+            ],
+            "allowed_evidence": [
+              "demo:429"
+            ],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientC Client 报 429 时，请降低并发并增加重试间隔。本记录不说明真实套餐额度。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:429",
+                "title": "ClientC Client 429 限流错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/429",
+                "score": 1.178379
+              }
+            ],
+            "session_id": "same_code_followup",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.108
+        },
+        {
+          "query": "还是 429，怎么办？",
+          "expected": {
+            "route": "clarify",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [
+              [
+                "429"
+              ],
+              [
+                "已经尝试"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "关于“ClientC Client 429”，请补充已经尝试的步骤、执行后的变化，以及当前完整报错（请先遮盖 API Key 和个人信息），以便继续排查。",
+            "route": "clarify",
+            "reason": "语义理解结果为 unclear",
+            "citations": [],
+            "session_id": "same_code_followup",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.025
+        }
+      ]
+    },
+    {
+      "id": "unsupported_rewrite",
+      "category": "multi_turn",
+      "passed": true,
+      "turns": [
+        {
+          "query": "ClientB Code 401",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:401"
+            ],
+            "allowed_evidence": [
+              "demo:401"
+            ],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientB Code 报 401 时，先检查鉴权配置与环境变量是否一致，再重新启动客户端。不要发送完整 API Key。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:401",
+                "title": "ClientB Code 401 鉴权错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/401",
+                "score": 1.133752
+              }
+            ],
+            "session_id": "unsupported_rewrite",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.162
+        },
+        {
+          "query": "改用 ClientC Client E401",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:e401"
+            ],
+            "allowed_evidence": [
+              "demo:e401"
+            ],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户",
+              "ClientB Code"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientC Client E401：重新加载演示凭据配置，再记录脱敏错误文字。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:e401",
+                "title": "ClientC Client E401 演示认证错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/e401",
+                "score": 1.124239
+              }
+            ],
+            "session_id": "unsupported_rewrite",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.165
+        }
+      ]
+    },
+    {
+      "id": "identity_then_issue",
+      "category": "multi_turn",
+      "passed": true,
+      "turns": [
+        {
+          "query": "你是谁",
+          "expected": {
+            "route": "answer",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [
+              [
+                "客服助手"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "我是智能客服助手，可以协助解答产品使用、订单和常见问题。请问有什么可以帮您？",
+            "route": "answer",
+            "reason": "语义理解为问候或身份询问，不需要检索知识库",
+            "citations": [],
+            "session_id": "identity_then_issue",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.018
+        },
+        {
+          "query": "ClientB Code 401",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:401"
+            ],
+            "allowed_evidence": [
+              "demo:401"
+            ],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientB Code 报 401 时，先检查鉴权配置与环境变量是否一致，再重新启动客户端。不要发送完整 API Key。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:401",
+                "title": "ClientB Code 401 鉴权错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/401",
+                "score": 1.133752
+              }
+            ],
+            "session_id": "identity_then_issue",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.108
+        }
+      ]
+    },
+    {
+      "id": "old_account_new_issue",
+      "category": "multi_turn",
+      "passed": true,
+      "turns": [
+        {
+          "query": "帮我退款",
+          "expected": {
+            "route": "escalate",
+            "evidence": [],
+            "allowed_evidence": [],
+            "required_points": [],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "这个问题涉及你的账户或订单状态，需要人工客服核验。请准备账号 ID、相关订单号和必要的错误截图；不要发送密码、API Key 或完整支付凭证。",
+            "route": "escalate",
+            "reason": "需要查询或修改客户账户、订单或财务状态",
+            "citations": [],
+            "session_id": "old_account_new_issue",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.102
+        },
+        {
+          "query": "ClientB Code 401",
+          "expected": {
+            "route": "answer",
+            "evidence": [
+              "demo:401"
+            ],
+            "allowed_evidence": [
+              "demo:401"
+            ],
+            "required_points": [
+              [
+                "鉴权"
+              ]
+            ],
+            "forbidden": [
+              "DEMO_INTERNAL_ONLY",
+              "DEMO_RESTRICTED_ONLY",
+              "CONFLICT_ONLY_DEMO",
+              "STALE_HISTORY_DEMO",
+              "已为你退款",
+              "已经查询了你的账户"
+            ]
+          },
+          "actual": {
+            "answer": "【虚构演示资料】ClientB Code 报 401 时，先检查鉴权配置与环境变量是否一致，再重新启动客户端。不要发送完整 API Key。",
+            "route": "answer",
+            "reason": "存在符合时效和披露规则的证据",
+            "citations": [
+              {
+                "document_id": "demo:401",
+                "title": "ClientB Code 401 鉴权错误",
+                "precedence": "P1",
+                "authority": "synthetic_demo",
+                "source_url": "https://support.example/401",
+                "score": 1.133752
+              }
+            ],
+            "session_id": "old_account_new_issue",
+            "provider": "local"
+          },
+          "checks": {
+            "route": true,
+            "required_points": true,
+            "forbidden_claims": true,
+            "required_evidence": true,
+            "allowed_evidence": true
+          },
+          "passed": true,
+          "error": null,
+          "elapsed_ms": 0.136
+        }
+      ]
+    }
+  ]
+}

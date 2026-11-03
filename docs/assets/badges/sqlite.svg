@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="24" role="img" aria-label="SQLite: Built-in">
+<title>SQLite: Built-in</title>
+<clipPath id="r"><rect width="120" height="24" rx="4"/></clipPath>
+<g clip-path="url(#r)"><path fill="#555" d="M0 0h58v24H0z"/><path fill="#167a80" d="M58 0h62v24H58z"/></g>
+<g fill="#fff" text-anchor="middle" font-family="Arial, Helvetica, PingFang SC, Microsoft YaHei, sans-serif" font-size="13">
+<text x="29.0" y="16.55">SQLite</text><text x="89.0" y="16.55" font-weight="400">Built-in</text>
+</g></svg>

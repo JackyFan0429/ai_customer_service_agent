@@ -1,6 +1,8 @@
 # Lumen 本地业务与客服工作流实现说明
 
-本文对应 v0.5.3 的 `support_agent.portal`。首次使用请看 [README](../README.zh-CN.md)，其中分别说明无需模型的本地运行和终端临时输入 Base URL / Key / 模型的运行方法。
+> 历史版本记录：保留当时的验证范围与结论。当前版本入口见[文档索引](../README.zh-CN.md)。
+
+本文对应 v0.5.3 的 `support_agent.portal`。首次使用请看 [README](../../README.zh-CN.md)，其中分别说明无需模型的本地运行和终端临时输入 Base URL / Key / 模型的运行方法。
 
 ## 日志模式与本项目规则
 

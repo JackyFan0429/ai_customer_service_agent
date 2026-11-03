@@ -1,96 +1,99 @@
-# 本地运行与知识维护
+# 使用说明
 
-[English](operations.md) | **简体中文**
+[首页](../README.zh-CN.md) · [English](operations.md)
 
-请先完成[主教程](../README.zh-CN.md)。下面前三步只使用随包合成资料，可以直接复现。所有命令在项目根目录、已激活的 Python 环境中执行。
+命令从项目根目录执行。Windows 将 `python3` 换成 `py -3`。
 
-## 1. 复制一份演示语料
-
-将随包资料复制到工作文件：
+## 启动网站
 
 ```bash
-python -c "from pathlib import Path; import shutil; Path('runtime').mkdir(exist_ok=True); shutil.copyfile('support_agent/demo/corpus.jsonl', 'runtime/copied_demo.jsonl')"
+python3 scripts/start_demo.py --provider local
 ```
 
-预期生成 `runtime/copied_demo.jsonl`，包含相同的 19 条虚构记录。尝试修改知识时可以编辑这份副本，保留仓库原始语料不变，以便与基线比较。
+本地模式只需 Python 3.11+，首次启动创建合成业务数据，从 8080 开始选择可用端口并打开浏览器。6 个[演示账号](../README.zh-CN.md#演示账号)初始密码均为 `Demo123!`。
 
-## 2. 指定这份文件运行
+默认自动回复。客服可发送内部建议、人工回复、接管工单、恢复 AI 和撤回 AI 消息。撤回后客户看到占位提示，审计记录保留；撤回消息不会撤销业务操作。
+
+人工回复后优先 15 分钟，客户再次发消息且 1 分钟无人回复才生成内部建议。主动接管持续到点击“恢复 AI”。已有建议和手动重新生成的建议均需客服确认发送。
+
+管理员可控制全局自动发送、修改账户余额和套餐。重新打开开关不会批量发送旧草稿。客服没有这些管理权限；余额回正建议需管理员审批。
+
+## 模型接入
 
 ```bash
-python -m support_agent.web --provider local --host 127.0.0.1 --port 8081 --corpus runtime/copied_demo.jsonl --database runtime/custom_demo.db
+python3 scripts/start_demo.py --provider openai
 ```
 
-打开 [http://127.0.0.1:8081](http://127.0.0.1:8081)，发送 `ClientA Base URL 怎么配置？`，预期得到虚构配置说明。复制后的记录仍带有 `synthetic: true`，所以状态栏依然显示演示资料。此命令使用单独的数据库，按 Ctrl+C 停止服务。
+按提示输入 API 前缀、隐藏 Key、模型 ID 和协议：`1` 为 Chat Completions，`2` 为 Responses。只询问缺失项；地址直接回车使用 `https://api.openai.com/v1`。程序添加实际接口路径。
 
-也可以使用 CLI：
+配置优先级为 **命令行参数 → 当前进程环境变量 → 交互补齐**。支持 `OPENAI_BASE_URL`、`OPENAI_API_KEY`、`OPENAI_MODEL`、`OPENAI_API_MODE`（`chat_completions` 或 `responses`）。可选参数包括 `--base-url`、`--model`、`--api-mode`、`--no-input`，不提供 Key 命令行参数。
+
+启动器不读取 `.env`，不保存交互凭据，也不写入父终端。停止进程后输入失效；用户主动设置的环境变量不属于程序缓存。
+
+接口及模型需支持**严格 JSON Schema 输出**；Chat 适配器还发送 `max_completion_tokens` 和 `store: false`。Anthropic Messages、Gemini 原生协议不能直接替代。
+
+启动先验证分诊、生成和质检。如只想检测连接：
 
 ```bash
-python -m support_agent.cli --provider local --corpus runtime/copied_demo.jsonl --json "ClientA Base URL 怎么配置？"
+python3 scripts/start_demo.py --provider openai --check-model
 ```
 
-Web 会话保存在 SQLite，CLI 历史只保存在进程内存。Web 是无认证的本地原型。如果使用 `pip install -e .` 安装，额外提供 `support-agent` 和 `support-agent-web` 两个命令入口。
+该命令发送 3 次短合成请求，可能计费；结束后丢弃交互输入，不发送已有工单或创建数据库。正常启动已包含这项检查，无需先单独执行。
 
-## 3. 生成知识复核队列
+客服“模型调用”面板记录配置及实际返回的模型名、协议、阶段、耗时、上下文覆盖和脱敏错误。“接口成功”与“内容检查通过”分开显示，运行中回退可见。初始化示例工单始终使用本地回复。
+
+## 实时更新
+
+SSE 通知触发各端按权限重新取数，同步消息、撤回、工单列表、AI 状态、套餐和余额。断线时有 5 秒后备同步，重连后获取最新状态。
+
+未发送文本和滚动位置保留；编辑弹窗打开时暂缓重绘，保护未保存内容。普通标签页共享登录 Cookie，多角色验收请使用不同浏览器或独立隐私会话。
+
+更新应用代码后，重启服务并刷新旧页面一次，后续业务变化自动同步。
+
+## 数据与启动选项
+
+两种模式都使用 `runtime/lumen_desk.db`，重启保留账号和工单。新版本目录默认使用自己的数据库。要创建新演示而不删除旧数据：
 
 ```bash
-python scripts/review_knowledge.py --corpus runtime/copied_demo.jsonl --as-of 2026-09-19 --output runtime/demo_knowledge_review
+python3 scripts/start_demo.py --provider local --database runtime/fresh_demo.db
 ```
 
-打开 `runtime/demo_knowledge_review/summary.json` 和 `review_queue.jsonl`。部分夹具专门模拟过期资料，队列会记录来源、内容哈希、到期原因，以及待填写的核验人、日期和依据。此命令不会续期事实，也不会修改输入语料；其他演示记录的远期日期只用于稳定复现，不能直接套用到真实政策。
+如需继续使用原数据库，先备份，再通过 `--database` 指定绝对路径，启动时会迁移表结构。不要让两个不同版本同时使用同一数据库。
 
-## 4. 可选：准备自己的私有输入
-
-本节是导入流程参考，**不能仅凭公开演示文件直接运行**，需要先提供自己的脱敏案例与来源文件。公开仓库不附带原始业务数据。
-
-- 将案例统一整理到 `data/input/case_kb_preview/canonical_cases.jsonl`，消息包含 `message_id`、`role`、`content`；先把渠道特有的消息 ID 映射到 `message_id`。
-- 配置 `scripts/enrich_cases.py` 和 `scripts/extract_pdf_official_kb.py` 的产品、客户端规则，当前标签只是虚构示例。
-- 按[官方来源结构](official_kb_policy.md)准备 `knowledge/official/` 内的 JSONL，整个目录保持私有。
-- 如需抽取 PDF，先执行 `python -m pip install -e ".[pdf]"`。
-
-处理已规范化的案例：
+启动器加 `--no-browser` 可关闭自动打开浏览器。需要固定端口、不自动换端口时：
 
 ```bash
-python scripts/enrich_cases.py --input data/input/case_kb_preview/canonical_cases.jsonl --output data/output/enriched
+python3 -m support_agent.portal --provider local --host 127.0.0.1 --port 8080
 ```
 
-如需抽取 PDF，将下面的示例文件名和日期换成自己的来源文件和实际提取日期：
+启动器的相对数据库路径基于项目根目录；模块入口则基于当前目录。
+
+项目也包含可选的本地 Docker 配置：
 
 ```bash
-python scripts/extract_pdf_official_kb.py --input knowledge/official/sources/support_knowledge_base.pdf --snapshot-date 2026-09-19 --output knowledge/official/internal/support_internal_pdf.jsonl --audit knowledge/official/audit/support_internal_pdf_audit.json --report knowledge/official/audit/support_internal_pdf_report.json
+docker compose up --build
 ```
 
-`snapshot-date` 是提取日期，不能证明政策仍有效。未提供 `--verified-at` 时，抽取记录的到期日期会有意早于快照日期，等待来源核验。仅在确实复核对应政策后填写核验日期；有效性混杂的文档应逐条复核，不能整体续期。重新抽取前请备份已有输出。
+Compose 启动的是**当前网站的本地模式**，仅映射回环地址，并保留 `./runtime`。根目录 `.env.example` 只有可选宿主端口配置，不用于模型凭据。v0.5.7 未构建或验证 Docker。
 
-## 5. 构建并校验私有语料
+用量、退款、发票和余额均为模拟状态，不含真实扣款、自动续费、定时额度重置或邮件发送。
 
-准备好输入，并完成必要核验后：
+## 常见故障
 
-```bash
-python scripts/ingest_official_kb.py --input knowledge/official --output data/output/official_kb
-python scripts/check_case_conflicts.py --cases data/output/enriched/case_summaries.jsonl --official-kb data/output/official_kb/official_kb.jsonl --output data/output/conflicts
-python scripts/build_retrieval_corpus.py --official-kb data/output/official_kb/official_kb.jsonl --cases data/output/enriched/case_summaries.jsonl --conflicts data/output/conflicts/case_conflict_assessments.jsonl --output data/output/retrieval
-python scripts/validate_official_pipeline.py --official-kb data/output/official_kb/official_kb.jsonl --cases data/output/enriched/case_summaries.jsonl --assessments data/output/conflicts/case_conflict_assessments.jsonl --corpus data/output/retrieval/retrieval_corpus.jsonl
-```
+| 现象 | 检查项 |
+|---|---|
+| 找不到脚本或模块 | 在解压后的项目根目录使用 Python 3.11+ |
+| 网站打不开 | 保持终端运行，使用终端显示的端口 |
+| Key 输入没有任何显示 | 属于隐藏输入，粘贴后按回车 |
+| 没有出现配置提示 | 参数或环境变量已提供；管道输入不是交互终端 |
+| HTTP 401 / 403 | Key、接口地址、模型权限 |
+| HTTP 404 / 405 | API 前缀、协议、是否重复填写接口后缀 |
+| HTTP 400 / 422 或结构化输出错误 | 是否支持严格 JSON Schema 及适配器参数 |
+| TLS 证书错误 | 配置当前 Python 的可信根证书；可选执行 `python3 -m pip install -e ".[models]"` 安装 certifi |
+| 客户未收到自动回复 | 查看 AI 开关、人工优先、质检失败或操作审批 |
+| 回复标为本地回退 | 在客服面板查看失败阶段及脱敏原因 |
+| 旧建议没有变化 | 新配置只用于后续生成，不改写旧建议 |
+| 找不到套餐或余额编辑 | 切换管理员工作台，客服仅可读取业务信息 |
 
-当前流水线校验器要求 `review_after >= retrieved_at`，所以有意标记为过期的未核验 PDF 记录不能通过这一步。将其作为已验证快照使用前，应先解决来源核验问题，不能只为通过检查而修改日期。
+TLS 始终验证证书及主机名；显式设置的 `SSL_CERT_FILE` / `SSL_CERT_DIR` 优先。
 
-校验通过后，明确指定自己的语料：
-
-```bash
-python -m support_agent.web --provider local --corpus data/output/retrieval/retrieval_corpus.jsonl
-```
-
-之后参考第 3 步，换成自己的语料路径和复核日期，定期执行 `scripts/review_knowledge.py`。未发现规则冲突不等于事实仍然正确。历史私有处理规模见[数据范围](data_scope.zh-CN.md)，不能当作公开演示数据量。
-
-## 响应字段
-
-| 字段 | 含义 |
-| --- | --- |
-| `answer` | 回答文本。 |
-| `route` | `answer`、`clarify` 或 `escalate`。 |
-| `reason` | 策略决策原因。 |
-| `citations` | 实际提供给生成器的材料，或本地 provider 摘录的记录。 |
-| `session_id` | 会话标识。 |
-| `provider` | 所选 provider。 |
-
-人工升级目前只产生提示与路由，创建真实工单需要渠道适配器。软件测试不能直接证明满意度、节省工时、真实解决率或模型费用。

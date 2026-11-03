@@ -96,7 +96,13 @@ def search(
     top_k: int,
     category: str | None = None,
     product: str | None = None,
+    *,
+    method: str = "hybrid",
 ) -> list[dict[str, Any]]:
+    # Offline ablations share tokenization, metadata rules and stable tie order.
+    # Existing portal/legacy callers keep exactly the previous hybrid default.
+    if method not in {"bm25", "char_ngram", "hybrid"}:
+        raise ValueError("Unknown retrieval method")
     filtered = [
         row
         for row in corpus
@@ -137,7 +143,12 @@ def search(
     results: list[dict[str, Any]] = []
     for bm25, semantic, row in raw_scores:
         lexical = bm25 / max_bm25
-        base = 0.62 * lexical + 0.38 * semantic
+        if method == "bm25":
+            base = lexical
+        elif method == "char_ngram":
+            base = semantic
+        else:
+            base = 0.62 * lexical + 0.38 * semantic
         authority_boost = 0.0
         if row.get("precedence") == "P1" and base > 0.03:
             query_set = set(query_terms)

@@ -1,45 +1,63 @@
 # Architecture
 
-**English** | [简体中文](architecture.zh-CN.md)
+[Home](../README.md) · [Chinese](architecture.zh-CN.md)
 
-This personal prototype is a program-orchestrated retrieval-augmented support workflow. It does not have live business tools or an autonomous planning loop. Start with the [step-by-step demo](../README.md#python-demo).
+The current portal is a Python-orchestrated support workflow with a SQLite business database and JavaScript UI. The model cannot freely choose or execute database writes.
 
 ```text
-Offline: historical cases → rule-based classification and quality tiers
-        → official-source checks → conflict flags → retrieval corpus
-
-Online: customer message + the latest 8 conversation messages
-      → local rules / structured model understanding
-      → standalone query (replace old topics and outdated error codes)
-      → BM25 + character n-gram retrieval
-      → identifier, relevance, expiry, conflict and audience checks
-      → apply a shared evidence-text budget
-      → answer: generate from the standalone query and selected evidence
-        clarify: ask for details, retaining the active unresolved topic
-        escalate: request human verification without executing a ticket action
-      → SQLite for web conversations; process-local memory for the CLI
+Customer message + recent public conversation
+  → topic tracking and triage
+  → scoped business queries + knowledge retrieval
+  → compose from current evidence
+  → content / action checks
+  → automatic reply, clarification, private suggestion or human handoff
+  → persist state → SSE notification → clients fetch authorized current data
 ```
 
-| Module | Responsibility |
-| --- | --- |
-| `session.py` | Bounded history; infer local context from user messages, not error codes mentioned by the assistant. |
-| `providers.py` | Local extraction and rules; structured understanding and generation through the Responses API. |
-| `retrieval.py` | BM25 and character bigram/trigram cosine similarity; complete identifier matching. |
-| `policy.py` | Source expiry, conflicts, audience filtering, account-specific and live-status escalation. |
-| `prompts.py` | Pass untrusted content as data; enforce a shared evidence-text budget. |
-| `agent.py` | Orchestration, preservation of explicit identifiers, and alignment of evidence with citations. |
-| `database.py` / `web.py` | SQLite persistence, HTTP endpoints, and the page. |
-| `scripts/evaluate_agent.py` | Fixed-date, per-turn acceptance checks and scenario comparisons. |
-| `scripts/review_knowledge.py` | Review deadlines and pending verification queues. |
+## Evidence and actions
 
-## Evidence precedence
+Ten read tools cover account overview, subscriptions, orders, invoices, recent requests, platform status, API-key metadata, ticket history, balance-correction eligibility and knowledge search. Queries are scoped to the customer associated with the ticket.
 
-P0 live tools are not connected. P1 represents official knowledge within its review window. P2 historical cases only provide troubleshooting clues. P3 low-confidence or unresolved material does not enter the primary retrieval corpus. The packaged P1/P2 records are fictional role fixtures, not real policies.
+The model proposes structured decisions and wording. Python controls allowed queries, fact checks and sending. Protected writes run through application services and role checks: support can reply and retract; admins manage account, plan, balance and global AI settings. Financial state is simulated locally.
 
-`restricted_internal` material should be excluded when building a corpus and is also rejected at response time. The bodies of `agent_internal` records are not given to the model or customer; the workflow currently retains only candidate IDs for internal routing signals.
+## Knowledge and retrieval
 
-## Limits to verify when extending the demo
+The portal starts with **10 synthetic policy entries** in `support_agent/desk/data/knowledge.json`. Each is a complete rule or FAQ with its own ID and metadata. These are curated units, not fixed-length text windows.
 
-Local rules cover a narrow set of short error-code changes and unresolved follow-ups. Long conversations can lose context beyond the message window; complex ellipsis and corrections need additional evaluation. Model understanding needs its own live-model evaluation. Ranking weights and top-K have not been tuned on production traffic.
+The separate legacy pipeline has **19 synthetic records**. Its PDF importer groups content by numbered third-level headings and keeps FAQ units together. It does not automatically replace the portal knowledge table. [Knowledge scope](../knowledge/README.md).
 
-Citations identify material visible during generation. The local provider cites the record it actually renders; this does not establish support for every possible generated claim. Evidence budgets count text characters, not tokens.
+The shared retriever combines normalized BM25 (**0.62**) with character bigram/trigram cosine similarity (**0.38**). BM25 uses `k1=1.5`, `b=0.75` and lexical features including Chinese characters/bigrams and English identifiers. Character similarity is sparse lexical matching, not an embedding model.
+
+The portal ranks candidates, takes up to **4**, then requires query coverage **≥ 0.12**. Rejected entries are not replaced from lower ranks. Source metadata and priority rules also influence ranking. A character budget bounds evidence sent to the model; it is not a token-cost estimate. [Method comparison](retrieval-comparison.md).
+
+## Conversation and collaboration
+
+- The model sees up to **24 prior public messages**, bounded at approximately **16,000 characters**, including customer, AI and human replies. Truncation is marked.
+- Retracted text, private suggestions, internal notes and other customers' conversations are excluded.
+- Topic tracking separates paused issues from the current question. Returning to a previous issue triggers fresh business queries; ambiguous references can require clarification.
+- A human reply gives **15 minutes** of priority. An unanswered customer follow-up waits **60 seconds** before a private suggestion is generated. Explicit takeover lasts until staff resume AI.
+- New customer input invalidates older pending suggestions. Automatic sending still depends on the global switch, current ticket state, checks and action approval.
+
+## Model integration
+
+Local mode uses rules and templates. Optional Chat Completions or Responses access uses structured triage, composition and review: ordinarily **3 calls**. A content revision can add **2** more calls. Composition and review receive the same current evidence and conversation context.
+
+Startup checks all three stages. Runtime diagnostics distinguish API failure, rejected content and local fallback, retaining model names and sanitized reasons. No model weights are trained.
+
+## Module map
+
+| Path | Responsibility |
+|---|---|
+| `support_agent/portal.py` | HTTP routes, sessions, authorization and SSE |
+| `support_agent/desk/service.py` | Tickets, background generation, human priority and sending |
+| `support_agent/desk/engine.py` | Triage, evidence orchestration and reply checks |
+| `support_agent/desk/topics.py` | Active topic and follow-up handling |
+| `support_agent/desk/tools.py` | Customer-scoped read tools and knowledge filtering |
+| `support_agent/desk/model.py` | Model prompts, composition and review |
+| `support_agent/desk/storage.py` | SQLite schema, migrations and synthetic fixtures |
+| `support_agent/desk/admin.py` | Controlled account, plan, balance and knowledge changes |
+| `support_agent/retrieval.py` | Shared BM25 and character scoring |
+| `support_agent/desk/static/` | Portal UI and live synchronization |
+
+[Earlier standalone RAG architecture](legacy/architecture.md) describes a different entrypoint without the business portal.
+

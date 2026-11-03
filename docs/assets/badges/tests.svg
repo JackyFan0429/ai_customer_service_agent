@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="165" height="24" role="img" aria-label="Local tests: 225 passed">
+<title>Local tests: 225 passed</title>
+<clipPath id="r"><rect width="165" height="24" rx="4"/></clipPath>
+<g clip-path="url(#r)"><path fill="#555" d="M0 0h81v24H0z"/><path fill="#238636" d="M81 0h84v24H81z"/></g>
+<g fill="#fff" text-anchor="middle" font-family="Arial, Helvetica, PingFang SC, Microsoft YaHei, sans-serif" font-size="13">
+<text x="40.5" y="16.55">Local tests</text><text x="123.0" y="16.55" font-weight="400">225 passed</text>
+</g></svg>

@@ -1,72 +1,62 @@
-# Reproduce the synthetic evaluation
+# Evaluation
 
-**English** | [简体中文](evaluation.zh-CN.md)
+[Home](../README.md) · [Chinese](evaluation.zh-CN.md)
 
-Use the Python environment from the [main tutorial](../README.md#python-demo) and run the following commands from the repository root. No model key or running web server is needed for the local evaluation.
+Keep software checks, workflow acceptance, retrieval quality and live-model behavior separate. None is a production resolution rate.
 
-## 1. Run the current version
+## Current evidence
 
-```bash
-python scripts/evaluate_agent.py --output runtime/evaluation.json --fail-on-regression evals/results/after.json
-```
+| Layer | Dataset / result | Limitation |
+|---|---|---|
+| Software tests | 225 passed in v0.5.7 | API responses are mocked |
+| Portal workflow | 29/29 synthetic scenarios | Checks routes, required tools and fact fragments |
+| Legacy RAG | 48/48 scenarios; 63/63 turns | Development regression, not unseen traffic |
+| Retrieval | 20 development + 10 holdout queries; 10 knowledge entries | AI-assisted labels await owner review |
+| Historical live model | v0.5.3: 8 post-fix turns, 22 successful API calls, no fallback | Small historical sample; not rerun for v0.5.7 |
 
-Expected: 48/48 complete scenarios, 63/63 complete turns, 14/14 multi-turn scenarios, and an empty `failures` list. Open `runtime/evaluation.json` to inspect individual answers and failed or passed checks.
+Of the 8 historical turns, 7 used model answers and 1 used a controlled business template. Call counts therefore differ from turn counts. [Raw record](topic-switch-live-v0.5.3.json).
 
-## 2. Reproduce the earlier implementation
+## Reproduce local checks
 
-Install Git if it is not already available in your terminal, then run:
-
-```bash
-python scripts/reproduce_baseline.py
-```
-
-The script applies a checked-in patch in a temporary directory, verifies implementation hashes, runs the same scenarios, and checks the exact baseline metrics and failure IDs. The expected result is **39/48 scenarios**, with nine known failures. The output is `runtime/reproduced_before.json`; your working implementation is not replaced.
-
-The baseline corresponds to the local version before the 2026-09-19 fixes, which had 40 software tests. It is not the earlier remote version with 38 tests. After anonymization, both implementations were rerun against `synthetic-v2-neutral`. Names can affect lexical retrieval, so reports and hashes were regenerated from executions. Both sets of acceptance counts remained unchanged.
-
-## 3. Understand what is measured
-
-The dataset has 48 synthetic development scenarios, 63 messages, and 14 multi-turn scenarios, using 19 fictional knowledge records. Labels were AI-authored and await owner review. These tasks were visible during development; this is neither a held-out test nor a sample of real traffic.
-
-Each line in `evals/scenarios.jsonl` contains the scenario ID, category, origin, label status, knowledge version, fixed date, selected `corpus_ids`, and ordered `turns`. Each turn specifies a query, expected route, required and allowed evidence IDs, necessary answer points, and forbidden conclusions.
-
-For `required_points`, the outer list is AND and each inner list is OR. Lexical checks may misread negation or complex wording and do not replace factual review. Each scenario gets its own session. Any failed turn fails the whole scenario; exceptions stay in the denominator. The evaluation date is fixed at 2026-09-19. Far-future review dates are fictional test fixtures only.
-
-| Metric | Numerator / denominator |
-| --- | --- |
-| `scenario_pass` | Scenarios where every turn passes / all scenarios. |
-| `turn_pass` | Turns passing route, content, forbidden-conclusion and evidence checks / all turns. |
-| `route_accuracy` | Turns routed as labeled / all turns. |
-| `answerable_acceptance` | Fully passing answerable knowledge turns / turns labeled answer with expected evidence. |
-| `evidence_rule_violation` | Cited answers with evidence outside the allowed set / all cited answers. |
-| `escalation_recall` | Correct escalations / turns labeled escalate. |
-| `multi_turn_success` | Fully passing multi-turn scenarios / all multi-turn scenarios. |
-
-`evidence_rule_violation` only checks evidence IDs; it is not a hallucination rate. Unsupported conclusions can occur even with correct citations. Claim-level human review or a calibrated judge is a separate requirement.
-
-Reports preserve per-turn output, failures, implementation-file hashes, and hashes of the corpus, scenarios, and grading script. `elapsed_ms` is local execution time, not model latency. Unmeasured API cost and tokens are `null`, not zero.
-
-## 4. Compare the recorded results
-
-| Metric | Before | After |
-| --- | --- | --- |
-| Complete scenarios | 39/48 | 48/48 |
-| Complete turns | 53/63 | 63/63 |
-| Correct routes | 56/63 | 63/63 |
-| Answerable-turn acceptance | 29/33 | 33/33 |
-| Evidence-set violations | 3/32 | 0/33 |
-| Required escalations recalled | 9/9 | 9/9 |
-| Multi-turn scenarios | 9/14 | 14/14 |
-
-The nine previously failing scenarios cover general refund-policy questions incorrectly escalated, confusion between 401/1401, 401/E401 and E401/E4012, short error-code updates, and unresolved follow-ups that lost their topic. None of the previously passing 39 scenarios regressed.
-
-Changing scenarios, corpus, grader, provider, or fixed dates invalidates the same-condition comparison. The comparison command rejects mismatched inputs. Establish a new baseline for intentional changes rather than removing failures from the denominator or silently overwriting earlier evidence. Source files use LF line endings to keep hashes consistent across checkouts.
-
-## 5. Keep software tests separate
+The portal and retrieval checks need only Python 3.11+. The full software suite also tests PDF extraction, which requires the optional PDF dependency.
 
 ```bash
-python -m pip install -e ".[pdf]"
-python -m unittest discover -s tests -v
+python3 -m pip install -e ".[pdf]"
+python3 -m unittest discover -s tests -v
+python3 scripts/evaluate_desk.py --as-of '2026-11-04T00:00:00+11:00' --output runtime/desk-evaluation.json
+python3 scripts/evaluate_agent.py --provider local --output runtime/rag-evaluation.json --fail-on-regression evals/results/after.json
+python3 scripts/validate_retrieval_dataset.py
 ```
 
-Expect 59 software tests. They also cover web-session restoration, isolation, standalone-query generation, identifier preservation, evidence-budget alignment, and date-sensitive checks. API tests use mocks. Neither this suite nor the stored local reports are a real-model end-to-end evaluation or evidence of a production resolution rate.
+Run from the project root. Outputs go to `runtime/`; packaged release evidence stays under `evals/`. A successful dataset validation confirms references, grouping and schema, not retrieval success or human approval.
+
+For retrieval experiments, use the development → freeze → holdout sequence in the [comparison guide](retrieval-comparison.md). Frozen v0.5.6 results remain unchanged in this release; no new holdout tuning was performed.
+
+## Metric definitions
+
+- **Recall@4:** per-query fraction of required knowledge IDs retrieved, averaged over knowledge-answerable queries. A two-source question returning one source scores 0.5.
+- **MRR@4:** reciprocal rank of the first relevant result. It does not prove all subquestions have evidence.
+- **No-answer false retrieval:** no-answer queries with any returned evidence / all no-answer queries.
+- **Pure dynamic queries:** reported separately; static knowledge cannot establish a current balance or request duration.
+- **Workflow acceptance:** required routing, tools and fact checks. It is not claim-level answer grading.
+
+Final retrieval metrics tie across BM25, character n-grams and hybrid:
+
+| Split | Answerable denominator | Recall@4 | MRR@4 | Fully covered | No-answer false retrieval |
+|---|---:|---:|---:|---:|---:|
+| Development | 17 | 67.65% | 70.59% | 11/17 | 0/2 |
+| Holdout | 8 | 68.75% | 75.00% | 5/8 | 0/1 |
+
+The dataset is small and provisional. One correctly rejected holdout negative does not establish a low general hallucination rate. [Method details and failure analysis](retrieval-comparison.md).
+
+## Remaining measurements
+
+1. Review labels and missing evidence with the project owner; retain versioned label changes.
+2. Improve coverage filtering on development examples, then use new unseen validation queries if published holdout cases inform the changes.
+3. Aggregate model usage, retries, latency and provider prices. Unknown cost stays unknown, not zero.
+4. In a real deployment, measure time to first useful answer, repeated-question rate, human handling time, draft adoption and cost per resolved ticket.
+
+A typical model reply uses three calls; a revision may add two. Local retrieval needs no embedding API, but that alone does not establish lower total cost. No measured revenue or labor savings are claimed.
+
+The [legacy evaluation](legacy/evaluation.md) retains the 2026-09-19 before/after reports. Reconstructing that old implementation requires a matching historical source snapshot; the current source is not an interchangeable substitute.
+

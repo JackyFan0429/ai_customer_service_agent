@@ -1,0 +1,258 @@
+{
+  "kind": "retrieval_freeze",
+  "created_at": "2026-11-03T16:17:07.262944+00:00",
+  "identity": {
+    "dataset_id": "lumen-retrieval-v1",
+    "dataset_manifest_sha256": "1426de04a2526db98b70df9af21a19361bc0f02d358c0eb7bda81b7984b089f7",
+    "dataset_files_sha256": {
+      "knowledge.json": "b5b154794862070104107e665d5e4d2ebafc2ee057f0a890cc7b310a54ba6d43",
+      "development.jsonl": "31a2fc0bc8f2f3c95b71938ea9915c8da67a8b28279194c56baf07fe5203e8ea",
+      "holdout.jsonl": "5a7f798a4d3ca0fa39ecfe4e9948e7c07f4fcc8e57f150b6584f42315b8d6212"
+    },
+    "as_of": "2026-11-03T13:00:00+00:00",
+    "configuration": {
+      "top_k": 4,
+      "minimum_query_term_coverage": 0.12,
+      "query_character_limit": 2000,
+      "bm25": {
+        "k1": 1.5,
+        "b": 0.75,
+        "normalization": "per-query maximum"
+      },
+      "character_ngram_sizes": [
+        2,
+        3
+      ],
+      "method_weights": {
+        "bm25": [
+          1.0,
+          0.0
+        ],
+        "char_ngram": [
+          0.0,
+          1.0
+        ],
+        "hybrid": [
+          0.62,
+          0.38
+        ]
+      },
+      "common_business_rules": {
+        "p1_metadata_boost_max": 0.22,
+        "boost_base_threshold": 0.03,
+        "p1_priority_score_threshold": 0.32,
+        "ties": "stable corpus order",
+        "filter_order": "published/current corpus -> rank -> top 4 -> coverage >= 0.12; no refill"
+      },
+      "query_rewriting": false,
+      "development_selection_order": [
+        "no retrieval exceptions",
+        "higher macro recall@4",
+        "lower no-answer false retrieval",
+        "higher MRR@4",
+        "keep hybrid on a tie"
+      ]
+    },
+    "implementation_sha256": {
+      "support_agent/retrieval.py": "684db977363cc2fc4fdfeaaf5e1853fe0e1237dd399a356d419ecb059c71a88f",
+      "support_agent/desk/tools.py": "d87679cccf0d425a15ca73d094fcf2908e633c578c68f3d9e92ada5677dc35d1",
+      "scripts/validate_retrieval_dataset.py": "b8ef79b47a0eccc74073f203024d70e27d94e1ae5a3abc03b632a319df5a7185",
+      "scripts/evaluate_retrieval.py": "3362c95608a705b486273abe274ab77600d153f0dd21c3e445fffaee100bb99a"
+    }
+  },
+  "development_report_sha256": "e7ddffcb3fdceefd58dee3660fa51e8f778afc301fd19da5a1b3d32a2a304ff9",
+  "development_metrics": {
+    "bm25": {
+      "recall_at_4": {
+        "numerator": 11.5,
+        "denominator": 17,
+        "rate": 0.676471
+      },
+      "mrr_at_4": {
+        "numerator": 12.0,
+        "denominator": 17,
+        "rate": 0.705882
+      },
+      "full_recall_queries": {
+        "numerator": 11,
+        "denominator": 17,
+        "rate": 0.647059
+      },
+      "returned_precision_macro": {
+        "numerator": 10.166667,
+        "denominator": 17,
+        "rate": 0.598039
+      },
+      "no_answer_false_retrieval": {
+        "numerator": 0,
+        "denominator": 2,
+        "rate": 0.0
+      },
+      "no_answer_outcomes": {
+        "returned_irrelevant": 0,
+        "successful_empty": 2,
+        "exceptions": 0
+      },
+      "retrieval_exceptions": {
+        "numerator": 0,
+        "denominator": 20,
+        "rate": 0.0
+      },
+      "diagnostics_before_coverage_filter": {
+        "recall_at_4": {
+          "numerator": 17.0,
+          "denominator": 17,
+          "rate": 1.0
+        },
+        "mrr_at_4": {
+          "numerator": 15.75,
+          "denominator": 17,
+          "rate": 0.926471
+        },
+        "no_answer_nonempty": {
+          "numerator": 2,
+          "denominator": 2,
+          "rate": 1.0
+        }
+      },
+      "missed_relevant_by_cause": {
+        "coverage_filter": 6
+      },
+      "known_queries_with_extra_context": 4,
+      "dynamic_diagnostics": {
+        "questions": 1,
+        "nonempty_results": 0
+      }
+    },
+    "char_ngram": {
+      "recall_at_4": {
+        "numerator": 11.5,
+        "denominator": 17,
+        "rate": 0.676471
+      },
+      "mrr_at_4": {
+        "numerator": 12.0,
+        "denominator": 17,
+        "rate": 0.705882
+      },
+      "full_recall_queries": {
+        "numerator": 11,
+        "denominator": 17,
+        "rate": 0.647059
+      },
+      "returned_precision_macro": {
+        "numerator": 10.166667,
+        "denominator": 17,
+        "rate": 0.598039
+      },
+      "no_answer_false_retrieval": {
+        "numerator": 0,
+        "denominator": 2,
+        "rate": 0.0
+      },
+      "no_answer_outcomes": {
+        "returned_irrelevant": 0,
+        "successful_empty": 2,
+        "exceptions": 0
+      },
+      "retrieval_exceptions": {
+        "numerator": 0,
+        "denominator": 20,
+        "rate": 0.0
+      },
+      "diagnostics_before_coverage_filter": {
+        "recall_at_4": {
+          "numerator": 15.0,
+          "denominator": 17,
+          "rate": 0.882353
+        },
+        "mrr_at_4": {
+          "numerator": 13.5,
+          "denominator": 17,
+          "rate": 0.794118
+        },
+        "no_answer_nonempty": {
+          "numerator": 2,
+          "denominator": 2,
+          "rate": 1.0
+        }
+      },
+      "missed_relevant_by_cause": {
+        "not_ranked": 2,
+        "coverage_filter": 4
+      },
+      "known_queries_with_extra_context": 4,
+      "dynamic_diagnostics": {
+        "questions": 1,
+        "nonempty_results": 0
+      }
+    },
+    "hybrid": {
+      "recall_at_4": {
+        "numerator": 11.5,
+        "denominator": 17,
+        "rate": 0.676471
+      },
+      "mrr_at_4": {
+        "numerator": 12.0,
+        "denominator": 17,
+        "rate": 0.705882
+      },
+      "full_recall_queries": {
+        "numerator": 11,
+        "denominator": 17,
+        "rate": 0.647059
+      },
+      "returned_precision_macro": {
+        "numerator": 10.166667,
+        "denominator": 17,
+        "rate": 0.598039
+      },
+      "no_answer_false_retrieval": {
+        "numerator": 0,
+        "denominator": 2,
+        "rate": 0.0
+      },
+      "no_answer_outcomes": {
+        "returned_irrelevant": 0,
+        "successful_empty": 2,
+        "exceptions": 0
+      },
+      "retrieval_exceptions": {
+        "numerator": 0,
+        "denominator": 20,
+        "rate": 0.0
+      },
+      "diagnostics_before_coverage_filter": {
+        "recall_at_4": {
+          "numerator": 17.0,
+          "denominator": 17,
+          "rate": 1.0
+        },
+        "mrr_at_4": {
+          "numerator": 15.75,
+          "denominator": 17,
+          "rate": 0.926471
+        },
+        "no_answer_nonempty": {
+          "numerator": 2,
+          "denominator": 2,
+          "rate": 1.0
+        }
+      },
+      "missed_relevant_by_cause": {
+        "coverage_filter": 6
+      },
+      "known_queries_with_extra_context": 4,
+      "dynamic_diagnostics": {
+        "questions": 1,
+        "nonempty_results": 0
+      }
+    }
+  },
+  "development_preference": "hybrid",
+  "rationale": "开发集三种方式的最终 Recall@4 均为 67.6471%、MRR@4 均为 70.5882%，两道无答案题均为空，依预先声明的并列规则保留 hybrid。过滤前 BM25 与 hybrid 的 Recall@4 为 100%，字符 n-gram 为 88.2353%；hybrid 的 6 个相关依据被覆盖度过滤，现有过滤同时挡住两道无答案题。本轮不做权重或阈值搜索，固定 Top-4、覆盖度 0.12、组合权重 0.62/0.38 及全部原业务规则；后续优化优先研究覆盖度与业务表述，当前不宣称某种方式最优。",
+  "parameters_tuned": false,
+  "holdout_rankings_used_to_select": false,
+  "selection_scope": "Development preference for comparison; the portal keeps its hybrid default."
+}

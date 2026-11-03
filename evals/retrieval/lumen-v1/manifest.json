@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "dataset_id": "lumen-retrieval-v1",
+  "delivery_version": "0.5.5",
+  "created_on": "2026-11-04",
+  "timezone": "Australia/Sydney",
+  "source_release": "0.5.4",
+  "source_archive_sha256": "6811246bdd50d89ca5782b00d8d05003c8b884d48c3f627bcabf84a19434def6",
+  "as_of": "2026-11-03T13:00:00+00:00",
+  "knowledge_file": "knowledge.json",
+  "knowledge_record_count": 10,
+  "knowledge_source": "evals/baselines/lumen-v0.5.3-2026-11-04/inputs/portal-knowledge.json",
+  "knowledge_state": {
+    "published": 1,
+    "review_after": "2027-02-01",
+    "basis": "All 10 records use the portal seed defaults at the fixed baseline instant; no per-case corpus filtering."
+  },
+  "splits": {
+    "development": {
+      "file": "development.jsonl",
+      "expected_count": 20
+    },
+    "holdout": {
+      "file": "holdout.jsonl",
+      "expected_count": 10
+    }
+  },
+  "split_policy": {
+    "method": "manual business-subproblem groups, fixed before scoring",
+    "groups": {
+      "plan-payment-order": {
+        "split": "development",
+        "intent": "套餐与余额并存时的扣除优先级"
+      },
+      "balance-eligibility": {
+        "split": "development",
+        "intent": "负余额回正的适用条件"
+      },
+      "refund-submission": {
+        "split": "development",
+        "intent": "退款申请入口和处理责任"
+      },
+      "auth401-checklist": {
+        "split": "development",
+        "intent": "401 的配置一致性检查与密钥披露"
+      },
+      "failure-billing": {
+        "split": "development",
+        "intent": "失败请求是否扣费需要什么证据"
+      },
+      "client-protocol": {
+        "split": "development",
+        "intent": "Claude Code 接入时协议与模型的匹配"
+      },
+      "invoice-correction": {
+        "split": "development",
+        "intent": "发票抬头修改的处理权限"
+      },
+      "historical-status": {
+        "split": "development",
+        "intent": "历史故障公告与当前状态的证据边界"
+      },
+      "account-isolation": {
+        "split": "development",
+        "intent": "工单用户的数据访问范围"
+      },
+      "image-placeholder": {
+        "split": "development",
+        "intent": "只有截图占位时如何获取排障信息"
+      },
+      "refund-reset-combination": {
+        "split": "development",
+        "intent": "退款申请是否改变额度周期以及是否另开工单"
+      },
+      "missing-model-spec": {
+        "split": "development",
+        "intent": "知识未提供的模型上下文窗口数值"
+      },
+      "unsupported-error-identifier": {
+        "split": "development",
+        "intent": "未知错误标识不能套用已知 401"
+      },
+      "dynamic-current-balance": {
+        "split": "development",
+        "intent": "只查询当前账户金额"
+      },
+      "quota-expiry-vs-cycle": {
+        "split": "holdout",
+        "intent": "套餐有效期与当前周期额度相互独立"
+      },
+      "balance-write-confirmation": {
+        "split": "holdout",
+        "intent": "提交回正与实际完成的区分"
+      },
+      "invoice-delivery-status": {
+        "split": "holdout",
+        "intent": "待开票与已发送的区别"
+      },
+      "human-assist-priority": {
+        "split": "holdout",
+        "intent": "人工接管后 AI 草稿的可见性"
+      },
+      "status-eta": {
+        "split": "holdout",
+        "intent": "没有恢复时间记录时的答复边界"
+      },
+      "403-quota-key": {
+        "split": "holdout",
+        "intent": "403 下余额、套餐额度与 Key 兜底的组合核验"
+      },
+      "missing-invoice-export-api": {
+        "split": "holdout",
+        "intent": "知识未提供的发票批量导出接口"
+      },
+      "dynamic-request-duration": {
+        "split": "holdout",
+        "intent": "只查询某次请求的耗时"
+      }
+    },
+    "same_knowledge_id_across_splits": "allowed; the same article can support distinct business subproblems",
+    "holdout_use": "Reserve for final validation after fixing retrieval settings on development. Both files are distributed; this is not third-party blind evaluation."
+  },
+  "labeling": {
+    "author": "ChatGPT-assisted",
+    "method": "Read all 10 frozen knowledge entries and annotate supporting evidence before running retrieval; do not label from retrieved rankings.",
+    "query_unit": "The complete query string is retrieval input. No rewrite, dialogue memory, answer generation or tool execution is evaluated.",
+    "source": "New synthetic questions based on the demo business rules; no original customer export or account credentials.",
+    "review_status": "pending_owner_review",
+    "quality_claim": "Proposed labels, not independently human-verified gold labels."
+  },
+  "metric_populations": {
+    "recall_at_4_and_mrr_at_4": [
+      "kb_answerable",
+      "kb_and_business_data"
+    ],
+    "no_answer_false_retrieval_rate": [
+      "no_kb_answer"
+    ],
+    "diagnostic_only": [
+      "business_data_only"
+    ]
+  },
+  "files_sha256": {
+    "knowledge.json": "b5b154794862070104107e665d5e4d2ebafc2ee057f0a890cc7b310a54ba6d43",
+    "development.jsonl": "31a2fc0bc8f2f3c95b71938ea9915c8da67a8b28279194c56baf07fe5203e8ea",
+    "holdout.jsonl": "5a7f798a4d3ca0fa39ecfe4e9948e7c07f4fcc8e57f150b6584f42315b8d6212"
+  }
+}

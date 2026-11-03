@@ -1,7 +1,16 @@
-# 自有知识导入位置
+# 知识来源
 
-[English](README.md) | **简体中文**
+[首页](../README.zh-CN.md) · [English](README.md)
 
-公开项目不包含任何公司的真实资料。默认演示使用 `support_agent/demo/corpus.jsonl` 中的合成语料。
+| 范围 | 包内来源 |
+|---|---|
+| 当前网站 | `support_agent/desk/data/knowledge.json`：10 条合成规则，初始化载入 SQLite |
+| 早期 RAG | `support_agent/demo/corpus.jsonl`：19 条合成记录 |
+| 检索评测 | `evals/retrieval/lumen-v1/knowledge.json`：冻结的网站知识快照，用于复现 |
 
-导入自己的资料时，可将来源文档和结构化记录放入 `knowledge/official/`，该目录整体被 Git 和 Docker 构建忽略。具体字段与命令见 [运行说明](../docs/operations.zh-CN.md) 和 [来源策略](../docs/official_kb_policy.md)。来源、核验日期与有效期必须如实记录。
+网站知识在管理员后台管理。[旧版导入流程](../docs/legacy/operations.zh-CN.md)生成独立 JSONL 语料，不会自动更新网站知识表。
+
+本包不含真实公司文档。忽略规则覆盖 `knowledge/official/internal/`、`sources/` 和 `audit/`，**不是整个 `knowledge/official/` 目录**。私有材料应放在明确忽略的路径。发布脚本仅包含这两份知识说明，不包含私有来源目录。
+
+保留来源、实际核验日期和有效期。[来源策略](../docs/legacy/official_kb_policy.md)。
+

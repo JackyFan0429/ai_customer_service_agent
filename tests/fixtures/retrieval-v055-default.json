@@ -1,0 +1,341 @@
+{
+  "source_version": "0.5.5",
+  "source_sha256": "a4c2d63f36d2766b0d4de5d351105720b08cb4d54cded04d7074058bce77889b",
+  "corpus": [
+    {
+      "document_id": "fixture:auth",
+      "title": "401 Key 检查",
+      "text": "核对 Base URL 和环境变量，重启客户端。",
+      "categories": [
+        "technical"
+      ],
+      "keywords": [
+        "401",
+        "Key"
+      ],
+      "precedence": "P1"
+    },
+    {
+      "document_id": "fixture:server",
+      "title": "503 请求失败",
+      "text": "核对日志和请求时间，失败扣费要查询记录。",
+      "categories": [
+        "technical"
+      ],
+      "keywords": [
+        "503",
+        "失败"
+      ],
+      "precedence": "P1"
+    },
+    {
+      "document_id": "fixture:plan",
+      "title": "套餐额度",
+      "text": "优先使用套餐额度，当前周期额度按时间刷新。",
+      "categories": [
+        "quota"
+      ],
+      "keywords": [
+        "套餐",
+        "周期"
+      ],
+      "precedence": "P1"
+    },
+    {
+      "document_id": "fixture:history",
+      "title": "过去的 Key 问题",
+      "text": "401 Key 报错，曾经重启客户端。",
+      "categories": [
+        "technical"
+      ],
+      "keywords": [
+        "Key"
+      ],
+      "precedence": "P2"
+    }
+  ],
+  "cases": [
+    {
+      "query": "401 Key",
+      "top_k": 4,
+      "expected": [
+        {
+          "score": 1.064655,
+          "lexical_score": 1.0,
+          "semantic_ngram_score": 0.591198,
+          "authority_boost": 0.22,
+          "query_term_coverage": 1.0,
+          "matched_query_terms": [
+            "401",
+            "key"
+          ],
+          "query_term_count": 2,
+          "critical_query_terms": [
+            "401"
+          ],
+          "matched_critical_terms": [
+            "401"
+          ],
+          "document_id": "fixture:auth",
+          "title": "401 Key 检查",
+          "text": "核对 Base URL 和环境变量，重启客户端。",
+          "categories": [
+            "technical"
+          ],
+          "keywords": [
+            "401",
+            "Key"
+          ],
+          "precedence": "P1"
+        },
+        {
+          "score": 0.790543,
+          "lexical_score": 0.950231,
+          "semantic_ngram_score": 0.529999,
+          "authority_boost": 0.0,
+          "query_term_coverage": 1.0,
+          "matched_query_terms": [
+            "401",
+            "key"
+          ],
+          "query_term_count": 2,
+          "critical_query_terms": [
+            "401"
+          ],
+          "matched_critical_terms": [
+            "401"
+          ],
+          "document_id": "fixture:history",
+          "title": "过去的 Key 问题",
+          "text": "401 Key 报错，曾经重启客户端。",
+          "categories": [
+            "technical"
+          ],
+          "keywords": [
+            "Key"
+          ],
+          "precedence": "P2"
+        }
+      ]
+    },
+    {
+      "query": "503 失败",
+      "top_k": 4,
+      "expected": [
+        {
+          "score": 1.01872,
+          "lexical_score": 1.0,
+          "semantic_ngram_score": 0.470317,
+          "authority_boost": 0.22,
+          "query_term_coverage": 1.0,
+          "matched_query_terms": [
+            "503",
+            "失败"
+          ],
+          "query_term_count": 2,
+          "critical_query_terms": [
+            "503"
+          ],
+          "matched_critical_terms": [
+            "503"
+          ],
+          "document_id": "fixture:server",
+          "title": "503 请求失败",
+          "text": "核对日志和请求时间，失败扣费要查询记录。",
+          "categories": [
+            "technical"
+          ],
+          "keywords": [
+            "503",
+            "失败"
+          ],
+          "precedence": "P1"
+        }
+      ]
+    },
+    {
+      "query": "额度还有吗",
+      "top_k": 4,
+      "expected": [
+        {
+          "score": 0.806735,
+          "lexical_score": 1.0,
+          "semantic_ngram_score": 0.122988,
+          "authority_boost": 0.14,
+          "query_term_coverage": 0.25,
+          "matched_query_terms": [
+            "额度"
+          ],
+          "query_term_count": 4,
+          "critical_query_terms": [],
+          "matched_critical_terms": [],
+          "document_id": "fixture:plan",
+          "title": "套餐额度",
+          "text": "优先使用套餐额度，当前周期额度按时间刷新。",
+          "categories": [
+            "quota"
+          ],
+          "keywords": [
+            "套餐",
+            "周期"
+          ],
+          "precedence": "P1"
+        }
+      ]
+    },
+    {
+      "query": "环境变量 Base URL",
+      "top_k": 4,
+      "expected": [
+        {
+          "score": 0.837438,
+          "lexical_score": 1.0,
+          "semantic_ngram_score": 0.36168,
+          "authority_boost": 0.08,
+          "query_term_coverage": 1.0,
+          "matched_query_terms": [
+            "base",
+            "url",
+            "变量",
+            "境变",
+            "环境"
+          ],
+          "query_term_count": 5,
+          "critical_query_terms": [],
+          "matched_critical_terms": [],
+          "document_id": "fixture:auth",
+          "title": "401 Key 检查",
+          "text": "核对 Base URL 和环境变量，重启客户端。",
+          "categories": [
+            "technical"
+          ],
+          "keywords": [
+            "401",
+            "Key"
+          ],
+          "precedence": "P1"
+        }
+      ]
+    },
+    {
+      "query": "unknownXYZ",
+      "top_k": 4,
+      "expected": []
+    },
+    {
+      "query": "",
+      "top_k": 4,
+      "expected": []
+    },
+    {
+      "query": "账户 1401",
+      "top_k": 4,
+      "expected": [
+        {
+          "score": 0.760457,
+          "lexical_score": 0.976729,
+          "semantic_ngram_score": 0.197066,
+          "authority_boost": 0.08,
+          "query_term_coverage": 0.0,
+          "matched_query_terms": [],
+          "query_term_count": 2,
+          "critical_query_terms": [
+            "1401"
+          ],
+          "matched_critical_terms": [],
+          "document_id": "fixture:auth",
+          "title": "401 Key 检查",
+          "text": "核对 Base URL 和环境变量，重启客户端。",
+          "categories": [
+            "technical"
+          ],
+          "keywords": [
+            "401",
+            "Key"
+          ],
+          "precedence": "P1"
+        },
+        {
+          "score": 0.66028,
+          "lexical_score": 1.0,
+          "semantic_ngram_score": 0.106,
+          "authority_boost": 0.0,
+          "query_term_coverage": 0.0,
+          "matched_query_terms": [],
+          "query_term_count": 2,
+          "critical_query_terms": [
+            "1401"
+          ],
+          "matched_critical_terms": [],
+          "document_id": "fixture:history",
+          "title": "过去的 Key 问题",
+          "text": "401 Key 报错，曾经重启客户端。",
+          "categories": [
+            "technical"
+          ],
+          "keywords": [
+            "Key"
+          ],
+          "precedence": "P2"
+        }
+      ]
+    },
+    {
+      "query": "重启 客户端",
+      "top_k": 4,
+      "expected": [
+        {
+          "score": 0.784636,
+          "lexical_score": 0.976729,
+          "semantic_ngram_score": 0.260694,
+          "authority_boost": 0.08,
+          "query_term_coverage": 1.0,
+          "matched_query_terms": [
+            "客户",
+            "户端",
+            "重启"
+          ],
+          "query_term_count": 3,
+          "critical_query_terms": [],
+          "matched_critical_terms": [],
+          "document_id": "fixture:auth",
+          "title": "401 Key 检查",
+          "text": "核对 Base URL 和环境变量，重启客户端。",
+          "categories": [
+            "technical"
+          ],
+          "keywords": [
+            "401",
+            "Key"
+          ],
+          "precedence": "P1"
+        },
+        {
+          "score": 0.726571,
+          "lexical_score": 1.0,
+          "semantic_ngram_score": 0.280449,
+          "authority_boost": 0.0,
+          "query_term_coverage": 1.0,
+          "matched_query_terms": [
+            "客户",
+            "户端",
+            "重启"
+          ],
+          "query_term_count": 3,
+          "critical_query_terms": [],
+          "matched_critical_terms": [],
+          "document_id": "fixture:history",
+          "title": "过去的 Key 问题",
+          "text": "401 Key 报错，曾经重启客户端。",
+          "categories": [
+            "technical"
+          ],
+          "keywords": [
+            "Key"
+          ],
+          "precedence": "P2"
+        }
+      ]
+    }
+  ]
+}

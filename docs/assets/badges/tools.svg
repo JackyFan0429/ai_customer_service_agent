@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="111" height="24" role="img" aria-label="Read tools: 10">
+<title>Read tools: 10</title>
+<clipPath id="r"><rect width="111" height="24" rx="4"/></clipPath>
+<g clip-path="url(#r)"><path fill="#555" d="M0 0h78v24H0z"/><path fill="#7653c6" d="M78 0h33v24H78z"/></g>
+<g fill="#fff" text-anchor="middle" font-family="Arial, Helvetica, PingFang SC, Microsoft YaHei, sans-serif" font-size="13">
+<text x="39.0" y="16.55">Read tools</text><text x="94.5" y="16.55" font-weight="400">10</text>
+</g></svg>

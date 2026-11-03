@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="114" height="24" role="img" aria-label="Python: 3.11+">
+<title>Python: 3.11+</title>
+<clipPath id="r"><rect width="114" height="24" rx="4"/></clipPath>
+<g clip-path="url(#r)"><path fill="#555" d="M0 0h61v24H0z"/><path fill="#3776ab" d="M61 0h53v24H61z"/></g>
+<g fill="#fff" text-anchor="middle" font-family="Arial, Helvetica, PingFang SC, Microsoft YaHei, sans-serif" font-size="13">
+<text x="30.5" y="16.55">Python</text><text x="87.5" y="16.55" font-weight="400">3.11+</text>
+</g></svg>

@@ -1,96 +1,99 @@
-# Local operation and knowledge maintenance
+# Operations
 
-**English** | [简体中文](operations.zh-CN.md)
+[Home](../README.md) · [Chinese](operations.zh-CN.md)
 
-Start with the [main tutorial](../README.md). The first three steps below use only included synthetic data. Run commands from the repository root with the Python environment activated.
+Run commands from the project root. Use `py -3` in place of `python3` on Windows. The UI and terminal prompts are in Simplified Chinese; control names below are translated.
 
-## 1. Make a separate demo corpus
-
-Copy the packaged corpus to a working file:
+## Start the website
 
 ```bash
-python -c "from pathlib import Path; import shutil; Path('runtime').mkdir(exist_ok=True); shutil.copyfile('support_agent/demo/corpus.jsonl', 'runtime/copied_demo.jsonl')"
+python3 scripts/start_demo.py --provider local
 ```
 
-Expected: `runtime/copied_demo.jsonl` contains the same 19 fictional records. Edit this working copy when experimenting, keeping the checked-in corpus unchanged for baseline comparisons.
+Local mode needs Python 3.11+ only. It opens a browser, creates synthetic data on first launch and selects an available port starting at 8080. The initial password for all six [demo accounts](../README.md#demo-accounts) is `Demo123!`.
 
-## 2. Run against that file
+Automatic replies are on by default. Staff can send private suggestions, reply manually, take over a ticket, resume AI and retract AI messages. Retraction shows a placeholder to the customer and retains the audit record; it does not reverse business operations.
+
+Human replies protect a conversation for 15 minutes. A subsequent customer message waits 1 minute for staff before generating a private suggestion. Explicit takeover continues until “Resume AI.” Existing or manually regenerated suggestions always require staff confirmation.
+
+Admins can change the global automatic-send switch, account balances and plans. Turning the switch on does not publish existing drafts. Support staff cannot use these admin controls; balance-correction suggestions require admin approval.
+
+## Model connection
 
 ```bash
-python -m support_agent.web --provider local --host 127.0.0.1 --port 8081 --corpus runtime/copied_demo.jsonl --database runtime/custom_demo.db
+python3 scripts/start_demo.py --provider openai
 ```
 
-Open [http://127.0.0.1:8081](http://127.0.0.1:8081) and send `ClientA Base URL 怎么配置？`. Expect a fictional setup answer. The copied records retain `synthetic: true`, so the header still labels them as demo data. This command uses a separate database. Press Ctrl+C to stop the server.
+Enter the API prefix, hidden key, exact model ID and protocol. Choose `1` for Chat Completions or `2` for Responses. Missing values are requested; pressing Enter for the address uses `https://api.openai.com/v1`. The program appends the endpoint path.
 
-CLI alternative:
+Configuration precedence is **CLI options → process environment → prompts for missing values**. Supported environment names are `OPENAI_BASE_URL`, `OPENAI_API_KEY`, `OPENAI_MODEL` and `OPENAI_API_MODE` (`chat_completions` or `responses`). Optional CLI flags include `--base-url`, `--model`, `--api-mode` and `--no-input`; there is no key CLI argument.
+
+The launcher does not read `.env`, save interactive credentials or export them to the parent shell. Stopping the process discards interactive input. Environment variables explicitly set by the user are separate from that behavior.
+
+The endpoint/model must support **strict JSON Schema output**. The Chat adapter also sends `max_completion_tokens` and `store: false`. Native Anthropic Messages and Gemini APIs are not direct substitutes.
+
+Startup verifies triage, composition and review before opening the site. To perform only that check:
 
 ```bash
-python -m support_agent.cli --provider local --corpus runtime/copied_demo.jsonl --json "ClientA Base URL 怎么配置？"
+python3 scripts/start_demo.py --provider openai --check-model
 ```
 
-Web sessions persist in SQLite; CLI history stays in process memory. The web server is a local prototype without authentication. If installed with `pip install -e .`, the console entry points are `support-agent` and `support-agent-web`.
+This sends three short synthetic requests, may incur charges, then exits and forgets interactive settings. It sends no existing tickets and creates no database. Normal startup already includes the check.
 
-## 3. Generate a review queue
+The staff model-call panel records requested/reported model names, protocol, stage results, timings, history coverage and sanitized failures. A successful API response and an accepted answer are separate checks. Runtime fallback is visible. Seeded tickets use local responses even in model mode.
+
+## Live updates
+
+SSE notifications trigger an authorized refetch. Customer and staff views update messages, retractions, ticket lists, AI status, plans and balances. A five-second fallback sync helps during disconnection; reconnection fetches current state.
+
+Unsent text and scroll position are preserved. Open editing dialogs defer redraw until closed to protect unsaved changes. Ordinary tabs share login cookies: test different roles in separate browsers or independent private sessions.
+
+After changing application code, restart the server and reload existing pages once. Subsequent data changes synchronize automatically.
+
+## Data and launch options
+
+Both providers use `runtime/lumen_desk.db`. Restarting preserves accounts and tickets. A new release folder uses its own database unless an explicit path is supplied. To start fresh without deleting the old database:
 
 ```bash
-python scripts/review_knowledge.py --corpus runtime/copied_demo.jsonl --as-of 2026-09-19 --output runtime/demo_knowledge_review
+python3 scripts/start_demo.py --provider local --database runtime/fresh_demo.db
 ```
 
-Open `runtime/demo_knowledge_review/summary.json` and `review_queue.jsonl`. Some fixtures intentionally simulate outdated sources. The queue records source references, content hashes, review reasons, and fields for reviewer, date and supporting evidence. It does not renew facts or modify the input corpus. Far-future dates in the other synthetic records are for reproducible demonstrations, not real policy management.
+For an existing database, back it up and pass its absolute path with `--database`. Startup applies schema migrations. Do not run two different releases against the same database simultaneously.
 
-## 4. Optional: prepare your own private inputs
-
-This section is a workflow reference, **not a command sequence that can run from the public demo alone**. Supply your own redacted cases and source documents first. Original business data is not included.
-
-- Normalize cases to `data/input/case_kb_preview/canonical_cases.jsonl`. Each message must have `message_id`, `role`, and `content`; map channel-specific IDs to `message_id` before processing.
-- Configure product/client rules in `scripts/enrich_cases.py` and `scripts/extract_pdf_official_kb.py`. Their current labels are fictional examples.
-- Prepare source-attributed official JSONL records under `knowledge/official/` using the [official schema](official_kb_policy.md). Keep the full directory private.
-- Install PDF dependencies with `python -m pip install -e ".[pdf]"` if you will extract a PDF.
-
-Enrich your normalized cases:
+Add `--no-browser` to the launcher to keep the browser closed. For a fixed port without automatic port selection:
 
 ```bash
-python scripts/enrich_cases.py --input data/input/case_kb_preview/canonical_cases.jsonl --output data/output/enriched
+python3 -m support_agent.portal --provider local --host 127.0.0.1 --port 8080
 ```
 
-If extracting a PDF, replace the sample filename and snapshot date with your actual file and extraction date:
+Relative database paths are based on the project root in the launcher and on the current directory in the module entrypoint.
+
+Optional local Docker configuration is included:
 
 ```bash
-python scripts/extract_pdf_official_kb.py --input knowledge/official/sources/support_knowledge_base.pdf --snapshot-date 2026-09-19 --output knowledge/official/internal/support_internal_pdf.jsonl --audit knowledge/official/audit/support_internal_pdf_audit.json --report knowledge/official/audit/support_internal_pdf_report.json
+docker compose up --build
 ```
 
-`snapshot-date` is the extraction date, not proof that policies are current. Without `--verified-at`, extracted records intentionally expire before the snapshot and await source verification. Only provide a verification date after genuinely reviewing the corresponding policies. A document with mixed validity needs record-level review rather than blanket renewal. Back up prior extraction outputs before replacing them.
+Compose starts the **current portal in local mode**, publishes it on loopback and persists `./runtime`. The root `.env.example` contains only an optional host-port setting; it is not a model credential file. Docker was not built or verified for v0.5.7.
 
-## 5. Build and validate a private corpus
+Usage, refunds, invoices and balances are synthetic. There is no real billing, automatic renewal, scheduled quota reset or invoice email.
 
-After preparing and reviewing the required inputs:
+## Troubleshooting
 
-```bash
-python scripts/ingest_official_kb.py --input knowledge/official --output data/output/official_kb
-python scripts/check_case_conflicts.py --cases data/output/enriched/case_summaries.jsonl --official-kb data/output/official_kb/official_kb.jsonl --output data/output/conflicts
-python scripts/build_retrieval_corpus.py --official-kb data/output/official_kb/official_kb.jsonl --cases data/output/enriched/case_summaries.jsonl --conflicts data/output/conflicts/case_conflict_assessments.jsonl --output data/output/retrieval
-python scripts/validate_official_pipeline.py --official-kb data/output/official_kb/official_kb.jsonl --cases data/output/enriched/case_summaries.jsonl --assessments data/output/conflicts/case_conflict_assessments.jsonl --corpus data/output/retrieval/retrieval_corpus.jsonl
-```
+| Symptom | Check |
+|---|---|
+| Script or module not found | Run inside the extracted project root with Python 3.11+ |
+| Website unavailable | Keep the terminal running and use its printed port |
+| Key input appears blank | Paste and press Enter; hidden input displays nothing |
+| Settings are not requested | CLI/environment values already supplied them; pipes are not interactive terminals |
+| HTTP 401 / 403 | Key, endpoint and model permissions |
+| HTTP 404 / 405 | API prefix, selected protocol and duplicate endpoint suffix |
+| HTTP 400 / 422 or schema error | Structured-output support and adapter parameters |
+| TLS certificate error | Install trusted CA roots for this interpreter; optional `python3 -m pip install -e ".[models]"` supplies certifi |
+| Customer receives no automatic answer | Inspect AI switch, human priority, review failure and action approval |
+| Reply is labeled local fallback | Read the failed stage and sanitized reason in the staff panel |
+| Old draft did not change | Generate a new reply; model settings do not rewrite earlier drafts |
+| Plan/balance controls missing | Switch to the admin workbench; support has read-only business access |
 
-The current pipeline validator requires `review_after >= retrieved_at`; deliberately expired, unverified PDF chunks will not pass it. Resolve source verification before using those records as a validated snapshot. Do not alter dates merely to satisfy a check.
+TLS verification remains enabled, including when certifi is used. Explicit `SSL_CERT_FILE` / `SSL_CERT_DIR` settings take precedence.
 
-After successful validation, select your corpus explicitly:
-
-```bash
-python -m support_agent.web --provider local --corpus data/output/retrieval/retrieval_corpus.jsonl
-```
-
-Review it periodically with `scripts/review_knowledge.py`, as in step 3 but using your private corpus path and the relevant date. A lack of rule-detected conflicts does not prove the advice is current. Historical private processing figures are documented in [data scope](data_scope.md); they are not the size of the public demo.
-
-## Response fields
-
-| Field | Meaning |
-| --- | --- |
-| `answer` | Response text. |
-| `route` | `answer`, `clarify`, or `escalate`. |
-| `reason` | Policy reason for the decision. |
-| `citations` | Material provided to generation, or the record rendered by the local provider. |
-| `session_id` | Conversation identifier. |
-| `provider` | Selected provider. |
-
-Human escalation only produces a prompt and routing decision. A channel adapter is needed to create real tickets. Software tests cannot establish customer satisfaction, saved labor, real resolution rates or model costs.

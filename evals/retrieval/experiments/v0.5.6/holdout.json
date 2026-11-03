@@ -1,0 +1,5262 @@
+{
+  "kind": "retrieval_evaluation",
+  "version": "0.5.6",
+  "split": "holdout",
+  "started_at": "2026-11-03T16:17:07.371943+00:00",
+  "completed_at": "2026-11-03T16:17:07.396403+00:00",
+  "identity": {
+    "dataset_id": "lumen-retrieval-v1",
+    "dataset_manifest_sha256": "1426de04a2526db98b70df9af21a19361bc0f02d358c0eb7bda81b7984b089f7",
+    "dataset_files_sha256": {
+      "knowledge.json": "b5b154794862070104107e665d5e4d2ebafc2ee057f0a890cc7b310a54ba6d43",
+      "development.jsonl": "31a2fc0bc8f2f3c95b71938ea9915c8da67a8b28279194c56baf07fe5203e8ea",
+      "holdout.jsonl": "5a7f798a4d3ca0fa39ecfe4e9948e7c07f4fcc8e57f150b6584f42315b8d6212"
+    },
+    "as_of": "2026-11-03T13:00:00+00:00",
+    "configuration": {
+      "top_k": 4,
+      "minimum_query_term_coverage": 0.12,
+      "query_character_limit": 2000,
+      "bm25": {
+        "k1": 1.5,
+        "b": 0.75,
+        "normalization": "per-query maximum"
+      },
+      "character_ngram_sizes": [
+        2,
+        3
+      ],
+      "method_weights": {
+        "bm25": [
+          1.0,
+          0.0
+        ],
+        "char_ngram": [
+          0.0,
+          1.0
+        ],
+        "hybrid": [
+          0.62,
+          0.38
+        ]
+      },
+      "common_business_rules": {
+        "p1_metadata_boost_max": 0.22,
+        "boost_base_threshold": 0.03,
+        "p1_priority_score_threshold": 0.32,
+        "ties": "stable corpus order",
+        "filter_order": "published/current corpus -> rank -> top 4 -> coverage >= 0.12; no refill"
+      },
+      "query_rewriting": false,
+      "development_selection_order": [
+        "no retrieval exceptions",
+        "higher macro recall@4",
+        "lower no-answer false retrieval",
+        "higher MRR@4",
+        "keep hybrid on a tie"
+      ]
+    },
+    "implementation_sha256": {
+      "support_agent/retrieval.py": "684db977363cc2fc4fdfeaaf5e1853fe0e1237dd399a356d419ecb059c71a88f",
+      "support_agent/desk/tools.py": "d87679cccf0d425a15ca73d094fcf2908e633c578c68f3d9e92ada5677dc35d1",
+      "scripts/validate_retrieval_dataset.py": "b8ef79b47a0eccc74073f203024d70e27d94e1ae5a3abc03b632a319df5a7185",
+      "scripts/evaluate_retrieval.py": "3362c95608a705b486273abe274ab77600d153f0dd21c3e445fffaee100bb99a"
+    }
+  },
+  "questions": 10,
+  "groups": 8,
+  "knowledge_records": 10,
+  "label_review_status": {
+    "pending_owner_review": 10
+  },
+  "provisional_labels": true,
+  "methods": {
+    "bm25": {
+      "metrics": {
+        "recall_at_4": {
+          "numerator": 5.5,
+          "denominator": 8,
+          "rate": 0.6875
+        },
+        "mrr_at_4": {
+          "numerator": 6.0,
+          "denominator": 8,
+          "rate": 0.75
+        },
+        "full_recall_queries": {
+          "numerator": 5,
+          "denominator": 8,
+          "rate": 0.625
+        },
+        "returned_precision_macro": {
+          "numerator": 5.0,
+          "denominator": 8,
+          "rate": 0.625
+        },
+        "no_answer_false_retrieval": {
+          "numerator": 0,
+          "denominator": 1,
+          "rate": 0.0
+        },
+        "no_answer_outcomes": {
+          "returned_irrelevant": 0,
+          "successful_empty": 1,
+          "exceptions": 0
+        },
+        "retrieval_exceptions": {
+          "numerator": 0,
+          "denominator": 10,
+          "rate": 0.0
+        },
+        "diagnostics_before_coverage_filter": {
+          "recall_at_4": {
+            "numerator": 8.0,
+            "denominator": 8,
+            "rate": 1.0
+          },
+          "mrr_at_4": {
+            "numerator": 7.333333,
+            "denominator": 8,
+            "rate": 0.916667
+          },
+          "no_answer_nonempty": {
+            "numerator": 1,
+            "denominator": 1,
+            "rate": 1.0
+          }
+        },
+        "missed_relevant_by_cause": {
+          "coverage_filter": 3
+        },
+        "known_queries_with_extra_context": 2,
+        "dynamic_diagnostics": {
+          "questions": 1,
+          "nonempty_results": 0
+        }
+      },
+      "results": [
+        {
+          "id": "RET-021",
+          "group_id": "quota-expiry-vs-cycle",
+          "query": "周卡还没到期，但这一轮的额度已经用光了；没到期是不是就应该继续有额度？",
+          "tags": [
+            "direct"
+          ],
+          "answerability": "kb_answerable",
+          "relevant_ids": [
+            "PLAN-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 1.11,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.105382,
+              "authority_boost": 0.11,
+              "query_term_coverage": 0.153846
+            },
+            {
+              "rank": 2,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.367996,
+              "lexical_score": 0.284663,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083333,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 3,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.284425,
+              "lexical_score": 0.201092,
+              "semantic_ngram_score": 0.008355,
+              "authority_boost": 0.083333,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 4,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.282977,
+              "lexical_score": 0.199644,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083333,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 5,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.281716,
+              "lexical_score": 0.195049,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.086667,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 6,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.2451,
+              "lexical_score": 0.1651,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 7,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.242926,
+              "lexical_score": 0.162926,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 8,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.204456,
+              "lexical_score": 0.124456,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 9,
+              "document_id": "IMAGE-001",
+              "title": "图片与错误信息补充",
+              "score": 0.194911,
+              "lexical_score": 0.114911,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 10,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.16771,
+              "lexical_score": 0.08771,
+              "semantic_ngram_score": 0.008312,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            }
+          ],
+          "raw_top_k_ids": [
+            "PLAN-001",
+            "REFUND-001",
+            "STATUS-001",
+            "ERR-503"
+          ],
+          "final_ids": [
+            "PLAN-001"
+          ],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 1.0,
+          "recall": 1.0,
+          "reciprocal_rank": 1.0,
+          "returned_precision": 1.0,
+          "full_recall": true,
+          "missed_relevant": {},
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-022",
+          "group_id": "quota-expiry-vs-cycle",
+          "query": "卡的到期日还远着呢，这期的量却跑光了，这两个不是一回事吗？",
+          "tags": [
+            "colloquial"
+          ],
+          "answerability": "kb_answerable",
+          "relevant_ids": [
+            "PLAN-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 1.0875,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.0875,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 2,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.906592,
+              "lexical_score": 0.822842,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08375,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 3,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.864063,
+              "lexical_score": 0.772813,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.09125,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 4,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.763778,
+              "lexical_score": 0.676278,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.0875,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 5,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.662898,
+              "lexical_score": 0.582898,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 6,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.588355,
+              "lexical_score": 0.504605,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08375,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 7,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.440269,
+              "lexical_score": 0.360269,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 8,
+              "document_id": "IMAGE-001",
+              "title": "图片与错误信息补充",
+              "score": 0.263121,
+              "lexical_score": 0.183121,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 9,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.243334,
+              "lexical_score": 0.163334,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 10,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.177365,
+              "lexical_score": 0.097365,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            }
+          ],
+          "raw_top_k_ids": [
+            "BAL-001",
+            "ERR-503",
+            "PLAN-001",
+            "STATUS-001"
+          ],
+          "final_ids": [],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 0.3333333333333333,
+          "recall": 0.0,
+          "reciprocal_rank": 0.0,
+          "returned_precision": 0.0,
+          "full_recall": false,
+          "missed_relevant": {
+            "PLAN-001": "coverage_filter"
+          },
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-023",
+          "group_id": "balance-write-confirmation",
+          "query": "余额回正只是提交了申请，还没实际写到账本，可以说已经回正成功了吗？",
+          "tags": [
+            "direct"
+          ],
+          "answerability": "kb_answerable",
+          "relevant_ids": [
+            "BAL-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 1.099636,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.14109,
+              "authority_boost": 0.099636,
+              "query_term_coverage": 0.307692
+            },
+            {
+              "rank": 2,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.582043,
+              "lexical_score": 0.482407,
+              "semantic_ngram_score": 0.066125,
+              "authority_boost": 0.099636,
+              "query_term_coverage": 0.153846
+            },
+            {
+              "rank": 3,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.294875,
+              "lexical_score": 0.205057,
+              "semantic_ngram_score": 0.018866,
+              "authority_boost": 0.089818,
+              "query_term_coverage": 0.076923
+            },
+            {
+              "rank": 4,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.27702,
+              "lexical_score": 0.19702,
+              "semantic_ngram_score": 0.013977,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.076923
+            },
+            {
+              "rank": 5,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.243202,
+              "lexical_score": 0.159929,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083273,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 6,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.23342,
+              "lexical_score": 0.15342,
+              "semantic_ngram_score": 0.008343,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 7,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.230831,
+              "lexical_score": 0.150831,
+              "semantic_ngram_score": 0.003496,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 8,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.223375,
+              "lexical_score": 0.140102,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083273,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 9,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.211249,
+              "lexical_score": 0.127976,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083273,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 10,
+              "document_id": "IMAGE-001",
+              "title": "图片与错误信息补充",
+              "score": 0.167395,
+              "lexical_score": 0.087395,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            }
+          ],
+          "raw_top_k_ids": [
+            "BAL-001",
+            "REFUND-001",
+            "PLAN-001",
+            "ERR-401"
+          ],
+          "final_ids": [
+            "BAL-001",
+            "REFUND-001"
+          ],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 1.0,
+          "recall": 1.0,
+          "reciprocal_rank": 1.0,
+          "returned_precision": 0.5,
+          "full_recall": true,
+          "missed_relevant": {},
+          "unrelated_ids": [
+            "REFUND-001"
+          ],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-024",
+          "group_id": "balance-write-confirmation",
+          "query": "客服说欠费抹零的申请已交上去，但还没有真正改账，这就算办完了吗？",
+          "tags": [
+            "colloquial"
+          ],
+          "answerability": "kb_answerable",
+          "relevant_ids": [
+            "BAL-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 1.095789,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.015331,
+              "authority_boost": 0.095789,
+              "query_term_coverage": 0.076923
+            },
+            {
+              "rank": 2,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 1.006564,
+              "lexical_score": 0.91709,
+              "semantic_ngram_score": 0.007169,
+              "authority_boost": 0.089474,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 3,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.648363,
+              "lexical_score": 0.555731,
+              "semantic_ngram_score": 0.022753,
+              "authority_boost": 0.092632,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 4,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.61253,
+              "lexical_score": 0.519898,
+              "semantic_ngram_score": 0.018433,
+              "authority_boost": 0.092632,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 5,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.58587,
+              "lexical_score": 0.502712,
+              "semantic_ngram_score": 0.008613,
+              "authority_boost": 0.083158,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 6,
+              "document_id": "IMAGE-001",
+              "title": "图片与错误信息补充",
+              "score": 0.453194,
+              "lexical_score": 0.373194,
+              "semantic_ngram_score": 0.009413,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 7,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.360065,
+              "lexical_score": 0.276907,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083158,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 8,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.33984,
+              "lexical_score": 0.25984,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 9,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.312161,
+              "lexical_score": 0.229003,
+              "semantic_ngram_score": 0.009264,
+              "authority_boost": 0.083158,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 10,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.293766,
+              "lexical_score": 0.210608,
+              "semantic_ngram_score": 0.006492,
+              "authority_boost": 0.083158,
+              "query_term_coverage": 0.038462
+            }
+          ],
+          "raw_top_k_ids": [
+            "BAL-001",
+            "ERR-503",
+            "REFUND-001",
+            "ACCOUNT-001"
+          ],
+          "final_ids": [],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 1.0,
+          "recall": 0.0,
+          "reciprocal_rank": 0.0,
+          "returned_precision": 0.0,
+          "full_recall": false,
+          "missed_relevant": {
+            "BAL-001": "coverage_filter"
+          },
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-025",
+          "group_id": "invoice-delivery-status",
+          "query": "发票记录显示待开具，是不是表示已经发出来了？这个状态可以保证哪天收到吗？",
+          "tags": [
+            "direct"
+          ],
+          "answerability": "kb_answerable",
+          "relevant_ids": [
+            "INVOICE-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 1.091613,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.105274,
+              "authority_boost": 0.091613,
+              "query_term_coverage": 0.206897
+            },
+            {
+              "rank": 2,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.490963,
+              "lexical_score": 0.402253,
+              "semantic_ngram_score": 0.043554,
+              "authority_boost": 0.08871,
+              "query_term_coverage": 0.068966
+            },
+            {
+              "rank": 3,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.483228,
+              "lexical_score": 0.400325,
+              "semantic_ngram_score": 0.013481,
+              "authority_boost": 0.082903,
+              "query_term_coverage": 0.068966
+            },
+            {
+              "rank": 4,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.408191,
+              "lexical_score": 0.325288,
+              "semantic_ngram_score": 0.007131,
+              "authority_boost": 0.082903,
+              "query_term_coverage": 0.034483
+            },
+            {
+              "rank": 5,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.250786,
+              "lexical_score": 0.170786,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 6,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.245019,
+              "lexical_score": 0.165019,
+              "semantic_ngram_score": 0.006104,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.034483
+            },
+            {
+              "rank": 7,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.223117,
+              "lexical_score": 0.140214,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.082903,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 8,
+              "document_id": "IMAGE-001",
+              "title": "图片与错误信息补充",
+              "score": 0.201992,
+              "lexical_score": 0.121992,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 9,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.145142,
+              "lexical_score": 0.065142,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 10,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.133833,
+              "lexical_score": 0.053833,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            }
+          ],
+          "raw_top_k_ids": [
+            "INVOICE-001",
+            "STATUS-001",
+            "ERR-503",
+            "REFUND-001"
+          ],
+          "final_ids": [
+            "INVOICE-001"
+          ],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 1.0,
+          "recall": 1.0,
+          "reciprocal_rank": 1.0,
+          "returned_precision": 1.0,
+          "full_recall": true,
+          "missed_relevant": {},
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-026",
+          "group_id": "human-assist-priority",
+          "query": "人工客服已经接手了，AI 后面生成的建议会直接插进对话发给我吗？",
+          "tags": [
+            "direct"
+          ],
+          "answerability": "kb_answerable",
+          "relevant_ids": [
+            "ACCOUNT-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 1.103774,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.103083,
+              "authority_boost": 0.103774,
+              "query_term_coverage": 0.153846
+            },
+            {
+              "rank": 2,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.401628,
+              "lexical_score": 0.314836,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.086792,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 3,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.382253,
+              "lexical_score": 0.292064,
+              "semantic_ngram_score": 0.015423,
+              "authority_boost": 0.090189,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 4,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.336729,
+              "lexical_score": 0.253333,
+              "semantic_ngram_score": 0.008757,
+              "authority_boost": 0.083396,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 5,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.333413,
+              "lexical_score": 0.250017,
+              "semantic_ngram_score": 0.007794,
+              "authority_boost": 0.083396,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 6,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.280878,
+              "lexical_score": 0.197482,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083396,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 7,
+              "document_id": "IMAGE-001",
+              "title": "图片与错误信息补充",
+              "score": 0.208291,
+              "lexical_score": 0.128291,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 8,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.164377,
+              "lexical_score": 0.080981,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083396,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 9,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.136349,
+              "lexical_score": 0.056349,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 10,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.013967,
+              "lexical_score": 0.013967,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.0
+            }
+          ],
+          "raw_top_k_ids": [
+            "ACCOUNT-001",
+            "SETUP-001",
+            "REFUND-001",
+            "INVOICE-001"
+          ],
+          "final_ids": [
+            "ACCOUNT-001"
+          ],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 1.0,
+          "recall": 1.0,
+          "reciprocal_rank": 1.0,
+          "returned_precision": 1.0,
+          "full_recall": true,
+          "missed_relevant": {},
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-027",
+          "group_id": "status-eta",
+          "query": "渠道记录里没有恢复时间，客服能不能给我承诺一个准确的恢复日期？",
+          "tags": [
+            "direct"
+          ],
+          "answerability": "kb_answerable",
+          "relevant_ids": [
+            "STATUS-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 1.096981,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.213082,
+              "authority_boost": 0.096981,
+              "query_term_coverage": 0.384615
+            },
+            {
+              "rank": 2,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.466977,
+              "lexical_score": 0.383581,
+              "semantic_ngram_score": 0.05735,
+              "authority_boost": 0.083396,
+              "query_term_coverage": 0.192308
+            },
+            {
+              "rank": 3,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.326066,
+              "lexical_score": 0.246066,
+              "semantic_ngram_score": 0.025838,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.115385
+            },
+            {
+              "rank": 4,
+              "document_id": "IMAGE-001",
+              "title": "图片与错误信息补充",
+              "score": 0.31667,
+              "lexical_score": 0.23667,
+              "semantic_ngram_score": 0.047067,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.115385
+            },
+            {
+              "rank": 5,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.255552,
+              "lexical_score": 0.175552,
+              "semantic_ngram_score": 0.022753,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.115385
+            },
+            {
+              "rank": 6,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.231813,
+              "lexical_score": 0.148417,
+              "semantic_ngram_score": 0.007217,
+              "authority_boost": 0.083396,
+              "query_term_coverage": 0.076923
+            },
+            {
+              "rank": 7,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.187363,
+              "lexical_score": 0.100571,
+              "semantic_ngram_score": 0.006492,
+              "authority_boost": 0.086792,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 8,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.184124,
+              "lexical_score": 0.093935,
+              "semantic_ngram_score": 0.009216,
+              "authority_boost": 0.090189,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 9,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.165025,
+              "lexical_score": 0.081629,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083396,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 10,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.155819,
+              "lexical_score": 0.072423,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083396,
+              "query_term_coverage": 0.0
+            }
+          ],
+          "raw_top_k_ids": [
+            "STATUS-001",
+            "ERR-503",
+            "INVOICE-001",
+            "IMAGE-001"
+          ],
+          "final_ids": [
+            "STATUS-001",
+            "ERR-503"
+          ],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 1.0,
+          "recall": 1.0,
+          "reciprocal_rank": 1.0,
+          "returned_precision": 0.5,
+          "full_recall": true,
+          "missed_relevant": {},
+          "unrelated_ids": [
+            "ERR-503"
+          ],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-028",
+          "group_id": "403-quota-key",
+          "query": "gpt-6.1-sol 返回 403。账户还有钱、套餐也在有效期，但这期额度耗尽了，Key 的余额兜底是关的；有余额就一定能继续用吗，还该一起查哪些条件？",
+          "tags": [
+            "error_code",
+            "model_name",
+            "multi_knowledge",
+            "long_query"
+          ],
+          "answerability": "kb_and_business_data",
+          "relevant_ids": [
+            "ERR-401",
+            "PLAN-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 1.101522,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.121273,
+              "authority_boost": 0.101522,
+              "query_term_coverage": 0.177778
+            },
+            {
+              "rank": 2,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.678035,
+              "lexical_score": 0.588252,
+              "semantic_ngram_score": 0.049379,
+              "authority_boost": 0.089783,
+              "query_term_coverage": 0.066667
+            },
+            {
+              "rank": 3,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.518461,
+              "lexical_score": 0.432591,
+              "semantic_ngram_score": 0.116179,
+              "authority_boost": 0.08587,
+              "query_term_coverage": 0.088889
+            },
+            {
+              "rank": 4,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.329471,
+              "lexical_score": 0.247514,
+              "semantic_ngram_score": 0.004618,
+              "authority_boost": 0.081957,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 5,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.312226,
+              "lexical_score": 0.228313,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083913,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 6,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.247134,
+              "lexical_score": 0.163221,
+              "semantic_ngram_score": 0.102278,
+              "authority_boost": 0.083913,
+              "query_term_coverage": 0.044444
+            },
+            {
+              "rank": 7,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.234129,
+              "lexical_score": 0.148259,
+              "semantic_ngram_score": 0.011874,
+              "authority_boost": 0.08587,
+              "query_term_coverage": 0.022222
+            },
+            {
+              "rank": 8,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.232926,
+              "lexical_score": 0.149013,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083913,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 9,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.222718,
+              "lexical_score": 0.140761,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.081957,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 10,
+              "document_id": "IMAGE-001",
+              "title": "图片与错误信息补充",
+              "score": 0.206953,
+              "lexical_score": 0.124996,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.081957,
+              "query_term_coverage": 0.0
+            }
+          ],
+          "raw_top_k_ids": [
+            "PLAN-001",
+            "BAL-001",
+            "ERR-401",
+            "ERR-503"
+          ],
+          "final_ids": [
+            "PLAN-001"
+          ],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 1.0,
+          "recall": 0.5,
+          "reciprocal_rank": 1.0,
+          "returned_precision": 1.0,
+          "full_recall": false,
+          "missed_relevant": {
+            "ERR-401": "coverage_filter"
+          },
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-029",
+          "group_id": "missing-invoice-export-api",
+          "query": "发票能按项目批量导出成 Excel 吗？如果有导出 API，它的请求参数是什么？",
+          "tags": [
+            "negative"
+          ],
+          "answerability": "no_kb_answer",
+          "relevant_ids": [],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 1.0908,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.047238,
+              "authority_boost": 0.0908,
+              "query_term_coverage": 0.045455
+            },
+            {
+              "rank": 2,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 1.022698,
+              "lexical_score": 0.939098,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.0836,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 3,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.630371,
+              "lexical_score": 0.539571,
+              "semantic_ngram_score": 0.032765,
+              "authority_boost": 0.0908,
+              "query_term_coverage": 0.045455
+            },
+            {
+              "rank": 4,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.5869,
+              "lexical_score": 0.5069,
+              "semantic_ngram_score": 0.006595,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.045455
+            },
+            {
+              "rank": 5,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.48524,
+              "lexical_score": 0.40164,
+              "semantic_ngram_score": 0.014014,
+              "authority_boost": 0.0836,
+              "query_term_coverage": 0.045455
+            },
+            {
+              "rank": 6,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.4801,
+              "lexical_score": 0.3965,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.0836,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 7,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.38826,
+              "lexical_score": 0.30826,
+              "semantic_ngram_score": 0.032986,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.045455
+            },
+            {
+              "rank": 8,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.385714,
+              "lexical_score": 0.305714,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 9,
+              "document_id": "IMAGE-001",
+              "title": "图片与错误信息补充",
+              "score": 0.372953,
+              "lexical_score": 0.292953,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 10,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.330453,
+              "lexical_score": 0.246853,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.0836,
+              "query_term_coverage": 0.0
+            }
+          ],
+          "raw_top_k_ids": [
+            "INVOICE-001",
+            "REFUND-001",
+            "ERR-503",
+            "ERR-401"
+          ],
+          "final_ids": [],
+          "raw_recall": null,
+          "raw_reciprocal_rank": null,
+          "recall": null,
+          "reciprocal_rank": null,
+          "returned_precision": null,
+          "full_recall": null,
+          "missed_relevant": {},
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": false,
+          "error": null
+        },
+        {
+          "id": "RET-030",
+          "group_id": "dynamic-request-duration",
+          "query": "帮我查刚才那次请求在日志里用了多少毫秒，我只要这次的实际记录。",
+          "tags": [
+            "dynamic_lookup"
+          ],
+          "answerability": "business_data_only",
+          "relevant_ids": [],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 1.093091,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.051024,
+              "authority_boost": 0.093091,
+              "query_term_coverage": 0.111111
+            },
+            {
+              "rank": 2,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.849647,
+              "lexical_score": 0.766374,
+              "semantic_ngram_score": 0.015588,
+              "authority_boost": 0.083273,
+              "query_term_coverage": 0.074074
+            },
+            {
+              "rank": 3,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.767072,
+              "lexical_score": 0.680527,
+              "semantic_ngram_score": 0.014671,
+              "authority_boost": 0.086545,
+              "query_term_coverage": 0.074074
+            },
+            {
+              "rank": 4,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.744075,
+              "lexical_score": 0.654257,
+              "semantic_ngram_score": 0.01884,
+              "authority_boost": 0.089818,
+              "query_term_coverage": 0.037037
+            },
+            {
+              "rank": 5,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.491067,
+              "lexical_score": 0.407794,
+              "semantic_ngram_score": 0.008757,
+              "authority_boost": 0.083273,
+              "query_term_coverage": 0.037037
+            },
+            {
+              "rank": 6,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.439476,
+              "lexical_score": 0.359476,
+              "semantic_ngram_score": 0.007338,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.074074
+            },
+            {
+              "rank": 7,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.313198,
+              "lexical_score": 0.229925,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083273,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 8,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.288789,
+              "lexical_score": 0.208789,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 9,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.271466,
+              "lexical_score": 0.184921,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.086545,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 10,
+              "document_id": "IMAGE-001",
+              "title": "图片与错误信息补充",
+              "score": 0.21294,
+              "lexical_score": 0.13294,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            }
+          ],
+          "raw_top_k_ids": [
+            "ERR-503",
+            "BAL-001",
+            "ERR-401",
+            "STATUS-001"
+          ],
+          "final_ids": [],
+          "raw_recall": null,
+          "raw_reciprocal_rank": null,
+          "recall": null,
+          "reciprocal_rank": null,
+          "returned_precision": null,
+          "full_recall": null,
+          "missed_relevant": {},
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": null,
+          "error": null
+        }
+      ],
+      "by_tag": {
+        "colloquial": {
+          "recall_at_4": {
+            "numerator": 0.0,
+            "denominator": 2,
+            "rate": 0.0
+          },
+          "mrr_at_4": {
+            "numerator": 0.0,
+            "denominator": 2,
+            "rate": 0.0
+          },
+          "full_recall_queries": {
+            "numerator": 0,
+            "denominator": 2,
+            "rate": 0.0
+          },
+          "returned_precision_macro": {
+            "numerator": 0.0,
+            "denominator": 2,
+            "rate": 0.0
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 0,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 2,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 2.0,
+              "denominator": 2,
+              "rate": 1.0
+            },
+            "mrr_at_4": {
+              "numerator": 1.333333,
+              "denominator": 2,
+              "rate": 0.666667
+            },
+            "no_answer_nonempty": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            }
+          },
+          "missed_relevant_by_cause": {
+            "coverage_filter": 2
+          },
+          "known_queries_with_extra_context": 0,
+          "dynamic_diagnostics": {
+            "questions": 0,
+            "nonempty_results": 0
+          }
+        },
+        "direct": {
+          "recall_at_4": {
+            "numerator": 5.0,
+            "denominator": 5,
+            "rate": 1.0
+          },
+          "mrr_at_4": {
+            "numerator": 5.0,
+            "denominator": 5,
+            "rate": 1.0
+          },
+          "full_recall_queries": {
+            "numerator": 5,
+            "denominator": 5,
+            "rate": 1.0
+          },
+          "returned_precision_macro": {
+            "numerator": 4.0,
+            "denominator": 5,
+            "rate": 0.8
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 0,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 5,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 5.0,
+              "denominator": 5,
+              "rate": 1.0
+            },
+            "mrr_at_4": {
+              "numerator": 5.0,
+              "denominator": 5,
+              "rate": 1.0
+            },
+            "no_answer_nonempty": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            }
+          },
+          "missed_relevant_by_cause": {},
+          "known_queries_with_extra_context": 2,
+          "dynamic_diagnostics": {
+            "questions": 0,
+            "nonempty_results": 0
+          }
+        },
+        "dynamic_lookup": {
+          "recall_at_4": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "mrr_at_4": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "full_recall_queries": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "returned_precision_macro": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 0,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            },
+            "mrr_at_4": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            },
+            "no_answer_nonempty": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            }
+          },
+          "missed_relevant_by_cause": {},
+          "known_queries_with_extra_context": 0,
+          "dynamic_diagnostics": {
+            "questions": 1,
+            "nonempty_results": 0
+          }
+        },
+        "error_code": {
+          "recall_at_4": {
+            "numerator": 0.5,
+            "denominator": 1,
+            "rate": 0.5
+          },
+          "mrr_at_4": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "full_recall_queries": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "returned_precision_macro": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 0,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "mrr_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "no_answer_nonempty": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            }
+          },
+          "missed_relevant_by_cause": {
+            "coverage_filter": 1
+          },
+          "known_queries_with_extra_context": 0,
+          "dynamic_diagnostics": {
+            "questions": 0,
+            "nonempty_results": 0
+          }
+        },
+        "long_query": {
+          "recall_at_4": {
+            "numerator": 0.5,
+            "denominator": 1,
+            "rate": 0.5
+          },
+          "mrr_at_4": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "full_recall_queries": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "returned_precision_macro": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 0,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "mrr_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "no_answer_nonempty": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            }
+          },
+          "missed_relevant_by_cause": {
+            "coverage_filter": 1
+          },
+          "known_queries_with_extra_context": 0,
+          "dynamic_diagnostics": {
+            "questions": 0,
+            "nonempty_results": 0
+          }
+        },
+        "model_name": {
+          "recall_at_4": {
+            "numerator": 0.5,
+            "denominator": 1,
+            "rate": 0.5
+          },
+          "mrr_at_4": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "full_recall_queries": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "returned_precision_macro": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 0,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "mrr_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "no_answer_nonempty": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            }
+          },
+          "missed_relevant_by_cause": {
+            "coverage_filter": 1
+          },
+          "known_queries_with_extra_context": 0,
+          "dynamic_diagnostics": {
+            "questions": 0,
+            "nonempty_results": 0
+          }
+        },
+        "multi_knowledge": {
+          "recall_at_4": {
+            "numerator": 0.5,
+            "denominator": 1,
+            "rate": 0.5
+          },
+          "mrr_at_4": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "full_recall_queries": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "returned_precision_macro": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 0,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "mrr_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "no_answer_nonempty": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            }
+          },
+          "missed_relevant_by_cause": {
+            "coverage_filter": 1
+          },
+          "known_queries_with_extra_context": 0,
+          "dynamic_diagnostics": {
+            "questions": 0,
+            "nonempty_results": 0
+          }
+        },
+        "negative": {
+          "recall_at_4": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "mrr_at_4": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "full_recall_queries": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "returned_precision_macro": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 1,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            },
+            "mrr_at_4": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            },
+            "no_answer_nonempty": {
+              "numerator": 1,
+              "denominator": 1,
+              "rate": 1.0
+            }
+          },
+          "missed_relevant_by_cause": {},
+          "known_queries_with_extra_context": 0,
+          "dynamic_diagnostics": {
+            "questions": 0,
+            "nonempty_results": 0
+          }
+        }
+      }
+    },
+    "char_ngram": {
+      "metrics": {
+        "recall_at_4": {
+          "numerator": 5.5,
+          "denominator": 8,
+          "rate": 0.6875
+        },
+        "mrr_at_4": {
+          "numerator": 6.0,
+          "denominator": 8,
+          "rate": 0.75
+        },
+        "full_recall_queries": {
+          "numerator": 5,
+          "denominator": 8,
+          "rate": 0.625
+        },
+        "returned_precision_macro": {
+          "numerator": 5.0,
+          "denominator": 8,
+          "rate": 0.625
+        },
+        "no_answer_false_retrieval": {
+          "numerator": 0,
+          "denominator": 1,
+          "rate": 0.0
+        },
+        "no_answer_outcomes": {
+          "returned_irrelevant": 0,
+          "successful_empty": 1,
+          "exceptions": 0
+        },
+        "retrieval_exceptions": {
+          "numerator": 0,
+          "denominator": 10,
+          "rate": 0.0
+        },
+        "diagnostics_before_coverage_filter": {
+          "recall_at_4": {
+            "numerator": 7.0,
+            "denominator": 8,
+            "rate": 0.875
+          },
+          "mrr_at_4": {
+            "numerator": 6.333333,
+            "denominator": 8,
+            "rate": 0.791667
+          },
+          "no_answer_nonempty": {
+            "numerator": 1,
+            "denominator": 1,
+            "rate": 1.0
+          }
+        },
+        "missed_relevant_by_cause": {
+          "not_ranked": 1,
+          "coverage_filter": 2
+        },
+        "known_queries_with_extra_context": 2,
+        "dynamic_diagnostics": {
+          "questions": 1,
+          "nonempty_results": 0
+        }
+      },
+      "results": [
+        {
+          "id": "RET-021",
+          "group_id": "quota-expiry-vs-cycle",
+          "query": "周卡还没到期，但这一轮的额度已经用光了；没到期是不是就应该继续有额度？",
+          "tags": [
+            "direct"
+          ],
+          "answerability": "kb_answerable",
+          "relevant_ids": [
+            "PLAN-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.215382,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.105382,
+              "authority_boost": 0.11,
+              "query_term_coverage": 0.153846
+            },
+            {
+              "rank": 2,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.008355,
+              "lexical_score": 0.201092,
+              "semantic_ngram_score": 0.008355,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 3,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.008312,
+              "lexical_score": 0.08771,
+              "semantic_ngram_score": 0.008312,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.0
+            }
+          ],
+          "raw_top_k_ids": [
+            "PLAN-001",
+            "STATUS-001",
+            "ACCOUNT-001"
+          ],
+          "final_ids": [
+            "PLAN-001"
+          ],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 1.0,
+          "recall": 1.0,
+          "reciprocal_rank": 1.0,
+          "returned_precision": 1.0,
+          "full_recall": true,
+          "missed_relevant": {},
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-022",
+          "group_id": "quota-expiry-vs-cycle",
+          "query": "卡的到期日还远着呢，这期的量却跑光了，这两个不是一回事吗？",
+          "tags": [
+            "colloquial"
+          ],
+          "answerability": "kb_answerable",
+          "relevant_ids": [
+            "PLAN-001"
+          ],
+          "ranked_candidates": [],
+          "raw_top_k_ids": [],
+          "final_ids": [],
+          "raw_recall": 0.0,
+          "raw_reciprocal_rank": 0.0,
+          "recall": 0.0,
+          "reciprocal_rank": 0.0,
+          "returned_precision": 0.0,
+          "full_recall": false,
+          "missed_relevant": {
+            "PLAN-001": "not_ranked"
+          },
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-023",
+          "group_id": "balance-write-confirmation",
+          "query": "余额回正只是提交了申请，还没实际写到账本，可以说已经回正成功了吗？",
+          "tags": [
+            "direct"
+          ],
+          "answerability": "kb_answerable",
+          "relevant_ids": [
+            "BAL-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.240726,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.14109,
+              "authority_boost": 0.099636,
+              "query_term_coverage": 0.307692
+            },
+            {
+              "rank": 2,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.165761,
+              "lexical_score": 0.482407,
+              "semantic_ngram_score": 0.066125,
+              "authority_boost": 0.099636,
+              "query_term_coverage": 0.153846
+            },
+            {
+              "rank": 3,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.018866,
+              "lexical_score": 0.205057,
+              "semantic_ngram_score": 0.018866,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.076923
+            },
+            {
+              "rank": 4,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.013977,
+              "lexical_score": 0.19702,
+              "semantic_ngram_score": 0.013977,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.076923
+            },
+            {
+              "rank": 5,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.008343,
+              "lexical_score": 0.15342,
+              "semantic_ngram_score": 0.008343,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 6,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.003496,
+              "lexical_score": 0.150831,
+              "semantic_ngram_score": 0.003496,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.038462
+            }
+          ],
+          "raw_top_k_ids": [
+            "BAL-001",
+            "REFUND-001",
+            "PLAN-001",
+            "ERR-401"
+          ],
+          "final_ids": [
+            "BAL-001",
+            "REFUND-001"
+          ],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 1.0,
+          "recall": 1.0,
+          "reciprocal_rank": 1.0,
+          "returned_precision": 0.5,
+          "full_recall": true,
+          "missed_relevant": {},
+          "unrelated_ids": [
+            "REFUND-001"
+          ],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-024",
+          "group_id": "balance-write-confirmation",
+          "query": "客服说欠费抹零的申请已交上去，但还没有真正改账，这就算办完了吗？",
+          "tags": [
+            "colloquial"
+          ],
+          "answerability": "kb_answerable",
+          "relevant_ids": [
+            "BAL-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.022753,
+              "lexical_score": 0.555731,
+              "semantic_ngram_score": 0.022753,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 2,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.018433,
+              "lexical_score": 0.519898,
+              "semantic_ngram_score": 0.018433,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 3,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.015331,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.015331,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.076923
+            },
+            {
+              "rank": 4,
+              "document_id": "IMAGE-001",
+              "title": "图片与错误信息补充",
+              "score": 0.009413,
+              "lexical_score": 0.373194,
+              "semantic_ngram_score": 0.009413,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 5,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.009264,
+              "lexical_score": 0.229003,
+              "semantic_ngram_score": 0.009264,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 6,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.008613,
+              "lexical_score": 0.502712,
+              "semantic_ngram_score": 0.008613,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 7,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.007169,
+              "lexical_score": 0.91709,
+              "semantic_ngram_score": 0.007169,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 8,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.006492,
+              "lexical_score": 0.210608,
+              "semantic_ngram_score": 0.006492,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.038462
+            }
+          ],
+          "raw_top_k_ids": [
+            "REFUND-001",
+            "ACCOUNT-001",
+            "BAL-001",
+            "IMAGE-001"
+          ],
+          "final_ids": [],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 0.3333333333333333,
+          "recall": 0.0,
+          "reciprocal_rank": 0.0,
+          "returned_precision": 0.0,
+          "full_recall": false,
+          "missed_relevant": {
+            "BAL-001": "coverage_filter"
+          },
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-025",
+          "group_id": "invoice-delivery-status",
+          "query": "发票记录显示待开具，是不是表示已经发出来了？这个状态可以保证哪天收到吗？",
+          "tags": [
+            "direct"
+          ],
+          "answerability": "kb_answerable",
+          "relevant_ids": [
+            "INVOICE-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.196887,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.105274,
+              "authority_boost": 0.091613,
+              "query_term_coverage": 0.206897
+            },
+            {
+              "rank": 2,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.132264,
+              "lexical_score": 0.402253,
+              "semantic_ngram_score": 0.043554,
+              "authority_boost": 0.08871,
+              "query_term_coverage": 0.068966
+            },
+            {
+              "rank": 3,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.013481,
+              "lexical_score": 0.400325,
+              "semantic_ngram_score": 0.013481,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.068966
+            },
+            {
+              "rank": 4,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.007131,
+              "lexical_score": 0.325288,
+              "semantic_ngram_score": 0.007131,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.034483
+            },
+            {
+              "rank": 5,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.006104,
+              "lexical_score": 0.165019,
+              "semantic_ngram_score": 0.006104,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.034483
+            }
+          ],
+          "raw_top_k_ids": [
+            "INVOICE-001",
+            "STATUS-001",
+            "ERR-503",
+            "REFUND-001"
+          ],
+          "final_ids": [
+            "INVOICE-001"
+          ],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 1.0,
+          "recall": 1.0,
+          "reciprocal_rank": 1.0,
+          "returned_precision": 1.0,
+          "full_recall": true,
+          "missed_relevant": {},
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-026",
+          "group_id": "human-assist-priority",
+          "query": "人工客服已经接手了，AI 后面生成的建议会直接插进对话发给我吗？",
+          "tags": [
+            "direct"
+          ],
+          "answerability": "kb_answerable",
+          "relevant_ids": [
+            "ACCOUNT-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.206857,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.103083,
+              "authority_boost": 0.103774,
+              "query_term_coverage": 0.153846
+            },
+            {
+              "rank": 2,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.015423,
+              "lexical_score": 0.292064,
+              "semantic_ngram_score": 0.015423,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 3,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.008757,
+              "lexical_score": 0.253333,
+              "semantic_ngram_score": 0.008757,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 4,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.007794,
+              "lexical_score": 0.250017,
+              "semantic_ngram_score": 0.007794,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.038462
+            }
+          ],
+          "raw_top_k_ids": [
+            "ACCOUNT-001",
+            "REFUND-001",
+            "INVOICE-001",
+            "BAL-001"
+          ],
+          "final_ids": [
+            "ACCOUNT-001"
+          ],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 1.0,
+          "recall": 1.0,
+          "reciprocal_rank": 1.0,
+          "returned_precision": 1.0,
+          "full_recall": true,
+          "missed_relevant": {},
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-027",
+          "group_id": "status-eta",
+          "query": "渠道记录里没有恢复时间，客服能不能给我承诺一个准确的恢复日期？",
+          "tags": [
+            "direct"
+          ],
+          "answerability": "kb_answerable",
+          "relevant_ids": [
+            "STATUS-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.310063,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.213082,
+              "authority_boost": 0.096981,
+              "query_term_coverage": 0.384615
+            },
+            {
+              "rank": 2,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.140746,
+              "lexical_score": 0.383581,
+              "semantic_ngram_score": 0.05735,
+              "authority_boost": 0.083396,
+              "query_term_coverage": 0.192308
+            },
+            {
+              "rank": 3,
+              "document_id": "IMAGE-001",
+              "title": "图片与错误信息补充",
+              "score": 0.127067,
+              "lexical_score": 0.23667,
+              "semantic_ngram_score": 0.047067,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.115385
+            },
+            {
+              "rank": 4,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.025838,
+              "lexical_score": 0.246066,
+              "semantic_ngram_score": 0.025838,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.115385
+            },
+            {
+              "rank": 5,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.022753,
+              "lexical_score": 0.175552,
+              "semantic_ngram_score": 0.022753,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.115385
+            },
+            {
+              "rank": 6,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.009216,
+              "lexical_score": 0.093935,
+              "semantic_ngram_score": 0.009216,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 7,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.007217,
+              "lexical_score": 0.148417,
+              "semantic_ngram_score": 0.007217,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.076923
+            },
+            {
+              "rank": 8,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.006492,
+              "lexical_score": 0.100571,
+              "semantic_ngram_score": 0.006492,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.038462
+            }
+          ],
+          "raw_top_k_ids": [
+            "STATUS-001",
+            "ERR-503",
+            "IMAGE-001",
+            "INVOICE-001"
+          ],
+          "final_ids": [
+            "STATUS-001",
+            "ERR-503"
+          ],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 1.0,
+          "recall": 1.0,
+          "reciprocal_rank": 1.0,
+          "returned_precision": 0.5,
+          "full_recall": true,
+          "missed_relevant": {},
+          "unrelated_ids": [
+            "ERR-503"
+          ],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-028",
+          "group_id": "403-quota-key",
+          "query": "gpt-6.1-sol 返回 403。账户还有钱、套餐也在有效期，但这期额度耗尽了，Key 的余额兜底是关的；有余额就一定能继续用吗，还该一起查哪些条件？",
+          "tags": [
+            "error_code",
+            "model_name",
+            "multi_knowledge",
+            "long_query"
+          ],
+          "answerability": "kb_and_business_data",
+          "relevant_ids": [
+            "ERR-401",
+            "PLAN-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.222795,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.121273,
+              "authority_boost": 0.101522,
+              "query_term_coverage": 0.177778
+            },
+            {
+              "rank": 2,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.202049,
+              "lexical_score": 0.432591,
+              "semantic_ngram_score": 0.116179,
+              "authority_boost": 0.08587,
+              "query_term_coverage": 0.088889
+            },
+            {
+              "rank": 3,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.186191,
+              "lexical_score": 0.163221,
+              "semantic_ngram_score": 0.102278,
+              "authority_boost": 0.083913,
+              "query_term_coverage": 0.044444
+            },
+            {
+              "rank": 4,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.139162,
+              "lexical_score": 0.588252,
+              "semantic_ngram_score": 0.049379,
+              "authority_boost": 0.089783,
+              "query_term_coverage": 0.066667
+            },
+            {
+              "rank": 5,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.011874,
+              "lexical_score": 0.148259,
+              "semantic_ngram_score": 0.011874,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.022222
+            },
+            {
+              "rank": 6,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.004618,
+              "lexical_score": 0.247514,
+              "semantic_ngram_score": 0.004618,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.0
+            }
+          ],
+          "raw_top_k_ids": [
+            "PLAN-001",
+            "ERR-401",
+            "SETUP-001",
+            "BAL-001"
+          ],
+          "final_ids": [
+            "PLAN-001"
+          ],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 1.0,
+          "recall": 0.5,
+          "reciprocal_rank": 1.0,
+          "returned_precision": 1.0,
+          "full_recall": false,
+          "missed_relevant": {
+            "ERR-401": "coverage_filter"
+          },
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-029",
+          "group_id": "missing-invoice-export-api",
+          "query": "发票能按项目批量导出成 Excel 吗？如果有导出 API，它的请求参数是什么？",
+          "tags": [
+            "negative"
+          ],
+          "answerability": "no_kb_answer",
+          "relevant_ids": [],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.138038,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.047238,
+              "authority_boost": 0.0908,
+              "query_term_coverage": 0.045455
+            },
+            {
+              "rank": 2,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.123565,
+              "lexical_score": 0.539571,
+              "semantic_ngram_score": 0.032765,
+              "authority_boost": 0.0908,
+              "query_term_coverage": 0.045455
+            },
+            {
+              "rank": 3,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.112986,
+              "lexical_score": 0.30826,
+              "semantic_ngram_score": 0.032986,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.045455
+            },
+            {
+              "rank": 4,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.014014,
+              "lexical_score": 0.40164,
+              "semantic_ngram_score": 0.014014,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.045455
+            },
+            {
+              "rank": 5,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.006595,
+              "lexical_score": 0.5069,
+              "semantic_ngram_score": 0.006595,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.045455
+            }
+          ],
+          "raw_top_k_ids": [
+            "INVOICE-001",
+            "ERR-503",
+            "SETUP-001",
+            "BAL-001"
+          ],
+          "final_ids": [],
+          "raw_recall": null,
+          "raw_reciprocal_rank": null,
+          "recall": null,
+          "reciprocal_rank": null,
+          "returned_precision": null,
+          "full_recall": null,
+          "missed_relevant": {},
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": false,
+          "error": null
+        },
+        {
+          "id": "RET-030",
+          "group_id": "dynamic-request-duration",
+          "query": "帮我查刚才那次请求在日志里用了多少毫秒，我只要这次的实际记录。",
+          "tags": [
+            "dynamic_lookup"
+          ],
+          "answerability": "business_data_only",
+          "relevant_ids": [],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.144115,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.051024,
+              "authority_boost": 0.093091,
+              "query_term_coverage": 0.111111
+            },
+            {
+              "rank": 2,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.01884,
+              "lexical_score": 0.654257,
+              "semantic_ngram_score": 0.01884,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.037037
+            },
+            {
+              "rank": 3,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.015588,
+              "lexical_score": 0.766374,
+              "semantic_ngram_score": 0.015588,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.074074
+            },
+            {
+              "rank": 4,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.014671,
+              "lexical_score": 0.680527,
+              "semantic_ngram_score": 0.014671,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.074074
+            },
+            {
+              "rank": 5,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.008757,
+              "lexical_score": 0.407794,
+              "semantic_ngram_score": 0.008757,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.037037
+            },
+            {
+              "rank": 6,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.007338,
+              "lexical_score": 0.359476,
+              "semantic_ngram_score": 0.007338,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.074074
+            }
+          ],
+          "raw_top_k_ids": [
+            "ERR-503",
+            "STATUS-001",
+            "BAL-001",
+            "ERR-401"
+          ],
+          "final_ids": [],
+          "raw_recall": null,
+          "raw_reciprocal_rank": null,
+          "recall": null,
+          "reciprocal_rank": null,
+          "returned_precision": null,
+          "full_recall": null,
+          "missed_relevant": {},
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": null,
+          "error": null
+        }
+      ],
+      "by_tag": {
+        "colloquial": {
+          "recall_at_4": {
+            "numerator": 0.0,
+            "denominator": 2,
+            "rate": 0.0
+          },
+          "mrr_at_4": {
+            "numerator": 0.0,
+            "denominator": 2,
+            "rate": 0.0
+          },
+          "full_recall_queries": {
+            "numerator": 0,
+            "denominator": 2,
+            "rate": 0.0
+          },
+          "returned_precision_macro": {
+            "numerator": 0.0,
+            "denominator": 2,
+            "rate": 0.0
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 0,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 2,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 1.0,
+              "denominator": 2,
+              "rate": 0.5
+            },
+            "mrr_at_4": {
+              "numerator": 0.333333,
+              "denominator": 2,
+              "rate": 0.166667
+            },
+            "no_answer_nonempty": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            }
+          },
+          "missed_relevant_by_cause": {
+            "not_ranked": 1,
+            "coverage_filter": 1
+          },
+          "known_queries_with_extra_context": 0,
+          "dynamic_diagnostics": {
+            "questions": 0,
+            "nonempty_results": 0
+          }
+        },
+        "direct": {
+          "recall_at_4": {
+            "numerator": 5.0,
+            "denominator": 5,
+            "rate": 1.0
+          },
+          "mrr_at_4": {
+            "numerator": 5.0,
+            "denominator": 5,
+            "rate": 1.0
+          },
+          "full_recall_queries": {
+            "numerator": 5,
+            "denominator": 5,
+            "rate": 1.0
+          },
+          "returned_precision_macro": {
+            "numerator": 4.0,
+            "denominator": 5,
+            "rate": 0.8
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 0,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 5,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 5.0,
+              "denominator": 5,
+              "rate": 1.0
+            },
+            "mrr_at_4": {
+              "numerator": 5.0,
+              "denominator": 5,
+              "rate": 1.0
+            },
+            "no_answer_nonempty": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            }
+          },
+          "missed_relevant_by_cause": {},
+          "known_queries_with_extra_context": 2,
+          "dynamic_diagnostics": {
+            "questions": 0,
+            "nonempty_results": 0
+          }
+        },
+        "dynamic_lookup": {
+          "recall_at_4": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "mrr_at_4": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "full_recall_queries": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "returned_precision_macro": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 0,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            },
+            "mrr_at_4": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            },
+            "no_answer_nonempty": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            }
+          },
+          "missed_relevant_by_cause": {},
+          "known_queries_with_extra_context": 0,
+          "dynamic_diagnostics": {
+            "questions": 1,
+            "nonempty_results": 0
+          }
+        },
+        "error_code": {
+          "recall_at_4": {
+            "numerator": 0.5,
+            "denominator": 1,
+            "rate": 0.5
+          },
+          "mrr_at_4": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "full_recall_queries": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "returned_precision_macro": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 0,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "mrr_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "no_answer_nonempty": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            }
+          },
+          "missed_relevant_by_cause": {
+            "coverage_filter": 1
+          },
+          "known_queries_with_extra_context": 0,
+          "dynamic_diagnostics": {
+            "questions": 0,
+            "nonempty_results": 0
+          }
+        },
+        "long_query": {
+          "recall_at_4": {
+            "numerator": 0.5,
+            "denominator": 1,
+            "rate": 0.5
+          },
+          "mrr_at_4": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "full_recall_queries": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "returned_precision_macro": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 0,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "mrr_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "no_answer_nonempty": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            }
+          },
+          "missed_relevant_by_cause": {
+            "coverage_filter": 1
+          },
+          "known_queries_with_extra_context": 0,
+          "dynamic_diagnostics": {
+            "questions": 0,
+            "nonempty_results": 0
+          }
+        },
+        "model_name": {
+          "recall_at_4": {
+            "numerator": 0.5,
+            "denominator": 1,
+            "rate": 0.5
+          },
+          "mrr_at_4": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "full_recall_queries": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "returned_precision_macro": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 0,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "mrr_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "no_answer_nonempty": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            }
+          },
+          "missed_relevant_by_cause": {
+            "coverage_filter": 1
+          },
+          "known_queries_with_extra_context": 0,
+          "dynamic_diagnostics": {
+            "questions": 0,
+            "nonempty_results": 0
+          }
+        },
+        "multi_knowledge": {
+          "recall_at_4": {
+            "numerator": 0.5,
+            "denominator": 1,
+            "rate": 0.5
+          },
+          "mrr_at_4": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "full_recall_queries": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "returned_precision_macro": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 0,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "mrr_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "no_answer_nonempty": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            }
+          },
+          "missed_relevant_by_cause": {
+            "coverage_filter": 1
+          },
+          "known_queries_with_extra_context": 0,
+          "dynamic_diagnostics": {
+            "questions": 0,
+            "nonempty_results": 0
+          }
+        },
+        "negative": {
+          "recall_at_4": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "mrr_at_4": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "full_recall_queries": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "returned_precision_macro": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 1,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            },
+            "mrr_at_4": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            },
+            "no_answer_nonempty": {
+              "numerator": 1,
+              "denominator": 1,
+              "rate": 1.0
+            }
+          },
+          "missed_relevant_by_cause": {},
+          "known_queries_with_extra_context": 0,
+          "dynamic_diagnostics": {
+            "questions": 0,
+            "nonempty_results": 0
+          }
+        }
+      }
+    },
+    "hybrid": {
+      "metrics": {
+        "recall_at_4": {
+          "numerator": 5.5,
+          "denominator": 8,
+          "rate": 0.6875
+        },
+        "mrr_at_4": {
+          "numerator": 6.0,
+          "denominator": 8,
+          "rate": 0.75
+        },
+        "full_recall_queries": {
+          "numerator": 5,
+          "denominator": 8,
+          "rate": 0.625
+        },
+        "returned_precision_macro": {
+          "numerator": 5.0,
+          "denominator": 8,
+          "rate": 0.625
+        },
+        "no_answer_false_retrieval": {
+          "numerator": 0,
+          "denominator": 1,
+          "rate": 0.0
+        },
+        "no_answer_outcomes": {
+          "returned_irrelevant": 0,
+          "successful_empty": 1,
+          "exceptions": 0
+        },
+        "retrieval_exceptions": {
+          "numerator": 0,
+          "denominator": 10,
+          "rate": 0.0
+        },
+        "diagnostics_before_coverage_filter": {
+          "recall_at_4": {
+            "numerator": 8.0,
+            "denominator": 8,
+            "rate": 1.0
+          },
+          "mrr_at_4": {
+            "numerator": 7.333333,
+            "denominator": 8,
+            "rate": 0.916667
+          },
+          "no_answer_nonempty": {
+            "numerator": 1,
+            "denominator": 1,
+            "rate": 1.0
+          }
+        },
+        "missed_relevant_by_cause": {
+          "coverage_filter": 3
+        },
+        "known_queries_with_extra_context": 2,
+        "dynamic_diagnostics": {
+          "questions": 1,
+          "nonempty_results": 0
+        }
+      },
+      "results": [
+        {
+          "id": "RET-021",
+          "group_id": "quota-expiry-vs-cycle",
+          "query": "周卡还没到期，但这一轮的额度已经用光了；没到期是不是就应该继续有额度？",
+          "tags": [
+            "direct"
+          ],
+          "answerability": "kb_answerable",
+          "relevant_ids": [
+            "PLAN-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.770045,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.105382,
+              "authority_boost": 0.11,
+              "query_term_coverage": 0.153846
+            },
+            {
+              "rank": 2,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.259824,
+              "lexical_score": 0.284663,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083333,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 3,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.211185,
+              "lexical_score": 0.201092,
+              "semantic_ngram_score": 0.008355,
+              "authority_boost": 0.083333,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 4,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.207597,
+              "lexical_score": 0.195049,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.086667,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 5,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.207112,
+              "lexical_score": 0.199644,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083333,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 6,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.182362,
+              "lexical_score": 0.1651,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 7,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.181014,
+              "lexical_score": 0.162926,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 8,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.157162,
+              "lexical_score": 0.124456,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 9,
+              "document_id": "IMAGE-001",
+              "title": "图片与错误信息补充",
+              "score": 0.151245,
+              "lexical_score": 0.114911,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 10,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.137539,
+              "lexical_score": 0.08771,
+              "semantic_ngram_score": 0.008312,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            }
+          ],
+          "raw_top_k_ids": [
+            "PLAN-001",
+            "REFUND-001",
+            "STATUS-001",
+            "BAL-001"
+          ],
+          "final_ids": [
+            "PLAN-001"
+          ],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 1.0,
+          "recall": 1.0,
+          "reciprocal_rank": 1.0,
+          "returned_precision": 1.0,
+          "full_recall": true,
+          "missed_relevant": {},
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-022",
+          "group_id": "quota-expiry-vs-cycle",
+          "query": "卡的到期日还远着呢，这期的量却跑光了，这两个不是一回事吗？",
+          "tags": [
+            "colloquial"
+          ],
+          "answerability": "kb_answerable",
+          "relevant_ids": [
+            "PLAN-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.7075,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.0875,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 2,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.593912,
+              "lexical_score": 0.822842,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08375,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 3,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.570394,
+              "lexical_score": 0.772813,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.09125,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 4,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.506792,
+              "lexical_score": 0.676278,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.0875,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 5,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.441397,
+              "lexical_score": 0.582898,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 6,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.396605,
+              "lexical_score": 0.504605,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08375,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 7,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.303367,
+              "lexical_score": 0.360269,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 8,
+              "document_id": "IMAGE-001",
+              "title": "图片与错误信息补充",
+              "score": 0.193535,
+              "lexical_score": 0.183121,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 9,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.181267,
+              "lexical_score": 0.163334,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 10,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.140366,
+              "lexical_score": 0.097365,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            }
+          ],
+          "raw_top_k_ids": [
+            "BAL-001",
+            "ERR-503",
+            "PLAN-001",
+            "STATUS-001"
+          ],
+          "final_ids": [],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 0.3333333333333333,
+          "recall": 0.0,
+          "reciprocal_rank": 0.0,
+          "returned_precision": 0.0,
+          "full_recall": false,
+          "missed_relevant": {
+            "PLAN-001": "coverage_filter"
+          },
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-023",
+          "group_id": "balance-write-confirmation",
+          "query": "余额回正只是提交了申请，还没实际写到账本，可以说已经回正成功了吗？",
+          "tags": [
+            "direct"
+          ],
+          "answerability": "kb_answerable",
+          "relevant_ids": [
+            "BAL-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.77325,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.14109,
+              "authority_boost": 0.099636,
+              "query_term_coverage": 0.307692
+            },
+            {
+              "rank": 2,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.423855,
+              "lexical_score": 0.482407,
+              "semantic_ngram_score": 0.066125,
+              "authority_boost": 0.099636,
+              "query_term_coverage": 0.153846
+            },
+            {
+              "rank": 3,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.224122,
+              "lexical_score": 0.205057,
+              "semantic_ngram_score": 0.018866,
+              "authority_boost": 0.089818,
+              "query_term_coverage": 0.076923
+            },
+            {
+              "rank": 4,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.207464,
+              "lexical_score": 0.19702,
+              "semantic_ngram_score": 0.013977,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.076923
+            },
+            {
+              "rank": 5,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.182429,
+              "lexical_score": 0.159929,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083273,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 6,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.178291,
+              "lexical_score": 0.15342,
+              "semantic_ngram_score": 0.008343,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 7,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.174844,
+              "lexical_score": 0.150831,
+              "semantic_ngram_score": 0.003496,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 8,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.170136,
+              "lexical_score": 0.140102,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083273,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 9,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.162618,
+              "lexical_score": 0.127976,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083273,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 10,
+              "document_id": "IMAGE-001",
+              "title": "图片与错误信息补充",
+              "score": 0.134185,
+              "lexical_score": 0.087395,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            }
+          ],
+          "raw_top_k_ids": [
+            "BAL-001",
+            "REFUND-001",
+            "PLAN-001",
+            "ERR-401"
+          ],
+          "final_ids": [
+            "BAL-001",
+            "REFUND-001"
+          ],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 1.0,
+          "recall": 1.0,
+          "reciprocal_rank": 1.0,
+          "returned_precision": 0.5,
+          "full_recall": true,
+          "missed_relevant": {},
+          "unrelated_ids": [
+            "REFUND-001"
+          ],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-024",
+          "group_id": "balance-write-confirmation",
+          "query": "客服说欠费抹零的申请已交上去，但还没有真正改账，这就算办完了吗？",
+          "tags": [
+            "colloquial"
+          ],
+          "answerability": "kb_answerable",
+          "relevant_ids": [
+            "BAL-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.721615,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.015331,
+              "authority_boost": 0.095789,
+              "query_term_coverage": 0.076923
+            },
+            {
+              "rank": 2,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.660794,
+              "lexical_score": 0.91709,
+              "semantic_ngram_score": 0.007169,
+              "authority_boost": 0.089474,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 3,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.445831,
+              "lexical_score": 0.555731,
+              "semantic_ngram_score": 0.022753,
+              "authority_boost": 0.092632,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 4,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.421973,
+              "lexical_score": 0.519898,
+              "semantic_ngram_score": 0.018433,
+              "authority_boost": 0.092632,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 5,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.398112,
+              "lexical_score": 0.502712,
+              "semantic_ngram_score": 0.008613,
+              "authority_boost": 0.083158,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 6,
+              "document_id": "IMAGE-001",
+              "title": "图片与错误信息补充",
+              "score": 0.314957,
+              "lexical_score": 0.373194,
+              "semantic_ngram_score": 0.009413,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 7,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.254841,
+              "lexical_score": 0.276907,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083158,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 8,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.241101,
+              "lexical_score": 0.25984,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 9,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.22866,
+              "lexical_score": 0.229003,
+              "semantic_ngram_score": 0.009264,
+              "authority_boost": 0.083158,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 10,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.216202,
+              "lexical_score": 0.210608,
+              "semantic_ngram_score": 0.006492,
+              "authority_boost": 0.083158,
+              "query_term_coverage": 0.038462
+            }
+          ],
+          "raw_top_k_ids": [
+            "BAL-001",
+            "ERR-503",
+            "REFUND-001",
+            "ACCOUNT-001"
+          ],
+          "final_ids": [],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 1.0,
+          "recall": 0.0,
+          "reciprocal_rank": 0.0,
+          "returned_precision": 0.0,
+          "full_recall": false,
+          "missed_relevant": {
+            "BAL-001": "coverage_filter"
+          },
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-025",
+          "group_id": "invoice-delivery-status",
+          "query": "发票记录显示待开具，是不是表示已经发出来了？这个状态可以保证哪天收到吗？",
+          "tags": [
+            "direct"
+          ],
+          "answerability": "kb_answerable",
+          "relevant_ids": [
+            "INVOICE-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.751617,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.105274,
+              "authority_boost": 0.091613,
+              "query_term_coverage": 0.206897
+            },
+            {
+              "rank": 2,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.354657,
+              "lexical_score": 0.402253,
+              "semantic_ngram_score": 0.043554,
+              "authority_boost": 0.08871,
+              "query_term_coverage": 0.068966
+            },
+            {
+              "rank": 3,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.336227,
+              "lexical_score": 0.400325,
+              "semantic_ngram_score": 0.013481,
+              "authority_boost": 0.082903,
+              "query_term_coverage": 0.068966
+            },
+            {
+              "rank": 4,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.287292,
+              "lexical_score": 0.325288,
+              "semantic_ngram_score": 0.007131,
+              "authority_boost": 0.082903,
+              "query_term_coverage": 0.034483
+            },
+            {
+              "rank": 5,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.185888,
+              "lexical_score": 0.170786,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 6,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.184631,
+              "lexical_score": 0.165019,
+              "semantic_ngram_score": 0.006104,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.034483
+            },
+            {
+              "rank": 7,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.169836,
+              "lexical_score": 0.140214,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.082903,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 8,
+              "document_id": "IMAGE-001",
+              "title": "图片与错误信息补充",
+              "score": 0.155635,
+              "lexical_score": 0.121992,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 9,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.120388,
+              "lexical_score": 0.065142,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 10,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.113377,
+              "lexical_score": 0.053833,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            }
+          ],
+          "raw_top_k_ids": [
+            "INVOICE-001",
+            "STATUS-001",
+            "ERR-503",
+            "REFUND-001"
+          ],
+          "final_ids": [
+            "INVOICE-001"
+          ],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 1.0,
+          "recall": 1.0,
+          "reciprocal_rank": 1.0,
+          "returned_precision": 1.0,
+          "full_recall": true,
+          "missed_relevant": {},
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-026",
+          "group_id": "human-assist-priority",
+          "query": "人工客服已经接手了，AI 后面生成的建议会直接插进对话发给我吗？",
+          "tags": [
+            "direct"
+          ],
+          "answerability": "kb_answerable",
+          "relevant_ids": [
+            "ACCOUNT-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.762946,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.103083,
+              "authority_boost": 0.103774,
+              "query_term_coverage": 0.153846
+            },
+            {
+              "rank": 2,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.28199,
+              "lexical_score": 0.314836,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.086792,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 3,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.27713,
+              "lexical_score": 0.292064,
+              "semantic_ngram_score": 0.015423,
+              "authority_boost": 0.090189,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 4,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.24379,
+              "lexical_score": 0.253333,
+              "semantic_ngram_score": 0.008757,
+              "authority_boost": 0.083396,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 5,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.241369,
+              "lexical_score": 0.250017,
+              "semantic_ngram_score": 0.007794,
+              "authority_boost": 0.083396,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 6,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.205835,
+              "lexical_score": 0.197482,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083396,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 7,
+              "document_id": "IMAGE-001",
+              "title": "图片与错误信息补充",
+              "score": 0.15954,
+              "lexical_score": 0.128291,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 8,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.133604,
+              "lexical_score": 0.080981,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083396,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 9,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.114936,
+              "lexical_score": 0.056349,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 10,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.008659,
+              "lexical_score": 0.013967,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.0,
+              "query_term_coverage": 0.0
+            }
+          ],
+          "raw_top_k_ids": [
+            "ACCOUNT-001",
+            "SETUP-001",
+            "REFUND-001",
+            "INVOICE-001"
+          ],
+          "final_ids": [
+            "ACCOUNT-001"
+          ],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 1.0,
+          "recall": 1.0,
+          "reciprocal_rank": 1.0,
+          "returned_precision": 1.0,
+          "full_recall": true,
+          "missed_relevant": {},
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-027",
+          "group_id": "status-eta",
+          "query": "渠道记录里没有恢复时间，客服能不能给我承诺一个准确的恢复日期？",
+          "tags": [
+            "direct"
+          ],
+          "answerability": "kb_answerable",
+          "relevant_ids": [
+            "STATUS-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.797952,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.213082,
+              "authority_boost": 0.096981,
+              "query_term_coverage": 0.384615
+            },
+            {
+              "rank": 2,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.343009,
+              "lexical_score": 0.383581,
+              "semantic_ngram_score": 0.05735,
+              "authority_boost": 0.083396,
+              "query_term_coverage": 0.192308
+            },
+            {
+              "rank": 3,
+              "document_id": "IMAGE-001",
+              "title": "图片与错误信息补充",
+              "score": 0.244621,
+              "lexical_score": 0.23667,
+              "semantic_ngram_score": 0.047067,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.115385
+            },
+            {
+              "rank": 4,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.24238,
+              "lexical_score": 0.246066,
+              "semantic_ngram_score": 0.025838,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.115385
+            },
+            {
+              "rank": 5,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.197488,
+              "lexical_score": 0.175552,
+              "semantic_ngram_score": 0.022753,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.115385
+            },
+            {
+              "rank": 6,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.178157,
+              "lexical_score": 0.148417,
+              "semantic_ngram_score": 0.007217,
+              "authority_boost": 0.083396,
+              "query_term_coverage": 0.076923
+            },
+            {
+              "rank": 7,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.151931,
+              "lexical_score": 0.093935,
+              "semantic_ngram_score": 0.009216,
+              "authority_boost": 0.090189,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 8,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.151613,
+              "lexical_score": 0.100571,
+              "semantic_ngram_score": 0.006492,
+              "authority_boost": 0.086792,
+              "query_term_coverage": 0.038462
+            },
+            {
+              "rank": 9,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.134006,
+              "lexical_score": 0.081629,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083396,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 10,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.128298,
+              "lexical_score": 0.072423,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083396,
+              "query_term_coverage": 0.0
+            }
+          ],
+          "raw_top_k_ids": [
+            "STATUS-001",
+            "ERR-503",
+            "IMAGE-001",
+            "INVOICE-001"
+          ],
+          "final_ids": [
+            "STATUS-001",
+            "ERR-503"
+          ],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 1.0,
+          "recall": 1.0,
+          "reciprocal_rank": 1.0,
+          "returned_precision": 0.5,
+          "full_recall": true,
+          "missed_relevant": {},
+          "unrelated_ids": [
+            "ERR-503"
+          ],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-028",
+          "group_id": "403-quota-key",
+          "query": "gpt-6.1-sol 返回 403。账户还有钱、套餐也在有效期，但这期额度耗尽了，Key 的余额兜底是关的；有余额就一定能继续用吗，还该一起查哪些条件？",
+          "tags": [
+            "error_code",
+            "model_name",
+            "multi_knowledge",
+            "long_query"
+          ],
+          "answerability": "kb_and_business_data",
+          "relevant_ids": [
+            "ERR-401",
+            "PLAN-001"
+          ],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.767606,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.121273,
+              "authority_boost": 0.101522,
+              "query_term_coverage": 0.177778
+            },
+            {
+              "rank": 2,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.473263,
+              "lexical_score": 0.588252,
+              "semantic_ngram_score": 0.049379,
+              "authority_boost": 0.089783,
+              "query_term_coverage": 0.066667
+            },
+            {
+              "rank": 3,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.398224,
+              "lexical_score": 0.432591,
+              "semantic_ngram_score": 0.116179,
+              "authority_boost": 0.08587,
+              "query_term_coverage": 0.088889
+            },
+            {
+              "rank": 4,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.23717,
+              "lexical_score": 0.247514,
+              "semantic_ngram_score": 0.004618,
+              "authority_boost": 0.081957,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 5,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.225467,
+              "lexical_score": 0.228313,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083913,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 6,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.223975,
+              "lexical_score": 0.163221,
+              "semantic_ngram_score": 0.102278,
+              "authority_boost": 0.083913,
+              "query_term_coverage": 0.044444
+            },
+            {
+              "rank": 7,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.182303,
+              "lexical_score": 0.148259,
+              "semantic_ngram_score": 0.011874,
+              "authority_boost": 0.08587,
+              "query_term_coverage": 0.022222
+            },
+            {
+              "rank": 8,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.176301,
+              "lexical_score": 0.149013,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083913,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 9,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.169229,
+              "lexical_score": 0.140761,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.081957,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 10,
+              "document_id": "IMAGE-001",
+              "title": "图片与错误信息补充",
+              "score": 0.159455,
+              "lexical_score": 0.124996,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.081957,
+              "query_term_coverage": 0.0
+            }
+          ],
+          "raw_top_k_ids": [
+            "PLAN-001",
+            "BAL-001",
+            "ERR-401",
+            "ERR-503"
+          ],
+          "final_ids": [
+            "PLAN-001"
+          ],
+          "raw_recall": 1.0,
+          "raw_reciprocal_rank": 1.0,
+          "recall": 0.5,
+          "reciprocal_rank": 1.0,
+          "returned_precision": 1.0,
+          "full_recall": false,
+          "missed_relevant": {
+            "ERR-401": "coverage_filter"
+          },
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": null,
+          "error": null
+        },
+        {
+          "id": "RET-029",
+          "group_id": "missing-invoice-export-api",
+          "query": "发票能按项目批量导出成 Excel 吗？如果有导出 API，它的请求参数是什么？",
+          "tags": [
+            "negative"
+          ],
+          "answerability": "no_kb_answer",
+          "relevant_ids": [],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.728751,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.047238,
+              "authority_boost": 0.0908,
+              "query_term_coverage": 0.045455
+            },
+            {
+              "rank": 2,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.665841,
+              "lexical_score": 0.939098,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.0836,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 3,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.437785,
+              "lexical_score": 0.539571,
+              "semantic_ngram_score": 0.032765,
+              "authority_boost": 0.0908,
+              "query_term_coverage": 0.045455
+            },
+            {
+              "rank": 4,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.396784,
+              "lexical_score": 0.5069,
+              "semantic_ngram_score": 0.006595,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.045455
+            },
+            {
+              "rank": 5,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.337942,
+              "lexical_score": 0.40164,
+              "semantic_ngram_score": 0.014014,
+              "authority_boost": 0.0836,
+              "query_term_coverage": 0.045455
+            },
+            {
+              "rank": 6,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.32943,
+              "lexical_score": 0.3965,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.0836,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 7,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.283656,
+              "lexical_score": 0.30826,
+              "semantic_ngram_score": 0.032986,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.045455
+            },
+            {
+              "rank": 8,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.269543,
+              "lexical_score": 0.305714,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 9,
+              "document_id": "IMAGE-001",
+              "title": "图片与错误信息补充",
+              "score": 0.261631,
+              "lexical_score": 0.292953,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 10,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.236649,
+              "lexical_score": 0.246853,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.0836,
+              "query_term_coverage": 0.0
+            }
+          ],
+          "raw_top_k_ids": [
+            "INVOICE-001",
+            "REFUND-001",
+            "ERR-503",
+            "ERR-401"
+          ],
+          "final_ids": [],
+          "raw_recall": null,
+          "raw_reciprocal_rank": null,
+          "recall": null,
+          "reciprocal_rank": null,
+          "returned_precision": null,
+          "full_recall": null,
+          "missed_relevant": {},
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": false,
+          "error": null
+        },
+        {
+          "id": "RET-030",
+          "group_id": "dynamic-request-duration",
+          "query": "帮我查刚才那次请求在日志里用了多少毫秒，我只要这次的实际记录。",
+          "tags": [
+            "dynamic_lookup"
+          ],
+          "answerability": "business_data_only",
+          "relevant_ids": [],
+          "ranked_candidates": [
+            {
+              "rank": 1,
+              "document_id": "ERR-503",
+              "title": "服务错误与失败扣费核查",
+              "score": 0.73248,
+              "lexical_score": 1.0,
+              "semantic_ngram_score": 0.051024,
+              "authority_boost": 0.093091,
+              "query_term_coverage": 0.111111
+            },
+            {
+              "rank": 2,
+              "document_id": "BAL-001",
+              "title": "小额负余额的核验与回正",
+              "score": 0.564349,
+              "lexical_score": 0.766374,
+              "semantic_ngram_score": 0.015588,
+              "authority_boost": 0.083273,
+              "query_term_coverage": 0.074074
+            },
+            {
+              "rank": 3,
+              "document_id": "ERR-401",
+              "title": "鉴权与访问线路检查",
+              "score": 0.514047,
+              "lexical_score": 0.680527,
+              "semantic_ngram_score": 0.014671,
+              "authority_boost": 0.086545,
+              "query_term_coverage": 0.074074
+            },
+            {
+              "rank": 4,
+              "document_id": "STATUS-001",
+              "title": "实时状态的事实边界",
+              "score": 0.502617,
+              "lexical_score": 0.654257,
+              "semantic_ngram_score": 0.01884,
+              "authority_boost": 0.089818,
+              "query_term_coverage": 0.037037
+            },
+            {
+              "rank": 5,
+              "document_id": "INVOICE-001",
+              "title": "发票查询与信息修改",
+              "score": 0.339433,
+              "lexical_score": 0.407794,
+              "semantic_ngram_score": 0.008757,
+              "authority_boost": 0.083273,
+              "query_term_coverage": 0.037037
+            },
+            {
+              "rank": 6,
+              "document_id": "SETUP-001",
+              "title": "Codex / Claude Code 客户端接入",
+              "score": 0.305664,
+              "lexical_score": 0.359476,
+              "semantic_ngram_score": 0.007338,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.074074
+            },
+            {
+              "rank": 7,
+              "document_id": "REFUND-001",
+              "title": "退款申请与人工核验",
+              "score": 0.225826,
+              "lexical_score": 0.229925,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.083273,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 8,
+              "document_id": "ACCOUNT-001",
+              "title": "账号与人工协作",
+              "score": 0.209449,
+              "lexical_score": 0.208789,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 9,
+              "document_id": "PLAN-001",
+              "title": "套餐额度与余额的使用顺序",
+              "score": 0.201196,
+              "lexical_score": 0.184921,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.086545,
+              "query_term_coverage": 0.0
+            },
+            {
+              "rank": 10,
+              "document_id": "IMAGE-001",
+              "title": "图片与错误信息补充",
+              "score": 0.162423,
+              "lexical_score": 0.13294,
+              "semantic_ngram_score": 0.0,
+              "authority_boost": 0.08,
+              "query_term_coverage": 0.0
+            }
+          ],
+          "raw_top_k_ids": [
+            "ERR-503",
+            "BAL-001",
+            "ERR-401",
+            "STATUS-001"
+          ],
+          "final_ids": [],
+          "raw_recall": null,
+          "raw_reciprocal_rank": null,
+          "recall": null,
+          "reciprocal_rank": null,
+          "returned_precision": null,
+          "full_recall": null,
+          "missed_relevant": {},
+          "unrelated_ids": [],
+          "no_answer_false_retrieval": null,
+          "error": null
+        }
+      ],
+      "by_tag": {
+        "colloquial": {
+          "recall_at_4": {
+            "numerator": 0.0,
+            "denominator": 2,
+            "rate": 0.0
+          },
+          "mrr_at_4": {
+            "numerator": 0.0,
+            "denominator": 2,
+            "rate": 0.0
+          },
+          "full_recall_queries": {
+            "numerator": 0,
+            "denominator": 2,
+            "rate": 0.0
+          },
+          "returned_precision_macro": {
+            "numerator": 0.0,
+            "denominator": 2,
+            "rate": 0.0
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 0,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 2,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 2.0,
+              "denominator": 2,
+              "rate": 1.0
+            },
+            "mrr_at_4": {
+              "numerator": 1.333333,
+              "denominator": 2,
+              "rate": 0.666667
+            },
+            "no_answer_nonempty": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            }
+          },
+          "missed_relevant_by_cause": {
+            "coverage_filter": 2
+          },
+          "known_queries_with_extra_context": 0,
+          "dynamic_diagnostics": {
+            "questions": 0,
+            "nonempty_results": 0
+          }
+        },
+        "direct": {
+          "recall_at_4": {
+            "numerator": 5.0,
+            "denominator": 5,
+            "rate": 1.0
+          },
+          "mrr_at_4": {
+            "numerator": 5.0,
+            "denominator": 5,
+            "rate": 1.0
+          },
+          "full_recall_queries": {
+            "numerator": 5,
+            "denominator": 5,
+            "rate": 1.0
+          },
+          "returned_precision_macro": {
+            "numerator": 4.0,
+            "denominator": 5,
+            "rate": 0.8
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 0,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 5,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 5.0,
+              "denominator": 5,
+              "rate": 1.0
+            },
+            "mrr_at_4": {
+              "numerator": 5.0,
+              "denominator": 5,
+              "rate": 1.0
+            },
+            "no_answer_nonempty": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            }
+          },
+          "missed_relevant_by_cause": {},
+          "known_queries_with_extra_context": 2,
+          "dynamic_diagnostics": {
+            "questions": 0,
+            "nonempty_results": 0
+          }
+        },
+        "dynamic_lookup": {
+          "recall_at_4": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "mrr_at_4": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "full_recall_queries": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "returned_precision_macro": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 0,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            },
+            "mrr_at_4": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            },
+            "no_answer_nonempty": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            }
+          },
+          "missed_relevant_by_cause": {},
+          "known_queries_with_extra_context": 0,
+          "dynamic_diagnostics": {
+            "questions": 1,
+            "nonempty_results": 0
+          }
+        },
+        "error_code": {
+          "recall_at_4": {
+            "numerator": 0.5,
+            "denominator": 1,
+            "rate": 0.5
+          },
+          "mrr_at_4": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "full_recall_queries": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "returned_precision_macro": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 0,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "mrr_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "no_answer_nonempty": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            }
+          },
+          "missed_relevant_by_cause": {
+            "coverage_filter": 1
+          },
+          "known_queries_with_extra_context": 0,
+          "dynamic_diagnostics": {
+            "questions": 0,
+            "nonempty_results": 0
+          }
+        },
+        "long_query": {
+          "recall_at_4": {
+            "numerator": 0.5,
+            "denominator": 1,
+            "rate": 0.5
+          },
+          "mrr_at_4": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "full_recall_queries": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "returned_precision_macro": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 0,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "mrr_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "no_answer_nonempty": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            }
+          },
+          "missed_relevant_by_cause": {
+            "coverage_filter": 1
+          },
+          "known_queries_with_extra_context": 0,
+          "dynamic_diagnostics": {
+            "questions": 0,
+            "nonempty_results": 0
+          }
+        },
+        "model_name": {
+          "recall_at_4": {
+            "numerator": 0.5,
+            "denominator": 1,
+            "rate": 0.5
+          },
+          "mrr_at_4": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "full_recall_queries": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "returned_precision_macro": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 0,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "mrr_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "no_answer_nonempty": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            }
+          },
+          "missed_relevant_by_cause": {
+            "coverage_filter": 1
+          },
+          "known_queries_with_extra_context": 0,
+          "dynamic_diagnostics": {
+            "questions": 0,
+            "nonempty_results": 0
+          }
+        },
+        "multi_knowledge": {
+          "recall_at_4": {
+            "numerator": 0.5,
+            "denominator": 1,
+            "rate": 0.5
+          },
+          "mrr_at_4": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "full_recall_queries": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "returned_precision_macro": {
+            "numerator": 1.0,
+            "denominator": 1,
+            "rate": 1.0
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 0,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "mrr_at_4": {
+              "numerator": 1.0,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "no_answer_nonempty": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            }
+          },
+          "missed_relevant_by_cause": {
+            "coverage_filter": 1
+          },
+          "known_queries_with_extra_context": 0,
+          "dynamic_diagnostics": {
+            "questions": 0,
+            "nonempty_results": 0
+          }
+        },
+        "negative": {
+          "recall_at_4": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "mrr_at_4": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "full_recall_queries": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "returned_precision_macro": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "no_answer_false_retrieval": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "no_answer_outcomes": {
+            "returned_irrelevant": 0,
+            "successful_empty": 1,
+            "exceptions": 0
+          },
+          "retrieval_exceptions": {
+            "numerator": 0,
+            "denominator": 1,
+            "rate": 0.0
+          },
+          "diagnostics_before_coverage_filter": {
+            "recall_at_4": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            },
+            "mrr_at_4": {
+              "numerator": 0,
+              "denominator": 0,
+              "rate": null
+            },
+            "no_answer_nonempty": {
+              "numerator": 1,
+              "denominator": 1,
+              "rate": 1.0
+            }
+          },
+          "missed_relevant_by_cause": {},
+          "known_queries_with_extra_context": 0,
+          "dynamic_diagnostics": {
+            "questions": 0,
+            "nonempty_results": 0
+          }
+        }
+      }
+    }
+  },
+  "external_model_calls": 0,
+  "scope": "Ranking inside shared portal metadata/coverage rules. Character n-grams are not embeddings. No answer generation or online-quality measurement.",
+  "freeze_sha256": "eb4424bb2ae3d093db36fd9968c600e5985e588e37ffc08178b2e8cc136d0866",
+  "frozen_at": "2026-11-03T16:17:07.262944+00:00",
+  "development_preference": "hybrid",
+  "selection_updated_from_holdout": false
+}

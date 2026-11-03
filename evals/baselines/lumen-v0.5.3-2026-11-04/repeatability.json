@@ -1,0 +1,13 @@
+{
+  "as_of": "2026-11-03T13:00:00+00:00",
+  "runs": 2,
+  "first_created_at": "2026-11-03T15:52:48+00:00",
+  "second_created_at": "2026-11-03T15:53:10+00:00",
+  "first_duration_ms": 6812,
+  "second_duration_ms": 6634,
+  "compared": "All report fields except created_at and duration_ms",
+  "matching": true,
+  "scenario_count": 29,
+  "second_report_sha256": "1361c0c6e8edb0115a846af26a928728bec9728996831b448084b4b6d81016a4",
+  "second_report": "desk-workflow-repeat.json"
+}

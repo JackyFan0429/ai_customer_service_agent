@@ -1,0 +1,287 @@
+{
+  "baseline_id": "lumen-v0.5.3-2026-11-04",
+  "delivery_version": "0.5.4",
+  "baseline_application_version": "0.5.3",
+  "recorded_at": "2026-11-03T15:54:19+00:00",
+  "recording_timezone": "Australia/Sydney",
+  "scope": "Stage 1: freeze existing synthetic inputs, define metrics and record local development regressions. No retrieval tuning or external model calls.",
+  "origin": {
+    "manifest": "origin.json",
+    "packaged_source_files": 129,
+    "changed_existing_files": [
+      "README.md",
+      "README.zh-CN.md",
+      "docs/verification.zh-CN.md",
+      "pyproject.toml",
+      "scripts/evaluate_desk.py"
+    ],
+    "runtime_files_compared": 39,
+    "runtime_files_unchanged": true,
+    "runtime_database_or_model_credentials_copied": false
+  },
+  "environment": {
+    "os": "Darwin",
+    "os_release": "27.0.0",
+    "machine": "arm64",
+    "evaluations_python": "3.13.15",
+    "full_tests_python": "3.12.14",
+    "full_tests_pdfplumber": "0.11.9",
+    "provider": "local"
+  },
+  "inputs": {
+    "support_agent/desk/data/knowledge.json": {
+      "snapshot": "inputs/portal-knowledge.json",
+      "sha256": "b5b154794862070104107e665d5e4d2ebafc2ee057f0a890cc7b310a54ba6d43"
+    },
+    "support_agent/desk/data/evaluation_cases.json": {
+      "snapshot": "inputs/portal-scenarios.json",
+      "sha256": "9efad8214f717f5c2f6d8dffa5d7afe67647c40c070741f1dcd24cf41c268dc6"
+    },
+    "support_agent/desk/data/policy.json": {
+      "snapshot": "inputs/portal-policy.json",
+      "sha256": "c862543f0dea206fa2a3f27aaae28f015aaa92dd45af4823bff4f12ad21c48ca"
+    },
+    "support_agent/demo/corpus.jsonl": {
+      "snapshot": "inputs/legacy-corpus.jsonl",
+      "sha256": "f8dac25b6755cc1c9604afc2c061324f4a92c4f41da0df4df46cdfc2657379b0"
+    },
+    "evals/scenarios.jsonl": {
+      "snapshot": "inputs/legacy-scenarios.jsonl",
+      "sha256": "757caaf9a3f99f03ded282ea4525906addc935e9bb9bcf4eb5fb4c08de1034fe"
+    }
+  },
+  "retrieval_configuration": {
+    "type": "BM25 + character n-gram cosine; no embedding API",
+    "bm25_k1": 1.5,
+    "bm25_b": 0.75,
+    "bm25_normalization": "divide by maximum BM25 score in the query",
+    "lexical_weight": 0.62,
+    "ngram_weight": 0.38,
+    "ngram_sizes": [
+      2,
+      3
+    ],
+    "p1_metadata_boost_max": 0.22,
+    "p1_priority_score_threshold": 0.32
+  },
+  "portal": {
+    "knowledge_records": 10,
+    "body_lengths": {
+      "unit": "Unicode characters, not tokens",
+      "min": 58,
+      "max": 214,
+      "median": 93.5
+    },
+    "scenarios": 29,
+    "judging_scope": "Final run of each scenario, not all turns; lexical facts, routes, tools, scope and optional action checks.",
+    "as_of": "2026-11-03T13:00:00+00:00",
+    "clock_mode": "fixed",
+    "raw_top_k": 4,
+    "final_top_k_max": 4,
+    "minimum_query_term_coverage": 0.12,
+    "pre_filter": "published=1 AND review_after >= UTC business date",
+    "independent_body_character_budget": null,
+    "scenario_pass": {
+      "numerator": 29,
+      "denominator": 29
+    },
+    "report": "desk-workflow.json",
+    "repeatability": "repeatability.json"
+  },
+  "legacy_rag": {
+    "knowledge_records": 19,
+    "body_lengths": {
+      "unit": "Unicode characters, not tokens",
+      "min": 24,
+      "max": 94,
+      "median": 47
+    },
+    "corpus_selection": "Each scenario selects its declared corpus_ids from the frozen corpus.",
+    "as_of_dates": [
+      "2026-09-19"
+    ],
+    "raw_top_k": 8,
+    "max_customer_evidence": 5,
+    "evidence_body_character_budget": 8000,
+    "metrics": {
+      "scenario_pass": {
+        "numerator": 48,
+        "denominator": 48,
+        "rate": 1.0
+      },
+      "turn_pass": {
+        "numerator": 63,
+        "denominator": 63,
+        "rate": 1.0
+      },
+      "route_accuracy": {
+        "numerator": 63,
+        "denominator": 63,
+        "rate": 1.0
+      },
+      "answerable_acceptance": {
+        "numerator": 33,
+        "denominator": 33,
+        "rate": 1.0
+      },
+      "evidence_rule_violation": {
+        "numerator": 0,
+        "denominator": 33,
+        "rate": 0.0
+      },
+      "escalation_recall": {
+        "numerator": 9,
+        "denominator": 9,
+        "rate": 1.0
+      },
+      "multi_turn_success": {
+        "numerator": 14,
+        "denominator": 14,
+        "rate": 1.0
+      }
+    },
+    "report": "legacy-rag.json",
+    "label_status": "AI-authored development labels await owner review; not a held-out sample."
+  },
+  "full_tests": [
+    {
+      "phase": "before",
+      "passed": 188,
+      "total": 188,
+      "duration_seconds": 10.149,
+      "report": "tests-before.txt"
+    },
+    {
+      "phase": "after",
+      "passed": 192,
+      "total": 192,
+      "duration_seconds": 10.676,
+      "report": "tests-after.txt"
+    }
+  ],
+  "unmeasured": {
+    "retrieval_recall_at_4": null,
+    "retrieval_mrr_at_4": null,
+    "no_answer_false_retrieval_rate": null,
+    "real_model_answer_quality": null,
+    "current_real_model_latency": null,
+    "customer_visible_latency": null,
+    "current_model_api_cost": null,
+    "production_resolution_rate": null,
+    "reason": "Independent retrieval labels and live production data are not yet available; model quality and latency were not rerun in this stage."
+  },
+  "historical_model_metadata": {
+    "source": "docs/topic-switch-live-v0.5.3.json",
+    "sha256": "dfac76dec9949124764defa11f4b11113e36bf6a974f5021701cba870456cfeb",
+    "window": "2026-10-18 23:02–23:08 Australia/Sydney",
+    "phase": "after_fix",
+    "newly_executed_in_this_stage": false,
+    "runs": 8,
+    "model_replies": 7,
+    "policy_replies": 1,
+    "fallbacks": 0,
+    "content_revisions": 0,
+    "api_calls": 22,
+    "successful_calls": 22,
+    "calls_with_usage": 22,
+    "calls_with_elapsed_ms": 22,
+    "usage_keys": [
+      "completion_tokens",
+      "prompt_tokens",
+      "total_tokens"
+    ],
+    "model_names": [
+      "gpt-6-astra"
+    ],
+    "price_table_or_invoice_available": false
+  },
+  "commands": [
+    {
+      "runner": "evaluation Python",
+      "command": "python3 scripts/evaluate_desk.py --as-of '2026-11-04T00:00:00+11:00' --output evals/baselines/lumen-v0.5.3-2026-11-04/desk-workflow.json"
+    },
+    {
+      "runner": "evaluation Python",
+      "command": "python3 scripts/evaluate_agent.py --provider local --label lumen-v0.5.3-stage1 --output evals/baselines/lumen-v0.5.3-2026-11-04/legacy-rag.json"
+    },
+    {
+      "runner": "full-test Python with pdf extra",
+      "command": "python3 -m unittest discover -s tests -v",
+      "note": "Executed on the isolated v0.5.3 snapshot before edits, then on v0.5.4 after edits."
+    }
+  ],
+  "implementation_and_grader_sha256": {
+    "support_agent/__init__.py": "b682b120972995994e537cc0e9807df9ff0c26f943f09e1966927cbdf4135c60",
+    "support_agent/agent.py": "aaf18c25741fd750f785b3d5f3b86569d8f976035983bcbd56d18f27aa00e324",
+    "support_agent/cli.py": "2212e30595758c6b146875a899eb7804f452ce36d2c0ec352219a08e2e1aa650",
+    "support_agent/config.py": "dbaa7eb1a9d3b824691b7b2f56e708c5c0b2771dd913888ee6ca0bde7efaca96",
+    "support_agent/database.py": "0e9ca6dccd02571557dad5b8caaae2b49c41e3b00284ee6f3559aa556cf2211f",
+    "support_agent/desk/__init__.py": "eaf9c36db8c3c57b63269f5e4a3fd72221c9b564311bc91225ed683733d7b2a6",
+    "support_agent/desk/admin.py": "194fc802f775ecd28c03fdbcaaf38b15e269a23a5c866fca758db30c0c0cf5a7",
+    "support_agent/desk/config.py": "6a5269ee4407a83c5aeba06ccd4ea36499961bc11708c1839bb9a72dc407a456",
+    "support_agent/desk/engine.py": "4d66bba800402a79cf39b656eb4bd60b3ce72485e22ecc1705458788b4155ffc",
+    "support_agent/desk/evaluation.py": "79b1f3a8a3b924d7f20164a009dc93ccd090952ba6728c8b597a199b9b71a275",
+    "support_agent/desk/evidence.py": "845695415307f8c8860404370aeb1a9ace1b208d2b8066480eaaeb60e0c65527",
+    "support_agent/desk/model.py": "d5fe951a195148dc432deb65c98e8318c4c3e883e746546e042800d8e6e8e83a",
+    "support_agent/desk/sandbox.py": "af56f874b792ed94183923d4783acb14504313c915026bb46b99c841fed0f4b4",
+    "support_agent/desk/service.py": "fe75bdcb2b841b447f7ea99b9fd52de57f63ce615a61de2539b6be7c6e07af41",
+    "support_agent/desk/storage.py": "e385543bd8e29bfef71b09b58a8d5f44935fde57025ef550359d8e2283f8d2c8",
+    "support_agent/desk/tools.py": "d87679cccf0d425a15ca73d094fcf2908e633c578c68f3d9e92ada5677dc35d1",
+    "support_agent/desk/topics.py": "496f1e7a1f003503b2e4aff88a23dc1b43ab1b6e73f385e5733169381aff26b0",
+    "support_agent/models.py": "53f0896fdafc70e79a042d1027a4c598870ccc0e18bf7ea1723c801aa5a5cd0d",
+    "support_agent/policy.py": "740e4d4e7c951ea8eda9a361172d02478cbcfddce817aa15dd3e90060b9c7845",
+    "support_agent/portal.py": "e5c4a6f15d6f704ba52342f21e5190f90d134c19f27825d09aa6c5d844b5d434",
+    "support_agent/prompts.py": "90f90cd03fae5b9753af240a386b9e0fe08d0843f10a04766228aedc53340623",
+    "support_agent/providers.py": "257eed54b75a8d6cbe7661ba95c39da72307ad1cc5c366eb735e87e15f2c7448",
+    "support_agent/retrieval.py": "a4c2d63f36d2766b0d4de5d351105720b08cb4d54cded04d7074058bce77889b",
+    "support_agent/session.py": "a322c7772ee1274cda3c996b500add83cbdf35927ba840c3ed5f224233b62267",
+    "support_agent/web.py": "bfec49b13d4e16f7c3b2e68f6261f403627ef89e3231ce10227bed2d7778850c",
+    "scripts/build_retrieval_corpus.py": "2d53076d1b1cb16aad1598ba56f62395087acfcfe7630e4c9841cde62bba7b4b",
+    "scripts/check_case_conflicts.py": "e748778faeba4f2a9d30b86125f1be890f25626cf8415a34107c17865083792b",
+    "scripts/enrich_cases.py": "b42fcee33d0de3e75a74b49caba74b6b45c9a9ad9fe58fc5d3fe2ce194dd740f",
+    "scripts/evaluate_agent.py": "73a32acb44073e11faaba4a7bdbcd1318fe5e11eed04526a9308e28919355951",
+    "scripts/evaluate_desk.py": "fb89dde3bc0e855b6e1825381266169efa65403a47b356821ff897726e3ae11a",
+    "scripts/extract_pdf_official_kb.py": "e67f6e2b487b1038898c5c65bb154e9820dfa69c5b8d28f14b2502e91c770191",
+    "scripts/hybrid_search.py": "e580345b0954ec772862b2b45d6e0d2fcb562001a0621e8a3b24de0523deb1ee",
+    "scripts/import_support_export.py": "69ca054097794c6e40c37a38c13578e6bf6664d257c4b294a7e463ae38dbe5a3",
+    "scripts/ingest_official_kb.py": "bfe8db878a2783b9881a21c3495d77b8425df6b56995955478c9d38e814ed43c",
+    "scripts/package_demo.py": "773358415adcede983042efea0a14a08a275c10249515f0420e750b984edc349",
+    "scripts/reproduce_baseline.py": "7ecb2b3e9ca2b15d82079237f78f7a8c75e4b399e9fe144abf128e4542bdd8b9",
+    "scripts/review_knowledge.py": "395623f4ead83575c85691021ddf6c8b9915c62a14d69354c32188523fcc017d",
+    "scripts/start_demo.py": "d0d537e8a1eb7cecbae558404d74e74ea9cabf4d141c1fd206801a3ce1d22be1",
+    "scripts/validate_enrichment.py": "19a715b0443506f60211f1cfaa34df21a4bb30825221b7efc4c52fe1a46f005f",
+    "scripts/validate_official_pipeline.py": "05933a00265d0e8ac06d5583a1163b05d741dc89cf8c3ff5a51b5c4f52ff41af",
+    "tests/test_agent.py": "fd4e95a32a711ffe88dfd204dff09a2f688e1fd5588ad68f5bfbea42cabea253",
+    "tests/test_database.py": "a18e63ced6124e414973de4841da361a1d0895103a2a33e01d6592ec5c50fd15",
+    "tests/test_desk.py": "3a87050691cb430b31a5c4350425c3468eb9dc0593a0ebeacae56768d981dc15",
+    "tests/test_enrich_cases.py": "f2c4aba667654c4949b98a7f2f110e085dbec05b0922568d9f6dd573e2587c32",
+    "tests/test_evaluation_clock.py": "e02254f452d4d86af6c6580f5d1db33fe46e16749df4aa18e864c9a8fee7f675",
+    "tests/test_ingest_official_kb.py": "72c44a6d5c755bfcfdaab0461d042a6fb4b0d94c1df79e720515472deb79b6fd",
+    "tests/test_live_workflow.py": "76bfcbd944e1e2366b4a3f4f09710e531ff12bd2738b16c9c542cab0133e9c81",
+    "tests/test_model_connection.py": "90777ac933e63ae6e86f24e8042bd99bec881682667275e6e0f979943240caf0",
+    "tests/test_model_context.py": "a22266c1a9cb673de6d7ea9088bef07a6d5aa4760eff7ec9bc0bdb7b8ecb5916",
+    "tests/test_multiturn_regression.py": "22b3f7bc0354fc8d9a35726fafceae544edda944ed95b6444302f812a1e626cf",
+    "tests/test_official_pipeline.py": "bd544d8a889cf03d526f41d27cc882575135bff971870cdd0b91cc25380275fb",
+    "tests/test_pdf_kb.py": "5eee3a4c9243c2409ebac6f937be1c054c3242fb71ffb56475da5ed669c60d39",
+    "tests/test_portal.py": "bc8e0c1c84b7e03b343dd510f5e2843651ea12349fefeaf48f90586172edcaa3",
+    "tests/test_portal_config.py": "2e3e0cf495478b0f7e58fec52b084deecfeb2a7e4172fc31a4f5ce646c413b3a",
+    "tests/test_providers.py": "b6dd7c4978da7a477fb6be62bff973ce4f0b6768e4bfb9ee4a44bebc2ef0a745",
+    "tests/test_regressions.py": "068ef620a15e512addc9a7599edd3178e823bd13159be8739471cda04dec769e",
+    "tests/test_topic_switching.py": "a4b8f07e136aa9baa9f14e2ba0a3aca2e10faa1e7f24c4354bb35b4b25f48ba9",
+    "tests/test_web.py": "e8629a6ceb48b773264a0974735e99663e3622f50557204949d034b32407ec42"
+  },
+  "artifact_sha256": {
+    "desk-workflow-repeat.json": "1361c0c6e8edb0115a846af26a928728bec9728996831b448084b4b6d81016a4",
+    "desk-workflow.json": "76d9a491304f2bb33e35fc2e1b82d393c82d837546d150631dc62ce0300eead9",
+    "inputs/legacy-corpus.jsonl": "f8dac25b6755cc1c9604afc2c061324f4a92c4f41da0df4df46cdfc2657379b0",
+    "inputs/legacy-scenarios.jsonl": "757caaf9a3f99f03ded282ea4525906addc935e9bb9bcf4eb5fb4c08de1034fe",
+    "inputs/portal-knowledge.json": "b5b154794862070104107e665d5e4d2ebafc2ee057f0a890cc7b310a54ba6d43",
+    "inputs/portal-policy.json": "c862543f0dea206fa2a3f27aaae28f015aaa92dd45af4823bff4f12ad21c48ca",
+    "inputs/portal-scenarios.json": "9efad8214f717f5c2f6d8dffa5d7afe67647c40c070741f1dcd24cf41c268dc6",
+    "legacy-rag.json": "bf584b0f021d37f6f0cbedda26863d340e75179b675b6fd55875a79500f65af2",
+    "origin.json": "b3944cb753eda986522bf920131cc88f2b3be9f6cc2423d0b8fd7018a1ca7b8b",
+    "repeatability.json": "ce2db16a91494b54ea3bf59e3929b91799eb8008741a69d2c8d008e86ce14937",
+    "tests-after.txt": "00e7d249d0cddbc263e19147edf2192da29a7aa1d02b097465ae3d47be47175e",
+    "tests-before.txt": "310ee7f75897b4e6363eeec6809ea05b9f7ebb08ff0fbb96a8050341f61b7427"
+  }
+}

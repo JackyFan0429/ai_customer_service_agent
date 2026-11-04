@@ -103,7 +103,7 @@ class RetrievalDatasetTests(unittest.TestCase):
             self.assertTrue(any("valid at the fixed instant" in e for e in report["errors"]))
 
     def test_validation_never_runs_rankings(self):
-        with patch("support_agent.desk.tools.search") as portal_search, patch("support_agent.retrieval.search") as search:
+        with patch("support_agent.desk.tools.retrieve") as portal_search, patch("support_agent.retrieval.search") as search:
             report = dataset.validate_dataset()
         self.assertTrue(report["valid"], report["errors"])
         portal_search.assert_not_called()

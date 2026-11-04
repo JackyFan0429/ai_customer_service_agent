@@ -31,7 +31,7 @@ class ContextProvider(ResponsesProvider):
         if stage == 'support_intents':
             result = {'intents': local_intents(data['message'], {})}
         elif stage == 'support_reply':
-            result = {'answer': '我已了解你的反馈。' + data['baseline_answer']}
+            result = {'evidence_summary': '依据本次业务查询回复。', 'answer': '我已了解你的反馈。' + data['baseline_answer']}
         else:
             result = {'issues': []}
         return {'model': 'gpt-6-astra-test-snapshot', 'output_text': json.dumps(result, ensure_ascii=False),
@@ -112,7 +112,7 @@ class ConversationContextTests(unittest.TestCase):
         return self.service.create_ticket(self.customer, {'subject': '503排障', 'content': text})['ticket']['id']
 
     def last(self, tid):
-        return self.service.ticket_detail(self.staff, tid)['runs'][0]
+        return self.service.ticket_detail(self.db.one('SELECT * FROM users WHERE id=1'), tid)['runs'][0]
 
     def due(self):
         self.db.execute("UPDATE generation_jobs SET due_at=? WHERE state='queued'", (after(seconds=-1),))
@@ -214,7 +214,7 @@ class ConversationContextTests(unittest.TestCase):
             data = json.loads(payload['input'])
             if payload['text']['format']['name'] == 'support_reply' and not data['revision_feedback']:
                 original_request(payload)
-                return {'output_text': json.dumps({'answer': '已扣费 $9999。'})}
+                return {'output_text': json.dumps({'evidence_summary': '依据本次业务查询回复。', 'answer': '已扣费 $9999。'})}
             return original_request(payload)
         with patch.object(self.provider, '_request', side_effect=respond):
             tid = self.create()

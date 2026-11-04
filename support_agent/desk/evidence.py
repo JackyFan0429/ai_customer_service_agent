@@ -6,7 +6,7 @@ from decimal import Decimal
 
 
 NUMBER = r"-?\d+(?:,\d{3})*(?:\.\d+)?"
-MONEY = re.compile(rf"(?P<symbol>[$¥￥])\s*(?P<amount>{NUMBER})|(?P<value>{NUMBER})\s*(?P<unit>USD|CNY|美元|美金|人民币|元|块)", re.I)
+MONEY = re.compile(rf"(?P<prefix_sign>[-−])?(?P<symbol>[$¥￥])\s*(?P<amount>{NUMBER})|(?P<value>{NUMBER})\s*(?P<unit>USD|CNY|美元|美金|人民币|元|块)", re.I)
 BARE_MONEY = re.compile(rf"(?:余额|退款金额|到账金额|扣费|手续费|实付|可退金额|已用额度|剩余额度)(?:为|是|合计|总计|只有|还有|剩余|：|:|\s){{0,5}}\s*(?P<amount>{NUMBER})(?![\d.:：])")
 
 
@@ -17,7 +17,10 @@ def decimal(value):
 def money_claims(text):
     for match in MONEY.finditer(text):
         currency = "USD" if (match['symbol'] == '$' or (match['unit'] or '').lower() in {'usd', '美元', '美金'}) else "CNY"
-        yield match.start(), match.end(), (currency, decimal(match['amount'] or match['value']))
+        amount = decimal(match['amount'] or match['value'])
+        if match['prefix_sign']:
+            amount = -abs(amount)
+        yield match.start(), match.end(), (currency, amount)
 
 
 def numeric_evidence(baseline, facts):
@@ -56,17 +59,40 @@ def quoted_request(text, start, end, amount, customer_amounts):
     return bool(attributed and not asserted)
 
 
+def current_debt_claim(text, start, end, amount, facts):
+    """A debt's positive magnitude is not a positive balance or refund amount."""
+    currency, value = amount
+    if currency != 'USD' or value <= 0:
+        return False
+    balances = [tool.get('result', {}).get('balance_units') for tool in facts
+                if tool.get('name') in {'get_account_overview', 'check_balance_adjustment'}
+                and tool.get('status', 'ok') == 'ok']
+    if not any(type(balance) is int and balance < 0 and -Decimal(balance) / 10000 == value for balance in balances):
+        return False
+    left = re.split(r'[，,。；;\n!?！？]', text[:start])[-1]
+    right = re.split(r'[，,。；;\n!?！？]', text[end:])[0]
+    clause = left + text[start:end] + right
+    if re.search(r'退款|可退|到账|可用余额|(?:当前|实际)(?:账户)?余额|(?:已|已经)(?:充值|付款|支付|扣费)', clause):
+        return False
+    return bool(re.search(r'(?:欠款|欠费|负余额|补足|补齐)(?:金额|当前|本次|账户|需要|为|是|的|\s)*$', left)
+                or re.match(r'\s*(?:的)?(?:欠款|欠费|负余额)', right))
+
+
 def numeric_issues(answer, baseline, *, facts=None, context=None, query=''):
     facts, context = facts or [], context or {}
     approved = numeric_evidence(baseline, facts)
     customers = [query] + [m['content'] for m in context.get('conversation', []) if m.get('speaker') == 'customer']
     customer_amounts = {value for text in customers for _, _, value in money_claims(text)}
     issue = []
-    for start, end, amount in money_claims(answer):
-        if amount not in approved and not quoted_request(answer, start, end, amount, customer_amounts):
+    claims = list(money_claims(answer))
+    for start, end, amount in claims:
+        if amount not in approved and not quoted_request(answer, start, end, amount, customer_amounts) and not current_debt_claim(answer, start, end, amount, facts):
             issue.append({'code': 'unsupported_amount', 'message': '新增金额缺少本轮业务依据；客户希望保留的金额只能作为其诉求复述，不能推算或确认可退金额', 'severity': 'critical'})
             break
-    if any(decimal(m['amount']) not in {value for _, value in approved} for m in BARE_MONEY.finditer(answer)):
+    # A currency-labelled value was already checked with its currency and role.
+    bare = [m for m in BARE_MONEY.finditer(answer)
+            if not any(start <= m.start('amount') and end >= m.end('amount') for start, end, _ in claims)]
+    if any(decimal(m['amount']) not in {value for _, value in approved} for m in bare):
         issue.append({'code': 'unsupported_amount', 'message': '余额、扣费或退款金额缺少当前业务依据', 'severity': 'critical'})
 
     def numbers(text):

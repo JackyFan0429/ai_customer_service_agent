@@ -79,6 +79,7 @@ class TopicWorkflowTests(unittest.TestCase):
         self.assertIn('不能单独证明',run['answer'])
 
     def test_pending_balance_action_does_not_block_new_configuration_reply(self):
+        self.db.set_setting("auto_balance_fix", False)
         tid=self.create(self.alice,'帮我核验余额回正')
         old=self.latest(tid)
         run=self.send(self.alice,tid,'先别处理余额回正，换个问题：Codex 配置显示 Custom，已经完全退出重开，这能证明成功吗？')

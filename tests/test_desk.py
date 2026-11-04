@@ -74,6 +74,7 @@ class DeskTests(unittest.TestCase):
         self.assertTrue(balance_eligibility(self.db, 2, self.db.settings())["eligible"])
 
     def test_accounts_and_private_drafts_are_isolated(self):
+        self.db.set_setting("auto_balance_fix", False)
         tid, run = self.ticket("我的余额为负，可以回正吗？")
         own = self.service.ticket_detail(self.alice, tid)
         self.assertTrue(own["pending_review"])
@@ -98,6 +99,7 @@ class DeskTests(unittest.TestCase):
             tools.call("execute_sql", query="DELETE FROM users")
 
     def test_balance_action_requires_approval_and_is_idempotent_under_race(self):
+        self.db.set_setting("auto_balance_fix", False)
         tid, run = self.ticket("负余额可以回正吗？")
         self.assertEqual(-1800, self.db.one("SELECT balance_units FROM users WHERE id=2")["balance_units"])
         self.assert_error(409, self.service.publish, self.admin, run["id"], {})
@@ -108,11 +110,13 @@ class DeskTests(unittest.TestCase):
         self.assertEqual(1, self.count("messages", "role='assistant'"))
         self.assertEqual(0, self.db.one("SELECT balance_units FROM users WHERE id=2")["balance_units"])
         answer = self.last_run(tid)["answer"]
-        self.assertIn("已回正至 $0.0000", answer)
+        self.assertNotIn("回正成功", answer)
+        self.assertTrue(any("回正成功" in m["content"] for m in self.service.ticket_detail(self.admin, tid)["messages"] if m["visibility"] == "staff"))
         self.assertNotIn("-0.1800", answer)
         self.assertNotIn("待审核", answer)
 
     def test_balance_action_rejects_stale_balance_and_keeps_draft(self):
+        self.db.set_setting("auto_balance_fix", False)
         tid, run = self.ticket("帮我回正余额")
         self.console.update_user(self.admin, 2, {"balance_units": 10000})
         self.assert_error(409, self.service.publish, self.admin, run["id"], {"execute_actions": True})
@@ -121,6 +125,7 @@ class DeskTests(unittest.TestCase):
         self.assertEqual(10000, self.db.one("SELECT balance_units FROM users WHERE id=2")["balance_units"])
 
     def test_balance_mutation_rolls_back_if_reply_cannot_commit(self):
+        self.db.set_setting("auto_balance_fix", False)
         _, run = self.ticket("帮我回正余额")
         with patch.object(self.db, "event", side_effect=RuntimeError("simulated storage failure")):
             with self.assertRaises(RuntimeError):
@@ -130,30 +135,33 @@ class DeskTests(unittest.TestCase):
         self.assertEqual(0, self.count("messages", "role='assistant'"))
 
     def test_balance_action_uses_controlled_reply(self):
+        self.db.set_setting("auto_balance_fix", False)
         _, run = self.ticket("帮我回正余额")
         self.assert_error(422, self.service.publish, self.admin, run["id"], {"execute_actions": True, "content": "已经回正"})
         self.assertEqual(0, self.count("ledger", "kind='balance_fix'"))
 
-    def test_balance_eligibility_checks_source_limit_and_cooldown(self):
+    def test_balance_eligibility_checks_source_and_allows_repeated_small_corrections(self):
         config = self.db.settings()
         self.assertTrue(balance_eligibility(self.db, 2, config)["eligible"])
-        self.assertFalse(balance_eligibility(self.db, 2, {**config, "balance_fix_limit_units": 1000})["eligible"])
+        self.assertTrue(balance_eligibility(self.db, 2, {**config, "balance_fix_limit_units": 1000})["eligible"])  # obsolete setting is not an active cap
         self.db.execute("INSERT INTO ledger(user_id,kind,delta_units,balance_after_units,note,created_at) VALUES (2,'admin_adjustment',-1800,-1800,'test',?)", (now(),))
         self.assertFalse(balance_eligibility(self.db, 2, config)["eligible"])
         self.db.execute("INSERT INTO ledger(user_id,kind,delta_units,balance_after_units,note,created_at) VALUES (2,'balance_fix',1800,0,'test',?)", (now(),))
         self.db.execute("INSERT INTO ledger(user_id,kind,delta_units,balance_after_units,note,created_at) VALUES (2,'request_overage',-1800,-1800,'test',?)", (now(),))
-        self.assertIn("冷却", balance_eligibility(self.db, 2, config)["reason"])
+        self.assertTrue(balance_eligibility(self.db, 2, config)["eligible"])
 
     def test_new_message_supersedes_previous_draft(self):
+        self.db.set_setting("auto_balance_fix", False)
         tid, run = self.ticket("负余额可以回正吗？")
-        self.service.customer_message(self.alice, tid, {"content": "我的余额呢？"})
+        self.service.customer_message(self.alice, tid, {"content": "再帮我回正余额"})
         self.assert_error(409, self.service.publish, self.admin, run["id"], {})
         self.assertEqual(1, self.count("runs", "state='draft'"))
 
-    def test_automatic_mode_sends_reads_but_holds_balance_action(self):
+    def test_automatic_mode_sends_reads_and_obeys_balance_write_switch(self):
         self.db.set_setting("reply_mode", "auto")
+        self.db.set_setting("auto_balance_fix", False)
         _, read = self.ticket("我的套餐还剩多少？")
-        _, action = self.ticket("我的负余额怎么办？")
+        _, action = self.ticket("帮我回正余额")
         self.assertEqual("sent", read["state"])
         self.assertEqual("draft", action["state"])
         self.db.set_setting("auto_balance_fix", True)

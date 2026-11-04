@@ -11,12 +11,12 @@
 
 Three problems shaped the work. Customers initially could not see replies automatically, so I checked the generation-to-publication flow and added live customer/staff synchronization. Real-model failures were difficult to distinguish from local responses, so I added three-stage startup checks and visible call diagnostics. Follow-ups could reuse the wrong topic or stale balance, so I preserved public conversation context and refreshed facts when the topic changed.
 
-For retrieval, I compared BM25, character n-grams and hybrid on a separate development/holdout dataset. I found the larger issue was the coverage filter discarding relevant evidence, so I kept the existing configuration rather than claiming an algorithm win. The next step is to validate that fixing evidence coverage reduces repeated questions and human handling.”
+For retrieval, I compared BM25, character n-grams and hybrid on a separate development/holdout dataset. I found the larger issue was the coverage filter discarding relevant evidence, so I kept the existing configuration rather than claiming an algorithm win. I then reviewed all 30 labels with the owner and implemented subject/capability filtering. Known-case coverage improved, but new unseen questions and a live pilot are still needed to measure customer and staffing outcomes.”
 
 ## Defensible evidence
 
-- 225 software checks, 29 portal scenarios and 48 legacy RAG scenarios pass locally.
-- Retrieval comparison: 20 development and 10 holdout queries; labels await owner review. Final holdout Recall@4 is 68.75%, not answer accuracy.
+- 283 software checks, 29 portal scenarios and 48 legacy RAG scenarios pass locally.
+- Retrieval comparison: 20 development and 10 holdout queries; all 30 labels are now owner-approved. The v0.5.9 filter covers all 25 answerable known questions. This is regression evidence, not blind accuracy or production resolution rate.
 - The published holdout was run after configuration freeze. Future fixes based on those failures need a new unseen validation set.
 - No measured labor savings, revenue uplift or production resolution rate is available.
 

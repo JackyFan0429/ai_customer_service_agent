@@ -210,7 +210,7 @@ class PortalConfigTests(unittest.TestCase):
 
     def test_connection_check_does_not_create_db_or_open_browser(self):
         def structured(name, instructions, data, properties):
-            return {"intents": ["technical"]} if name == "support_intents" else {"answer": data["baseline_answer"]} if name == "support_reply" else {"issues": []}
+            return {"intents": ["technical"]} if name == "support_intents" else {"evidence_summary": "Based on current facts.", "answer": data["baseline_answer"]} if name == "support_reply" else {"issues": []}
         with patch.dict(os.environ, MODEL_ENV, clear=True), patch("support_agent.portal.Database") as database, patch("support_agent.portal.webbrowser.open") as browser, patch("support_agent.desk.model.DeskModel.structured", side_effect=structured) as request, contextlib.redirect_stdout(io.StringIO()) as output:
             main(["--check-model"], root=self.root)
         database.assert_not_called()

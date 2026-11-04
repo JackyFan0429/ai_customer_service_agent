@@ -16,7 +16,7 @@ Automatic replies are on by default. Staff can send private suggestions, reply m
 
 Human replies protect a conversation for 15 minutes. A subsequent customer message waits 1 minute for staff before generating a private suggestion. Explicit takeover continues until “Resume AI.” Existing or manually regenerated suggestions always require staff confirmation.
 
-Admins can change the global automatic-send switch, account balances and plans. Turning the switch on does not publish existing drafts. Support staff cannot use these admin controls; balance-correction suggestions require admin approval.
+Admins can change the global automatic-send switch, account balances and plans. Turning the switch on does not publish existing drafts. Support cannot use these admin controls. Support and admins can approve an eligible balance correction, edit an invoice title or reissue an unchanged amount after verifying the linked order. Only admins can approve refunds or change invoice amounts. [Rules and boundaries](business-rules.md).
 
 ## Model connection
 
@@ -40,15 +40,18 @@ python3 scripts/start_demo.py --provider openai --check-model
 
 This sends three short synthetic requests, may incur charges, then exits and forgets interactive settings. It sends no existing tickets and creates no database. Normal startup already includes the check.
 
-The staff model-call panel records requested/reported model names, protocol, stage results, timings, history coverage and sanitized failures. A successful API response and an accepted answer are separate checks. Runtime fallback is visible. Seeded tickets use local responses even in model mode.
+The admin model-call panel records requested/reported model names, protocol, stage results, timings, history coverage and sanitized failures. A successful API response and an accepted answer are separate checks. Runtime fallback is visible. Seeded tickets use local responses even in model mode.
 
 ## Live updates
 
-SSE notifications trigger an authorized refetch. Customer and staff views update messages, retractions, ticket lists, AI status, plans and balances. A five-second fallback sync helps during disconnection; reconnection fetches current state.
+SSE notifications trigger an authorized refetch. Customer and staff views update messages, retractions, ticket lists, AI status, plans, balances and invoices. A five-second fallback sync helps during disconnection; reconnection fetches current state.
 
 Unsent text and scroll position are preserved. Open editing dialogs defer redraw until closed to protect unsaved changes. Ordinary tabs share login cookies: test different roles in separate browsers or independent private sessions.
 
 After changing application code, restart the server and reload existing pages once. Subsequent data changes synchronize automatically.
+
+
+Time-zone conversion needs an IANA database. If your Python installation lacks one (common on Windows), install it with `python3 -m pip install tzdata`. The top-bar selector changes display/event context; an explicit zone in the message takes precedence. [Matching rules](business-rules.md#request-identity-and-time-zones).
 
 ## Data and launch options
 
@@ -74,9 +77,9 @@ Optional local Docker configuration is included:
 docker compose up --build
 ```
 
-Compose starts the **current portal in local mode**, publishes it on loopback and persists `./runtime`. The root `.env.example` contains only an optional host-port setting; it is not a model credential file. Docker was not built or verified for v0.5.7.
+Compose starts the **current portal in local mode**, publishes it on loopback and persists `./runtime`. The root `.env.example` contains only an optional host-port setting; it is not a model credential file. Docker was not built or verified for v0.5.10.
 
-Usage, refunds, invoices and balances are synthetic. There is no real billing, automatic renewal, scheduled quota reset or invoice email.
+Usage, refunds, invoices and balances are synthetic. Quota resets and quota/balance deductions run in the local database. There is no real payment, automatic renewal or invoice email. The v0.5.9 migration updates unchanged seeded knowledge, preserves customized entries and keeps unpublished entries unpublished; review any custom rules separately.
 
 ## Troubleshooting
 
@@ -91,9 +94,11 @@ Usage, refunds, invoices and balances are synthetic. There is no real billing, a
 | HTTP 400 / 422 or schema error | Structured-output support and adapter parameters |
 | TLS certificate error | Install trusted CA roots for this interpreter; optional `python3 -m pip install -e ".[models]"` supplies certifi |
 | Customer receives no automatic answer | Inspect AI switch, human priority, review failure and action approval |
-| Reply is labeled local fallback | Read the failed stage and sanitized reason in the staff panel |
+| Reply is labeled local fallback | Read the failed stage and sanitized reason in the admin panel |
 | Old draft did not change | Generate a new reply; model settings do not rewrite earlier drafts |
-| Plan/balance controls missing | Switch to the admin workbench; support has read-only business access |
+| Plan/balance controls missing | Switch to the admin workbench; support uses only the approved correction and invoice controls on tickets |
 
 TLS verification remains enabled, including when certifi is used. Explicit `SSL_CERT_FILE` / `SSL_CERT_DIR` settings take precedence.
 
+
+For evidence visibility, `/recharge` and cost-rate setup, see the [admin guide](admin-evidence.md).

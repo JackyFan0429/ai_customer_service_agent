@@ -35,7 +35,7 @@
   },
   {
     "id": "balance-eligible",
-    "name": "小额负余额：先核验再批准",
+    "name": "小额负余额：核验通过后自动回正",
     "user_id": 2,
     "messages": [
       "我的余额为负，可以帮我回正吗？"
@@ -46,7 +46,7 @@
       "check_balance_adjustment"
     ],
     "contains": [
-      "待审核"
+      "已处理本次余额核验"
     ],
     "action": "balance_fix",
     "family": "受限操作"
@@ -335,9 +335,7 @@
       "还是一样，没有请求编号，信息已经发过。"
     ],
     "route": "answer_and_handoff",
-    "tools": [
-      "get_recent_requests"
-    ],
+    "tools": [],
     "contains": [
       "无需重复",
       "没有请求编号"
@@ -345,7 +343,8 @@
     "not_contains": [
       "请补充"
     ],
-    "family": "连续追问"
+    "family": "连续追问",
+    "review_note": "v0.5.8: the customer supplied a wall-clock time but no date/year; do not replace exact matching with a recent-log query. Preserve known details and hand off when no more information is available."
   },
   {
     "id": "multiturn-partial-refund",

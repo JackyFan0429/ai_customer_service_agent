@@ -1,5 +1,7 @@
 # BM25, character n-grams and hybrid retrieval
 
+> Historical v0.5.6 experiment. For reviewed v3 labels and v0.5.9 filtering, see [current evaluation](evaluation.md). All results below keep their original corpus and label status.
+
 [Documentation](README.md) · [Chinese](retrieval-comparison.zh-CN.md)
 
 Experiment: **v0.5.6**, 4 November 2026, using the frozen v0.5.5 dataset. This release preserves the original reports.

@@ -248,7 +248,7 @@ class LiveWorkflowTests(unittest.TestCase):
         self.assertEqual(message['content'], self.db.one('SELECT content FROM messages WHERE id=?',(message['id'],))['content'])
         self.denied(self.service.retract, self.customer, message['id'])
 
-    def test_staff_cannot_change_settings_accounts_or_approve_balance(self):
+    def test_staff_can_approve_eligible_balance_but_cannot_administer_accounts(self):
         self.denied(self.console.settings, self.staff, {'reply_mode':'review'})
         self.denied(self.console.update_user, self.staff, 3, {'balance_units':100})
         self.denied(self.console.save_subscription, self.staff, 3, {})
@@ -257,8 +257,8 @@ class LiveWorkflowTests(unittest.TestCase):
         alice = self.db.one('SELECT * FROM users WHERE id=2')
         tid = self.service.create_ticket(alice, {'subject':'负余额','content':'帮我回正余额'})['ticket']['id']
         self.service.run_due_jobs()
-        self.denied(self.service.publish, self.staff, self.last_run(tid)['id'], {'execute_actions':True})
-        self.assertEqual(-1800, self.db.one('SELECT balance_units FROM users WHERE id=2')['balance_units'])
+        self.service.publish(self.staff, self.last_run(tid)['id'], {'execute_actions':True})
+        self.assertEqual(0, self.db.one('SELECT balance_units FROM users WHERE id=2')['balance_units'])
 
     def test_global_switch_cancels_unsent_auto_jobs_but_keeps_human_assistance(self):
         tid = self.create()

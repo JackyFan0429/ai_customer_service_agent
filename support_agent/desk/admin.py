@@ -7,6 +7,7 @@ import re
 
 from .service import DeskError, public_user, require_admin, require_support, text_field
 from .storage import DATA, after, encode, now, password_hash
+from .audit import usage_summary, valid_prices
 
 
 class AdminConsole:
@@ -25,10 +26,15 @@ class AdminConsole:
             "sent_replies": db.one("SELECT COUNT(*) AS n FROM runs WHERE state='sent'")["n"],
             "customer_count": db.one("SELECT COUNT(*) AS n FROM users WHERE role='personal'")["n"],
             "overdue": sum(bool(t["status"] == "waiting_human" and t["handoff_at"] and t["handoff_at"] < after(hours=-db.settings()["handoff_reminder_hours"])) for t in tickets),
-        }, "tickets": tickets, "events": db.all("SELECT e.*,t.subject FROM events e LEFT JOIN tickets t ON t.id=e.ticket_id ORDER BY e.id DESC LIMIT 15"),
-            "settings": db.settings(), "provider": "openai" if self.service.workflow.model else "local",
+        }, "tickets": tickets, "events": self.service.visible_events(user, db.all("SELECT e.*,t.subject FROM events e LEFT JOIN tickets t ON t.id=e.ticket_id ORDER BY e.id DESC LIMIT 15")),
+            "settings": {k: v for k, v in db.settings().items() if user['role'] == 'admin' or k != 'model_prices'}, "provider": "openai" if self.service.workflow.model else "local",
             "model": self.service.workflow.model.provider.model if self.service.workflow.model else None,
             "platform": db.all("SELECT * FROM platform_status")}
+
+    def usage(self, user):
+        require_admin(user)
+        runs = [self.service.decode_run(r) for r in self.db.all('SELECT * FROM runs')]
+        return usage_summary(runs, self.db.settings().get('model_prices'))
 
     def users(self, user):
         require_admin(user)
@@ -99,6 +105,9 @@ class AdminConsole:
         if sid and not old:
             raise DeskError("套餐不存在", 404)
         values = {**(old or {}), **payload}
+        period = values.get('period_days', 7)
+        if type(period) is not int or not 1 <= period <= 366:
+            raise DeskError('刷新周期应为 1–366 天')
         name = text_field(values, "name", maximum=80)
         quota, used = values.get("quota_units"), values.get("used_units", 0)
         if type(quota) is not int or type(used) is not int or not 0 <= used <= quota <= 10000000000:
@@ -122,7 +131,8 @@ class AdminConsole:
             if sid:
                 self.db.execute("UPDATE subscriptions SET name=?,quota_units=?,used_units=?,reset_at=?,expires_at=?,status=? WHERE id=? AND user_id=?", (name, quota, used, *dates, status, sid, uid))
             else:
-                self.db.execute("INSERT INTO subscriptions(user_id,name,quota_units,used_units,reset_at,expires_at,status) VALUES (?,?,?,?,?,?,?)", (uid, name, quota, used, *dates, status))
+                sid = self.db.execute("INSERT INTO subscriptions(user_id,name,quota_units,used_units,reset_at,expires_at,status) VALUES (?,?,?,?,?,?,?)", (uid, name, quota, used, *dates, status))
+            self.db.execute('UPDATE subscriptions SET period_days=? WHERE id=?', (period, sid))
             self.db.event(None, "subscription_updated", f"管理员{'修改' if sid else '新增'}客户 #{uid} 的套餐：{name}", user["id"])
         return self.service.account(user, uid)
 
@@ -134,8 +144,7 @@ class AdminConsole:
             "handoff_reminder_hours": lambda v: type(v) is int and 1 <= v <= 168,
             "max_tool_calls": lambda v: type(v) is int and 4 <= v <= 16,
             "auto_balance_fix": lambda v: type(v) is bool,
-            "balance_fix_limit_units": lambda v: type(v) is int and 1 <= v <= 10000,
-            "balance_fix_cooldown_days": lambda v: type(v) is int and 1 <= v <= 30,
+            "model_prices": valid_prices,
         }
         for key, value in payload.items():
             if key not in validators or not validators[key](value):
@@ -148,6 +157,50 @@ class AdminConsole:
                 self.db.execute("UPDATE generation_jobs SET state='cancelled' WHERE force_review=0 AND state IN ('queued','running')")
             self.db.event(None, "policy_updated", "管理员更新客服工作流配置", user["id"])
         return self.db.settings()
+
+    def invoice(self, user, ticket_id, invoice_id, payload):
+        require_support(user)
+        ticket = self.service.ticket(user, ticket_id)
+        action = payload.get('action')
+        if action not in {'edit', 'reissue'}:
+            raise DeskError('请选择修改或重开')
+        with self.db.transaction():
+            old = self.db.one('SELECT * FROM invoices WHERE id=? AND user_id=?', (invoice_id, ticket['user_id']))
+            if not old:
+                raise DeskError('该客户没有此发票', 404)
+            order = self.db.one('SELECT * FROM orders WHERE id=? AND user_id=?', (old['order_id'], ticket['user_id']))
+            if not order or payload.get('order_number') != order['number'] or payload.get('order_verified') is not True:
+                raise DeskError('请核对并确认该客户的关联订单', 409)
+            if old['status'] == 'cancelled':
+                raise DeskError('原发票已取消，请使用最新发票记录', 409)
+            if type(payload.get('expected_revision')) is not int or payload['expected_revision'] != old['revision']:
+                raise DeskError('发票已更新，请查看最新记录后再操作', 409)
+            title = text_field(payload, 'title', maximum=120)
+            amount = payload.get('amount_cents', old['amount_cents'])
+            if type(amount) is not int or not 0 < amount <= 100000000:
+                raise DeskError('请输入有效发票金额')
+            if amount != old['amount_cents']:
+                require_admin(user)
+            stamp = now()
+            if action == 'reissue':
+                self.db.execute("UPDATE invoices SET status='cancelled',revision=revision+1,updated_at=? WHERE id=?", (stamp, invoice_id))
+                result_id = self.db.execute("INSERT INTO invoices(user_id,order_id,title,amount_cents,status,created_at,updated_at,reissued_from) VALUES (?,?,?,?,'issued',?,?,?)",
+                                            (ticket['user_id'], order['id'], title, amount, stamp, stamp, invoice_id))
+            else:
+                result_id = invoice_id
+                self.db.execute('UPDATE invoices SET title=?,amount_cents=?,revision=revision+1,updated_at=? WHERE id=?', (title, amount, stamp, invoice_id))
+            updated = self.db.one('SELECT * FROM invoices WHERE id=?', (result_id,))
+            self.db.execute('INSERT INTO invoice_events(invoice_id,actor_id,action,before_json,after_json,created_at) VALUES (?,?,?,?,?,?)',
+                            (invoice_id, user['id'], action, encode(old), encode(updated), stamp))
+            description = '已完成本地演示重开，原记录已取消' if action == 'reissue' else '已更新本地演示发票资料'
+            status = {'pending': '待开具', 'issued': '已开具', 'cancelled': '已取消'}[updated['status']]
+            message = f"{description}：抬头「{title}」，金额 ¥{amount/100:.2f}，状态「{status}」。未发送邮件，不涉及真实开票。"
+            self.db.execute("INSERT INTO messages(ticket_id,author_id,role,content,created_at) VALUES (?,?,'human',?,?)", (ticket_id, user['id'], message, stamp))
+            self.db.execute("UPDATE tickets SET updated_at=?,status='waiting_customer',human_until=?,handoff_at=NULL,reminder_at=NULL WHERE id=?", (stamp, after(minutes=self.db.settings()['human_cooldown_minutes']), ticket_id))
+            self.db.execute("UPDATE runs SET state='superseded' WHERE ticket_id=? AND state='draft'", (ticket_id,))
+            self.service.cancel_jobs(ticket_id)
+            self.db.event(ticket_id, 'invoice_updated', f"客服处理发票 #{invoice_id}；结果 #{result_id}，操作 {action}", user['id'])
+        return self.service.ticket_detail(user, ticket_id)
 
     def save_knowledge(self, user, payload):
         require_admin(user)

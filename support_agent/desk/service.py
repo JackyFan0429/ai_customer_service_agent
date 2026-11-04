@@ -11,6 +11,9 @@ from datetime import datetime, timedelta, timezone
 from .engine import INTENT_LABELS, SupportWorkflow, quality_check, scrub
 from .storage import DATA, Database, after, encode, now, password_hash, password_matches
 from .tools import balance_eligibility
+from .billing import refresh_subscriptions
+from .audit import run_receipt
+from .request_context import parse_context, time_evidence
 
 
 class DeskError(Exception):
@@ -50,6 +53,7 @@ def text_field(payload, key, *, maximum=6000, required=True):
 class DeskService:
     def __init__(self, db: Database, model=None, *, seed_tickets=True, background=False):
         self.db = db
+        refresh_subscriptions(db)
         self.workflow = SupportWorkflow(db, model)
         self.model_status = {"status": "configured" if model else "local"}
         self.background = False
@@ -95,7 +99,7 @@ class DeskService:
     def list_tickets(self, user):
         clause, args = ("", ()) if is_staff(user) else ("WHERE t.user_id=?", (user["id"],))
         rows = self.db.all(f"SELECT t.*,u.name AS customer_name,u.email AS customer_email,"
-                           "(SELECT CASE WHEN retracted_at IS NOT NULL THEN '已撤回' ELSE content END FROM messages m WHERE m.ticket_id=t.id ORDER BY id DESC LIMIT 1) AS preview,"
+                           "(SELECT CASE WHEN retracted_at IS NOT NULL THEN '已撤回' ELSE content END FROM messages m WHERE m.ticket_id=t.id AND m.visibility='public' ORDER BY id DESC LIMIT 1) AS preview,"
                            "(SELECT COUNT(*) FROM runs r WHERE r.ticket_id=t.id AND r.state='draft') AS draft_count "
                            f"FROM tickets t JOIN users u ON u.id=t.user_id {clause} ORDER BY t.updated_at DESC,t.id DESC", args)
         for row in rows:
@@ -106,8 +110,11 @@ class DeskService:
 
     def ticket_detail(self, user, ticket_id):
         ticket = self.ticket(user, ticket_id)
-        messages = self.db.all("SELECT m.*,u.name AS author_name,r.provider AS run_provider,r.quality_json AS run_quality FROM messages m LEFT JOIN users u ON m.author_id=u.id LEFT JOIN runs r ON r.id=m.run_id WHERE m.ticket_id=? ORDER BY m.id", (ticket_id,))
+        visible = ('public', 'staff', 'admin') if is_staff(user) and user['role'] == 'admin' else ('public', 'staff') if is_staff(user) else ('public',)
+        marks = ','.join('?' for _ in visible)
+        messages = self.db.all(f"SELECT m.*,u.name AS author_name,r.provider AS run_provider,r.quality_json AS run_quality FROM messages m LEFT JOIN users u ON m.author_id=u.id LEFT JOIN runs r ON r.id=m.run_id WHERE m.ticket_id=? AND m.visibility IN ({marks}) ORDER BY m.id", (ticket_id, *visible))
         for message in messages:
+            message["request_context"] = json.loads(message.pop("request_context_json", "{}"))
             provider = message.pop("run_provider")
             metadata = json.loads(message.pop("run_quality") or "{}").get("model", {})
             if message["role"] == "assistant":
@@ -131,7 +138,15 @@ class DeskService:
             result["human_notice"] = self.human_notice(ticket)
             result["context"] = json.loads(ticket["context_json"])
             result["runs"] = [self.decode_run(r) for r in self.db.all("SELECT r.*,EXISTS(SELECT 1 FROM messages m WHERE m.run_id=r.id AND m.retracted_at IS NOT NULL) AS retracted FROM runs r WHERE ticket_id=? ORDER BY id DESC", (ticket_id,))]
-            result["events"] = self.db.all("SELECT * FROM events WHERE ticket_id=? ORDER BY id", (ticket_id,))
+            result["events"] = self.visible_events(user, self.db.all("SELECT * FROM events WHERE ticket_id=? ORDER BY id", (ticket_id,)))
+            if user['role'] != 'admin':
+                result.pop('context', None)
+                for run in result['runs']:
+                    final = {k: run[k] for k in ('id', 'ticket_id', 'state', 'answer', 'blocked_reason', 'retracted', 'route', 'created_at') if k in run}
+                    final['quality'] = {'passed': run['quality']['passed']}
+                    final['actions'] = [{'type': a['type']} for a in run['actions']]
+                    run.clear()
+                    run.update(final)
             result["account"] = self.account(user, ticket["user_id"])
         else:
             result["pending_review"] = bool(self.db.one("SELECT id FROM runs WHERE ticket_id=? AND state='draft'", (ticket_id,)))
@@ -140,10 +155,56 @@ class DeskService:
     @staticmethod
     def decode_run(row):
         result = dict(row)
+        result["admin_basis"] = json.loads(result.pop("admin_basis_json", "{}"))
         for field in ("intents", "tools", "evidence", "quality", "actions"):
             result[field] = json.loads(result.pop(field + "_json"))
         result["intent_labels"] = [INTENT_LABELS.get(i, i) for i in result["intents"]]
         return result
+
+    @staticmethod
+    def visible_events(user, rows):
+        if user['role'] == 'admin' and is_staff(user):
+            return rows
+        descriptions = {'ai_draft': 'AI 建议已生成', 'model_fallback': '回复引擎使用备用答复'}
+        return [{**row, 'detail': descriptions.get(row['kind'], row['detail'])} for row in rows]
+
+    def execute_balance_fix(self, ticket, *, actor=None, run=None, override=False):
+        """Caller holds the transaction; the model never supplies the account ID."""
+        uid, tid = ticket['user_id'], ticket['id']
+        balance = self.db.one('SELECT balance_units FROM users WHERE id=?', (uid,))['balance_units']
+        if balance >= 0:
+            if not override:
+                raise DeskError('余额已经变化，请重新生成答复', 409)
+            detail = f'当前余额 {balance / 10000:.4f} USD，无需回正。'
+        else:
+            if not override:
+                check = balance_eligibility(self.db, uid, self.db.settings())
+                action = next(a for a in run['actions'] if a['type'] == 'balance_fix')
+                if not check['eligible'] or balance != action['expected_balance_units'] or check.get('ledger_id') != action.get('expected_ledger_id'):
+                    raise DeskError('余额或核验条件已经变化，请重新生成草稿', 409)
+            latest = self.db.one('SELECT id FROM ledger WHERE user_id=? ORDER BY id DESC LIMIT 1', (uid,))
+            key = f"run:{run['id']}:balance_fix" if run else f"override:{tid}:{latest['id'] if latest else 0}:{balance}"
+            self.db.execute('UPDATE users SET balance_units=0 WHERE id=?', (uid,))
+            self.db.execute("INSERT INTO ledger(user_id,kind,delta_units,balance_after_units,note,operation_key,created_at) VALUES (?,'balance_fix',?,0,?,?,?)",
+                            (uid, -balance, '余额回正', key, now()))
+            who = f"工作人员 #{actor['id']}" if actor else 'AI 自动执行'
+            detail = f'回正成功 · 当前余额 $0.0000 · 原余额 ${balance / 10000:.4f} · {who}'
+            self.db.event(tid, 'balance_fixed', detail, actor['id'] if actor else None)
+        self.db.execute("INSERT INTO messages(ticket_id,author_id,role,content,created_at,visibility) VALUES (?,?,'system',?,?,'staff')",
+                        (tid, actor['id'] if actor else None, detail, now()))
+        return detail
+
+    def message_context(self, uid, content, payload):
+        try:
+            context = parse_context(content, payload, received_at=now())
+        except ValueError as error:
+            raise DeskError(str(error)) from None
+        if payload.get('request_id') is not None:
+            row = self.db.one('SELECT created_at FROM request_logs WHERE id=? AND user_id=?', (payload['request_id'], uid))
+            if not row:
+                raise DeskError('当前客户没有该请求记录', 404)
+            context['linked_time'] = time_evidence(row['created_at'], context.get('time_zone'))
+        return context
 
     def create_ticket(self, user, payload):
         uid = user["id"]
@@ -154,10 +215,12 @@ class DeskService:
                 raise DeskError("请选择有效客户")
         subject = text_field(payload, "subject", maximum=120)
         content = text_field(payload, "content")
+        context_payload = {**payload, 'time_zone': None, 'timezone_source': 'unknown'} if is_staff(user) and payload.get('timezone_source', 'browser') == 'browser' else payload
+        metadata = self.message_context(uid, content, context_payload)
         with self.db.lock:
             with self.db.transaction():
                 tid = self.db.execute("INSERT INTO tickets(user_id,subject,created_at,updated_at) VALUES (?,?,?,?)", (uid, subject, now(), now()))
-                mid = self.db.execute("INSERT INTO messages(ticket_id,author_id,role,content,created_at) VALUES (?,?,'customer',?,?)", (tid, uid, content, now()))
+                mid = self.db.execute("INSERT INTO messages(ticket_id,author_id,role,content,created_at,request_context_json) VALUES (?,?,'customer',?,?,?)", (tid, uid, content, now(), encode(metadata)))
                 self.db.event(tid, "ticket_created", "客户提交工单", uid)
             self.schedule(tid, mid)
         return self.ticket_detail(user, tid)
@@ -167,9 +230,10 @@ class DeskService:
         if is_staff(user):
             return self.human_reply(user, tid, payload)
         content = text_field(payload, "content")
+        metadata = self.message_context(ticket['user_id'], content, payload)
         with self.db.lock:
             with self.db.transaction():
-                mid = self.db.execute("INSERT INTO messages(ticket_id,author_id,role,content,created_at) VALUES (?,?,'customer',?,?)", (tid, user["id"], content, now()))
+                mid = self.db.execute("INSERT INTO messages(ticket_id,author_id,role,content,created_at,request_context_json) VALUES (?,?,'customer',?,?,?)", (tid, user["id"], content, now(), encode(metadata)))
                 self.db.execute("UPDATE tickets SET updated_at=?,status=CASE WHEN status='resolved' THEN 'open' ELSE status END WHERE id=?", (now(), tid))
                 self.db.execute("UPDATE runs SET state='superseded' WHERE ticket_id=? AND state='draft'", (tid,))
                 self.cancel_jobs(tid)
@@ -255,15 +319,19 @@ class DeskService:
             if not reason and force_review:
                 reason = "人工请求的内部建议，等待客服确认发送"
             if not reason and config["reply_mode"] != "auto":
-                reason = "AI 直接发送已关闭，等待客服确认发送"
+                reason = "生成时 AI 直接发送已关闭，此建议仍需客服确认发送"
             if not reason and run["quality"].get("blocking_warnings", run["quality"].get("warnings", [])):
                 reason = "业务查询未完成，缺失信息需要人工核验"
             if not reason and not run["quality"]["passed"]:
                 reason = "回复未通过质检，需要人工复核"
-            if not reason and any(a["type"] == "balance_fix" for a in run["actions"]) and not config["auto_balance_fix"]:
-                reason = "余额操作等待管理员批准"
+            if not reason and not config.get("auto_balance_fix") and any(a["type"] == "balance_fix" for a in run["actions"]):
+                reason = "余额操作等待客服或管理员核验批准"
             rid = self.db.execute("INSERT INTO runs(ticket_id,trigger_message_id,route,intents_json,answer,original_answer,baseline_answer,internal_note,tools_json,evidence_json,quality_json,actions_json,provider,blocked_reason,elapsed_ms,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                                  (tid, mid, run["route"], encode(run["intents"]), run["answer"], run["original_answer"], run["baseline"], run["internal_note"], encode(run["tools"]), encode(run["evidence"]), encode(run["quality"]), encode(run["actions"]), run["provider"], reason, run["elapsed_ms"], now()))
+            receipt = run_receipt(run, config.get('model_prices'))
+            self.db.execute('UPDATE runs SET admin_basis_json=? WHERE id=?', (encode(receipt), rid))
+            self.db.execute("INSERT INTO messages(ticket_id,role,content,created_at,run_id,visibility) VALUES (?,'system',?,?,?,'admin')",
+                            (tid, receipt['summary'], now(), rid))
             status = "human" if self.human_notice(ticket) else "waiting_human" if reason else "open"
             self.db.execute("UPDATE tickets SET context_json=?,status=?,updated_at=? WHERE id=?", (encode(run["context"]), status, now(), tid))
             self.db.event(tid, "ai_draft", f"生成建议 #{rid}，路由 {run['route']}，查询 {len(run['tools'])} 个工具")
@@ -275,7 +343,9 @@ class DeskService:
             try:
                 self.publish(None, rid, {"execute_actions": config["auto_balance_fix"]}, automatic=True)
             except DeskError:
-                self.db.execute("UPDATE runs SET blocked_reason='发送前状态已变化，等待人工核验' WHERE id=? AND state='draft'", (rid,))
+                with self.db.transaction():
+                    self.db.execute("UPDATE runs SET blocked_reason='发送前状态已变化，等待人工核验' WHERE id=? AND state='draft'", (rid,))
+                    self.db.execute("UPDATE tickets SET status='waiting_human',updated_at=? WHERE id=? AND status='open'", (now(), tid))
         return rid
 
     def publish(self, user, rid, payload, *, automatic=False):
@@ -304,23 +374,17 @@ class DeskService:
             if not quality["passed"]:
                 raise DeskError("回复未通过质检：" + "；".join(i["message"] for i in quality["issues"]), 422)
             action_needed = any(a["type"] == "balance_fix" for a in run["actions"])
-            if action_needed and not automatic:
-                require_admin(user)
+            if action_needed and automatic and not self.db.settings().get("auto_balance_fix"):
+                raise DeskError("AI 自动回正已关闭", 409)
             if action_needed and payload.get("execute_actions") is not True:
                 raise DeskError("该草稿包含余额回正操作，请使用“批准操作并发送”，或先人工回复", 409)
             if action_needed and content != run["baseline_answer"]:
                 raise DeskError("余额操作使用核验后的固定回复；需要修改说明时请使用人工回复", 422)
             for action in run["actions"]:
                 if action["type"] == "balance_fix":
-                    check = balance_eligibility(self.db, ticket["user_id"], self.db.settings())
-                    if not check["eligible"] or check["balance_units"] != action["expected_balance_units"]:
-                        raise DeskError("余额或核验条件已经变化，请重新生成草稿", 409)
-                    self.db.execute("UPDATE users SET balance_units=0 WHERE id=?", (ticket["user_id"],))
-                    self.db.execute("INSERT INTO ledger(user_id,kind,delta_units,balance_after_units,note,operation_key,created_at) VALUES (?,'balance_fix',?,0,?,?,?)",
-                                    (ticket["user_id"], -check["balance_units"], "客服演示回正", f"run:{rid}:balance_fix", now()))
+                    self.execute_balance_fix(ticket, actor=user, run=run)
                     content = re.sub(r"查询到你当前的账户余额是[^。]*。", "", content)
-                    content = content.replace("这笔负余额符合演示平台的回正条件，已列为待审核操作；批准执行后才能确认余额恢复。", "余额已回正至 $0.0000，已核对数据库写入结果。")
-                    self.db.event(tid, "balance_fixed", "已执行演示余额回正，数据库余额为 0", user["id"] if user else None)
+                    content = content.replace("正在按已核验的账本处理余额回正；处理结果以账户页面为准。", "已处理本次余额核验，你可以在账户页面查看当前状态；如仍有异常，可以继续在本工单说明。")
                 elif action["type"] == "refund_request":
                     self.db.execute("UPDATE orders SET refund_status='pending' WHERE number=? AND user_id=? AND refund_status='none'", (action["order_number"], ticket["user_id"]))
             if run["route"] in {"handoff", "answer_and_handoff"}:
@@ -346,6 +410,16 @@ class DeskService:
         require_support(user)
         self.ticket(user, tid)
         content = text_field(payload, "content")
+        if content.startswith('/recharge'):
+            if content != '/recharge':
+                raise DeskError('回正命令请单独输入 /recharge，不附带金额或其他文字')
+            with self.db.transaction():
+                ticket = self.ticket(user, tid)
+                self.execute_balance_fix(ticket, actor=user, override=True)
+                self.db.execute("UPDATE runs SET state='superseded' WHERE ticket_id=? AND state='draft'", (tid,))
+                self.db.execute('UPDATE tickets SET human_until=?,updated_at=? WHERE id=?', (after(minutes=self.db.settings()['human_cooldown_minutes']), now(), tid))
+                self.cancel_jobs(tid)
+            return self.ticket_detail(user, tid)
         with self.db.transaction():
             self.db.execute("INSERT INTO messages(ticket_id,author_id,role,content,created_at) VALUES (?,?,'human',?,?)", (tid, user["id"], content, now()))
             self.db.execute("UPDATE tickets SET status='waiting_customer',human_until=?,handoff_at=NULL,reminder_at=NULL,updated_at=? WHERE id=?", (after(minutes=self.db.settings()["human_cooldown_minutes"]), now(), tid))
@@ -391,25 +465,41 @@ class DeskService:
         uid = uid if uid is not None else user["id"]
         if uid != user["id"]:
             require_support(user)
+        refresh_subscriptions(self.db, uid)
         row = self.db.one("SELECT * FROM users WHERE id=?", (uid,))
         if not row:
             raise DeskError("账号不存在", 404)
         return {"user": public_user(row),
                 "subscriptions": self.db.all("SELECT * FROM subscriptions WHERE user_id=? ORDER BY (status='active') DESC,id DESC", (uid,)),
                 "orders": self.db.all("SELECT * FROM orders WHERE user_id=?", (uid,)),
-                "invoices": self.db.all("SELECT * FROM invoices WHERE user_id=?", (uid,)),
+                "invoices": self.db.all("SELECT i.*,o.number AS order_number FROM invoices i LEFT JOIN orders o ON o.id=i.order_id WHERE i.user_id=? ORDER BY i.id DESC", (uid,)),
+                "quota_ledger": self.db.all("SELECT * FROM quota_ledger WHERE user_id=? ORDER BY id DESC LIMIT 50", (uid,)),
                 "requests": self.db.all("SELECT * FROM request_logs WHERE user_id=? ORDER BY id DESC LIMIT 30", (uid,)),
                 "ledger": self.db.all("SELECT * FROM ledger WHERE user_id=? ORDER BY id DESC", (uid,)),
-                "keys": self.db.all("SELECT name,suffix,channel,balance_fallback FROM api_key_metadata WHERE user_id=?", (uid,))}
+                "keys": self.db.all("SELECT id,name,suffix,channel,balance_fallback FROM api_key_metadata WHERE user_id=?", (uid,))}
+
+    def set_balance_fallback(self, user, key_id, payload):
+        if is_staff(user):
+            raise DeskError('请在个人空间修改自己的 Key 设置', 403)
+        value = payload.get('enabled')
+        if type(value) is not bool:
+            raise DeskError('余额兜底设置必须为开或关')
+        with self.db.transaction():
+            if not self.db.one('SELECT id FROM api_key_metadata WHERE id=? AND user_id=?', (key_id, user['id'])):
+                raise DeskError('当前账号没有该 Key', 404)
+            self.db.execute('UPDATE api_key_metadata SET balance_fallback=? WHERE id=? AND user_id=?', (int(value), key_id, user['id']))
+            self.db.event(None, 'key_fallback_updated', f"客户 #{user['id']} {'开启' if value else '关闭'} Key #{key_id} 的余额兜底", user['id'])
+        return self.account(user)
 
     def maintenance(self):
+        refreshed = refresh_subscriptions(self.db)
         cutoff = after(hours=-self.db.settings()["handoff_reminder_hours"])
         with self.db.transaction():
             rows = self.db.all("SELECT * FROM tickets WHERE status='waiting_human' AND handoff_at<? AND reminder_at IS NULL", (cutoff,))
             for row in rows:
                 self.db.event(row["id"], "overdue_reminder", "转人工等待超时，请管理员跟进")
                 self.db.execute("UPDATE tickets SET reminder_at=? WHERE id=?", (now(), row["id"]))
-        return {"reminded": len(rows)}
+        return {"reminded": len(rows), "refreshed": refreshed}
 
     def seed_examples(self):
         self.seeding = True

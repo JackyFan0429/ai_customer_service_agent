@@ -131,6 +131,17 @@ CREATE TABLE IF NOT EXISTS generation_jobs (
  due_at TEXT NOT NULL, created_at TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS jobs_due ON generation_jobs(state,due_at);
+CREATE TABLE IF NOT EXISTS quota_ledger (
+ id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id),
+ subscription_id INTEGER NOT NULL REFERENCES subscriptions(id), kind TEXT NOT NULL,
+ delta_units INTEGER NOT NULL, used_after_units INTEGER NOT NULL,
+ request_id INTEGER REFERENCES request_logs(id), period_end TEXT NOT NULL, created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS invoice_events (
+ id INTEGER PRIMARY KEY, invoice_id INTEGER NOT NULL REFERENCES invoices(id),
+ actor_id INTEGER NOT NULL REFERENCES users(id), action TEXT NOT NULL,
+ before_json TEXT NOT NULL, after_json TEXT NOT NULL, created_at TEXT NOT NULL
+);
 """
 
 
@@ -170,7 +181,11 @@ class Database:
                 self.connection.execute("PRAGMA foreign_keys=ON")
         for table, additions in {
             "sessions": {"view_mode": "TEXT NOT NULL DEFAULT 'workspace'"},
-            "messages": {"retracted_at": "TEXT", "retracted_by": "INTEGER REFERENCES users(id)", "run_id": "INTEGER REFERENCES runs(id)"},
+            "subscriptions": {"period_days": "INTEGER NOT NULL DEFAULT 7"},
+            "request_logs": {"billing_source": "TEXT NOT NULL DEFAULT 'legacy'", "api_key_id": "INTEGER REFERENCES api_key_metadata(id)", "subscription_id": "INTEGER REFERENCES subscriptions(id)"},
+            "invoices": {"revision": "INTEGER NOT NULL DEFAULT 0", "updated_at": "TEXT", "reissued_from": "INTEGER REFERENCES invoices(id)"},
+            "runs": {"admin_basis_json": "TEXT NOT NULL DEFAULT '{}'"},
+            "messages": {"visibility": "TEXT NOT NULL DEFAULT 'public'", "retracted_at": "TEXT", "retracted_by": "INTEGER REFERENCES users(id)", "run_id": "INTEGER REFERENCES runs(id)", "request_context_json": "TEXT NOT NULL DEFAULT '{}'"},
         }.items():
             columns = {r["name"] for r in self.all(f"PRAGMA table_info({table})")}
             for name, definition in additions.items():
@@ -183,6 +198,31 @@ class Database:
                 self.set_setting("human_suggestion_delay_seconds", 60)
                 self.set_setting("policy_version", "lumen-demo-v2")
                 self.set_setting("live_workflow_migrated", True)
+        if not self.settings().get("business_rules_v3_migrated"):
+            with self.transaction():
+                self.set_setting("balance_fix_threshold_units", 50000)
+                self.set_setting("balance_fix_cooldown_days", 7)
+                self.set_setting("auto_balance_fix", False)
+                self.set_setting("policy_version", "lumen-demo-v3")
+                old_docs = {d['id']: d for d in json.loads((DATA / 'knowledge-v2.json').read_text())}
+                for doc in json.loads((DATA / 'knowledge.json').read_text()):
+                    old = old_docs.get(doc['id'])
+                    if old:
+                        self.execute("UPDATE knowledge SET content=?,keywords=?,updated_at=?,review_after=?,title=? WHERE id=? AND content=?",
+                                     (doc['content'], encode(doc['keywords']), now(), after(days=90)[:10], doc['title'], doc['id'], old['content']))
+                self.set_setting("business_rules_v3_migrated", True)
+        if not self.settings().get("business_rules_v4_migrated"):
+            with self.transaction():
+                self.set_setting("auto_balance_fix", True)
+                self.set_setting("policy_version", "lumen-demo-v4")
+                self.set_setting("model_prices", {})
+                previous = {d['id']: d for d in json.loads((DATA / 'knowledge-v3.json').read_text())}
+                for doc in json.loads((DATA / 'knowledge.json').read_text()):
+                    old = previous.get(doc['id'])
+                    if old:
+                        self.execute("UPDATE knowledge SET content=?,keywords=?,updated_at=?,review_after=?,title=? WHERE id=? AND content=?",
+                                     (doc['content'], encode(doc['keywords']), now(), after(days=90)[:10], doc['title'], doc['id'], old['content']))
+                self.set_setting("business_rules_v4_migrated", True)
         # A stopped process cannot finish its claimed jobs. Recheck them on restart.
         self.execute("UPDATE generation_jobs SET state='queued' WHERE state='running'")
 
@@ -240,6 +280,9 @@ class Database:
                 with self.transaction():
                     uid = self.execute("INSERT INTO users(email,name,password_hash,role,balance_units,company,persona,created_at) VALUES (?,?,?,'support',200000,'Lumen Support','人工客服 · 可切换个人空间',?)", (email, name, password_hash("Demo123!"), now()))
                     self.execute("INSERT INTO subscriptions(user_id,name,quota_units,used_units,reset_at,expires_at) VALUES (?,'客服体验月卡',6000000,0,?,?)", (uid, after(days=7), after(days=30)))
+        for user in self.all("SELECT id FROM users WHERE role IN ('support','admin')"):
+            if not self.one('SELECT id FROM api_key_metadata WHERE user_id=?', (user['id'],)):
+                self.execute("INSERT INTO api_key_metadata(user_id,name,suffix,channel,balance_fallback) VALUES (?,'个人体验 Key',?,'标准线路',0)", (user['id'], f"d{user['id']:03d}"))
 
     def seed(self):
         defaults = json.loads((DATA / "policy.json").read_text(encoding="utf-8"))

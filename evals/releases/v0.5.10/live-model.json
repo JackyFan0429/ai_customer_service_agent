@@ -1,0 +1,1049 @@
+{
+  "version": "0.5.10",
+  "tested_on": "2026-11-05",
+  "timezone": "Australia/Sydney",
+  "requested_model": "gpt-6-astra",
+  "api_mode": "chat_completions",
+  "turns": 12,
+  "calls": 34,
+  "failed_api_calls": 0,
+  "input_tokens": 83979,
+  "output_tokens": 3190,
+  "model_elapsed_ms": 233035,
+  "observed_fallbacks_before_fix": [
+    "large_balance_cooldown"
+  ],
+  "retained_knowledge_failures_before_fix": [
+    "return403",
+    "human_context"
+  ],
+  "fixed_cases": [
+    "return403_fixed",
+    "human_context_fixed",
+    "large_balance_cooldown_fixed"
+  ],
+  "financial_template_turns": [
+    "automatic_balance",
+    "large_balance_fixed"
+  ],
+  "cost": null,
+  "cost_reason": "No provider tariff supplied; no monetary saving claimed.",
+  "limits": [
+    "Synthetic business accounts and local ledger fixtures only.",
+    "Known acceptance scenarios, not blind evaluation or production resolution rate.",
+    "Includes investigative runs before fixes; not all runs passed initially.",
+    "Startup connection probes excluded; cumulative model time is not user waiting time.",
+    "Keys, API endpoint, sessions and runtime database excluded from the release."
+  ],
+  "turn_records": [
+    {
+      "case": "after_human_resume",
+      "question": "我已打开余额兜底，刚才请求 #37 成功了。请查这次实际扣的是哪一份、具体多少钱，并核对当前余额。",
+      "ticket_id": 7,
+      "started_at": "2026-11-04T13:15:43.498398+00:00",
+      "completed_at": "2026-11-04T13:16:03.591913+00:00",
+      "checks": {
+        "real_triage_succeeded": true,
+        "no_model_fallback": true,
+        "quality_passed": true,
+        "admin_basis_present": true,
+        "basis_hidden_from_customer": true,
+        "basis_hidden_from_support": true,
+        "technical_details_hidden_from_support_api": true
+      },
+      "answer": "已核实，**请求 #37 成功，本次扣的是账户余额，不是套餐额度。**\n\n- **实际费用：$0.1200**\n- **当前账户余额：$18.3800**（查询于 2026-11-04 13:15:48 UTC）\n- 请求模型：gpt-6.1-sol，返回 HTTP 200，无错误。\n- 使用 Key：「开发环境」（末四位 3f8a），已确认余额兜底开启。\n- 请求时间：2026-11-05 00:15:43（Australia/Sydney，UTC+11:00），对应 2026-11-04 13:15:43 UTC。",
+      "state": "sent",
+      "knowledge_ids": [],
+      "route": "answer",
+      "tools": [
+        "search_kb",
+        "get_account_overview",
+        "get_api_keys",
+        "get_recent_requests",
+        "check_platform_status"
+      ],
+      "admin_basis": "分诊：balance / technical；路由：answer。\n检索：BM25 0.62 + 字符 2/3-gram 0.38，经问题类型和完整错误码过滤，最多 4 条；依据：无匹配知识。\n业务查询：get_account_overview → get_api_keys → get_recent_requests → check_platform_status；数据绑定当前工单客户。\n质检：通过；回复来源：openai。\n模型依据摘要：本次无知识文档命中。get_recent_requests 按编号精确匹配 #37，无冲突，状态200，余额扣费1200单位；get_account_overview 查得余额183800单位；get_api_keys 确认余额兜底开启。金额依据本轮业务答复。",
+      "model": {
+        "requested_model": "gpt-6-astra",
+        "api_mode": "chat_completions",
+        "calls": [
+          {
+            "stage": "support_intents",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 2264,
+              "completion_tokens": 18,
+              "total_tokens": 2282
+            },
+            "elapsed_ms": 4326
+          },
+          {
+            "stage": "support_reply",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 3934,
+              "completion_tokens": 242,
+              "total_tokens": 4176
+            },
+            "elapsed_ms": 10676
+          },
+          {
+            "stage": "support_quality",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 3774,
+              "completion_tokens": 13,
+              "total_tokens": 3787
+            },
+            "elapsed_ms": 4099,
+            "content_review": {
+              "passed": true,
+              "issues": []
+            }
+          }
+        ],
+        "review": {
+          "passed": true,
+          "issues": []
+        },
+        "source": "model",
+        "history_messages": 9,
+        "history_truncated": false,
+        "includes_human": true
+      },
+      "fallback": false,
+      "revision_attempted": false,
+      "warnings": []
+    },
+    {
+      "case": "automatic_balance",
+      "question": "我的余额变成负数了，请核对最后一笔套餐超额和账本，符合条件就直接帮我回正。",
+      "ticket_id": 8,
+      "started_at": "2026-11-04T13:11:42.225987+00:00",
+      "completed_at": "2026-11-04T13:11:48.262172+00:00",
+      "checks": {
+        "real_triage_succeeded": true,
+        "no_model_fallback": true,
+        "quality_passed": true,
+        "admin_basis_present": true,
+        "basis_hidden_from_customer": true,
+        "basis_hidden_from_support": true,
+        "technical_details_hidden_from_support_api": true
+      },
+      "answer": "你的「轻享月卡」当前周期额度为 $600.0000，已用 $180.0000，剩余 $420.0000。下一次刷新时间为 2026-11-07（UTC），套餐到期时间为 2026-11-25（UTC）。\n\n本次查询：Key「开发环境」（末四位 2f8a）的余额兜底关闭。使用该 Key 时，额度用尽不会自动扣账户余额继续请求。\n\n\n\n已处理本次余额核验，你可以在账户页面查看当前状态；如仍有异常，可以继续在本工单说明。",
+      "state": "sent",
+      "knowledge_ids": [
+        "BAL-001",
+        "PLAN-001"
+      ],
+      "route": "answer",
+      "tools": [
+        "search_kb",
+        "get_subscriptions",
+        "get_api_keys",
+        "get_account_overview",
+        "check_balance_adjustment"
+      ],
+      "admin_basis": "分诊：quota / balance；路由：answer。\n检索：BM25 0.62 + 字符 2/3-gram 0.38，经问题类型和完整错误码过滤，最多 4 条；依据：BAL-001＋PLAN-001。\n业务查询：get_subscriptions → get_api_keys → get_account_overview → check_balance_adjustment；数据绑定当前工单客户。\n质检：通过；回复来源：local。",
+      "model": {
+        "requested_model": "gpt-6-astra",
+        "api_mode": "chat_completions",
+        "calls": [
+          {
+            "stage": "support_intents",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 562,
+              "completion_tokens": 18,
+              "total_tokens": 580
+            },
+            "elapsed_ms": 4703
+          }
+        ],
+        "review": null,
+        "source": "policy",
+        "history_messages": 0,
+        "history_truncated": false,
+        "includes_human": false
+      },
+      "fallback": false,
+      "revision_attempted": false,
+      "warnings": []
+    },
+    {
+      "case": "balance_after_write",
+      "question": "现在再查一下我的精确余额是多少？不要重复执行回正。",
+      "ticket_id": 8,
+      "started_at": "2026-11-04T13:12:25.967194+00:00",
+      "completed_at": "2026-11-04T13:12:42.045351+00:00",
+      "checks": {
+        "real_triage_succeeded": true,
+        "no_model_fallback": true,
+        "quality_passed": true,
+        "admin_basis_present": true,
+        "basis_hidden_from_customer": true,
+        "basis_hidden_from_support": true,
+        "technical_details_hidden_from_support_api": true
+      },
+      "answer": "刚查询到，你当前的账户精确余额为 **$0.0000**。本次仅查询余额，没有重复执行回正。",
+      "state": "sent",
+      "knowledge_ids": [
+        "BAL-001"
+      ],
+      "route": "answer",
+      "tools": [
+        "search_kb",
+        "get_account_overview"
+      ],
+      "admin_basis": "分诊：balance；路由：answer。\n检索：BM25 0.62 + 字符 2/3-gram 0.38，经问题类型和完整错误码过滤，最多 4 条；依据：BAL-001。\n业务查询：get_account_overview；数据绑定当前工单客户。\n质检：通过；回复来源：openai。\n模型依据摘要：命中知识 BAL-001；get_account_overview 于 2026-11-04T13:12:31+00:00 查询到账户余额为 0。本轮仅查询，未执行回正。",
+      "model": {
+        "requested_model": "gpt-6-astra",
+        "api_mode": "chat_completions",
+        "calls": [
+          {
+            "stage": "support_intents",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 821,
+              "completion_tokens": 16,
+              "total_tokens": 837
+            },
+            "elapsed_ms": 5310
+          },
+          {
+            "stage": "support_reply",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 1953,
+              "completion_tokens": 93,
+              "total_tokens": 2046
+            },
+            "elapsed_ms": 5525
+          },
+          {
+            "stage": "support_quality",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 1665,
+              "completion_tokens": 13,
+              "total_tokens": 1678
+            },
+            "elapsed_ms": 4467,
+            "content_review": {
+              "passed": true,
+              "issues": []
+            }
+          }
+        ],
+        "review": {
+          "passed": true,
+          "issues": []
+        },
+        "source": "model",
+        "history_messages": 2,
+        "history_truncated": false,
+        "includes_human": false
+      },
+      "fallback": false,
+      "revision_attempted": false,
+      "warnings": []
+    },
+    {
+      "case": "combo403",
+      "question": "gpt-6.1-sol 返回 403。账户还有钱、套餐还有效，但本周期额度用光了，Key 的余额兜底关闭。请帮我核查为什么不能继续请求。",
+      "ticket_id": 7,
+      "started_at": "2026-11-04T13:10:15.282939+00:00",
+      "completed_at": "2026-11-04T13:10:41.408479+00:00",
+      "checks": {
+        "real_triage_succeeded": true,
+        "no_model_fallback": true,
+        "quality_passed": true,
+        "admin_basis_present": true,
+        "basis_hidden_from_customer": true,
+        "basis_hidden_from_support": true,
+        "technical_details_hidden_from_support_api": true
+      },
+      "answer": "已核查：**本周期额度用尽，且 Key 的余额兜底关闭，所以即使账户有余额、套餐仍有效，也不能自动扣余额继续请求。**\n\n当前状态：\n- 「轻享周卡」本周期额度 $600.0000，已用 $600.0000，剩余 $0.0000。\n- 下次额度刷新：2026-11-07 13:09（UTC）；套餐到期：2026-11-25 13:09（UTC）。套餐有效期与额度刷新是分别判断的。\n- 账户正常，余额为 $18.5000。\n- Key「开发环境」（末四位 3f8a）使用标准线路，余额兜底关闭；目前标准线路状态正常。\n\n如果要使用账户余额继续请求，需要开启实际使用的 Key 的余额兜底，且余额足够支付本次请求；否则可以等待额度刷新，或请人工协助核查套餐调整方案。\n\n不过，最近 24 小时未查到匹配的 gpt-6.1-sol 403 请求记录，因此暂时不能确认这次报错是否到达平台。若需要进一步定位，请确认客户端使用的是上述 Key、标准线路及正确的 Base URL，并补充报错发生时间（注明时区）和完整错误文字。不要发送完整密钥。",
+      "state": "sent",
+      "knowledge_ids": [
+        "PLAN-001",
+        "ERR-401"
+      ],
+      "route": "answer",
+      "tools": [
+        "search_kb",
+        "get_subscriptions",
+        "get_api_keys",
+        "get_account_overview",
+        "get_recent_requests",
+        "check_platform_status"
+      ],
+      "admin_basis": "分诊：quota / balance / technical；路由：answer。\n检索：BM25 0.62 + 字符 2/3-gram 0.38，经问题类型和完整错误码过滤，最多 4 条；依据：PLAN-001＋ERR-401。\n业务查询：get_subscriptions → get_api_keys → get_account_overview → get_recent_requests → check_platform_status；数据绑定当前工单客户。\n质检：通过；回复来源：openai。\n模型依据摘要：命中 PLAN-001、ERR-401；get_subscriptions 确认套餐有效但周期额度为零，get_api_keys 确认兜底关闭，get_account_overview 确认余额 $18.5000。get_recent_requests 未匹配近24小时记录；check_platform_status 显示标准线路正常。",
+      "model": {
+        "requested_model": "gpt-6-astra",
+        "api_mode": "chat_completions",
+        "calls": [
+          {
+            "stage": "support_intents",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 613,
+              "completion_tokens": 20,
+              "total_tokens": 633
+            },
+            "elapsed_ms": 3547
+          },
+          {
+            "stage": "support_reply",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 2969,
+              "completion_tokens": 391,
+              "total_tokens": 3360
+            },
+            "elapsed_ms": 17451
+          },
+          {
+            "stage": "support_quality",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 2953,
+              "completion_tokens": 13,
+              "total_tokens": 2966
+            },
+            "elapsed_ms": 3481,
+            "content_review": {
+              "passed": true,
+              "issues": []
+            }
+          }
+        ],
+        "review": {
+          "passed": true,
+          "issues": []
+        },
+        "source": "model",
+        "history_messages": 0,
+        "history_truncated": false,
+        "includes_human": false
+      },
+      "fallback": false,
+      "revision_attempted": false,
+      "warnings": []
+    },
+    {
+      "case": "human_context",
+      "question": "还是403。模型和客户端都没变，也没有请求编号；请继续核查账号配置，不要让我重复报这些信息。",
+      "ticket_id": 7,
+      "started_at": "2026-11-04T13:12:48.479871+00:00",
+      "completed_at": "2026-11-04T13:14:12.882618+00:00",
+      "checks": {
+        "real_triage_succeeded": true,
+        "no_model_fallback": true,
+        "quality_passed": true,
+        "admin_basis_present": true,
+        "basis_hidden_from_customer": true,
+        "basis_hidden_from_support": true,
+        "technical_details_hidden_from_support_api": true
+      },
+      "answer": "收到，不会再让你重复提供客户端、模型或请求编号，也不需要重新核对 Base URL、保存和重启。\n\n本次重新核查账号配置的结果是：\n- **账户正常，余额为 $18.5000。**\n- 「轻享周卡」仍有效，但本周期 $600.0000 额度已全部用完，剩余 **$0.0000**；下次刷新为 **2026-11-07 13:09（UTC）**，套餐到期为 **2026-11-25 13:09（UTC）**。\n- Key「开发环境」（末四位 3f8a）使用标准线路，**余额兜底仍关闭**；标准线路当前正常。\n\n因此，当前配置确实无法在套餐额度用尽后自动使用账户余额。若要使用余额继续请求，需要开启实际使用 Key 的余额兜底，且余额足够支付请求；我这边尚未修改配置。也可以等待额度刷新，或由人工核查套餐调整方案。\n\n不过，最近24小时仍未查到匹配的 gpt-6.1-sol 403 记录，所以还不能把这次403的具体原因完全确认下来。这部分由本工单人工继续跟进；**只需补充403的完整错误文字**，不要发送完整密钥，其他已提供的信息无需重复。",
+      "state": "draft",
+      "knowledge_ids": [
+        "SETUP-001"
+      ],
+      "route": "answer_and_handoff",
+      "tools": [
+        "search_kb",
+        "get_account_overview",
+        "get_recent_requests",
+        "check_platform_status",
+        "get_api_keys",
+        "get_subscriptions"
+      ],
+      "admin_basis": "分诊：technical / configuration / balance；路由：answer_and_handoff。\n检索：BM25 0.62 + 字符 2/3-gram 0.38，经问题类型和完整错误码过滤，最多 4 条；依据：SETUP-001。\n业务查询：get_account_overview → get_recent_requests → check_platform_status → get_api_keys → get_subscriptions；数据绑定当前工单客户。\n质检：通过；回复来源：openai。\n模型依据摘要：命中 SETUP-001；本轮通过 get_account_overview、get_api_keys、get_subscriptions 核实账户正常、余额 $18.5000、套餐额度用尽且 Key 兜底关闭。get_recent_requests 未匹配最近24小时目标403记录；check_platform_status 显示标准线路正常。沿用人工已确认的客户端与配置步骤，仅补问完整错误文字。",
+      "model": {
+        "requested_model": "gpt-6-astra",
+        "api_mode": "chat_completions",
+        "calls": [
+          {
+            "stage": "support_intents",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 1797,
+              "completion_tokens": 18,
+              "total_tokens": 1815
+            },
+            "elapsed_ms": 4753
+          },
+          {
+            "stage": "support_reply",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 4048,
+              "completion_tokens": 412,
+              "total_tokens": 4460
+            },
+            "elapsed_ms": 15618
+          },
+          {
+            "stage": "support_quality",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 4039,
+              "completion_tokens": 13,
+              "total_tokens": 4052
+            },
+            "elapsed_ms": 4101,
+            "content_review": {
+              "passed": true,
+              "issues": []
+            }
+          }
+        ],
+        "review": {
+          "passed": true,
+          "issues": []
+        },
+        "source": "model",
+        "history_messages": 7,
+        "history_truncated": false,
+        "includes_human": true
+      },
+      "fallback": false,
+      "revision_attempted": false,
+      "warnings": []
+    },
+    {
+      "case": "human_context_fixed",
+      "question": "还是403。模型和客户端都没变，也没有请求编号；请继续核查账号配置，不要让我重复报这些信息。",
+      "ticket_id": 7,
+      "started_at": "2026-11-04T13:21:02.725894+00:00",
+      "completed_at": "2026-11-04T13:22:27.222371+00:00",
+      "checks": {
+        "real_triage_succeeded": true,
+        "no_model_fallback": true,
+        "quality_passed": true,
+        "admin_basis_present": true,
+        "basis_hidden_from_customer": true,
+        "basis_hidden_from_support": true,
+        "technical_details_hidden_from_support_api": true
+      },
+      "answer": "收到，不会再让你重复提供客户端、模型或请求编号，也不用重新核对 Base URL、保存重启或重装客户端。\n\n本次重新核查结果（2026-11-04 13:22:09 UTC）：\n- **账户正常，当前余额 $18.3800。**\n- Key「开发环境」（末四位 **3f8a**）使用标准线路，**余额兜底已开启**。\n- 「轻享周卡」仍有效，但本周期额度已用尽，剩余 **$0.0000**；下次刷新为 **2026-11-07 13:09（UTC）**，套餐到期为 **2026-11-25 13:09（UTC）**。\n- 标准线路当前状态正常。\n\n因此，不能再用此前“余额兜底关闭”来解释这次403。当前配置允许在套餐额度不足、余额足够支付请求时使用账户余额。\n\n本次查到的仍是之前成功的请求 **#37**：HTTP 200，从账户余额扣除 **$0.1200**，并不是你现在报错的那次，不能据此确定新403的原因。\n\n请只补充**这次403的完整错误文字**，不要发送完整密钥。其他信息无需重复，本工单由人工继续跟进定位。",
+      "state": "draft",
+      "knowledge_ids": [
+        "ERR-401",
+        "PLAN-001",
+        "SETUP-001"
+      ],
+      "route": "answer_and_handoff",
+      "tools": [
+        "search_kb",
+        "get_account_overview",
+        "get_recent_requests",
+        "check_platform_status",
+        "get_api_keys",
+        "get_subscriptions"
+      ],
+      "admin_basis": "分诊：technical / configuration / balance；路由：answer_and_handoff。\n检索：BM25 0.62 + 字符 2/3-gram 0.38，经问题类型和完整错误码过滤，最多 4 条；依据：ERR-401＋PLAN-001＋SETUP-001。\n业务查询：get_account_overview → get_recent_requests → check_platform_status → get_api_keys → get_subscriptions；数据绑定当前工单客户。\n质检：通过；回复来源：真实模型；未发生模型回退。\n模型依据摘要：命中 ERR-401、PLAN-001；本次通过 get_account_overview、get_api_keys、get_subscriptions、check_platform_status 核实账户、兜底、额度及线路。get_recent_requests 仅查到历史成功请求 #37，不能用于定位本次403；需新的完整错误文字供人工继续排查。",
+      "model": {
+        "requested_model": "gpt-6-astra",
+        "api_mode": "chat_completions",
+        "calls": [
+          {
+            "stage": "support_intents",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 2743,
+              "completion_tokens": 43,
+              "total_tokens": 2786
+            },
+            "elapsed_ms": 7403
+          },
+          {
+            "stage": "support_reply",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 5215,
+              "completion_tokens": 395,
+              "total_tokens": 5610
+            },
+            "elapsed_ms": 13698
+          },
+          {
+            "stage": "support_quality",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 5202,
+              "completion_tokens": 13,
+              "total_tokens": 5215
+            },
+            "elapsed_ms": 3668,
+            "content_review": {
+              "passed": true,
+              "issues": []
+            }
+          }
+        ],
+        "review": {
+          "passed": true,
+          "issues": []
+        },
+        "source": "model",
+        "history_messages": 14,
+        "history_truncated": false,
+        "includes_human": true
+      },
+      "fallback": false,
+      "revision_attempted": false,
+      "warnings": []
+    },
+    {
+      "case": "large_balance_cooldown",
+      "question": "我又有7美元负余额了，刚才已经回正过6美元；现在请按规则核验，能直接帮我回正吗？",
+      "ticket_id": 9,
+      "started_at": "2026-11-04T13:21:06.952185+00:00",
+      "completed_at": "2026-11-04T13:21:35.056841+00:00",
+      "checks": {
+        "real_triage_succeeded": true,
+        "no_model_fallback": false,
+        "quality_passed": true,
+        "admin_basis_present": true,
+        "basis_hidden_from_customer": true,
+        "basis_hidden_from_support": true,
+        "technical_details_hidden_from_support_api": true
+      },
+      "answer": "查询到你当前的账户余额是 $-7.0000。\n\n当前不符合回正条件，原因是过去 7 天内已成功回正过超过 5 美元的欠款，本次不能再次回正；请小额充值补足当前欠款。这部分需要人工核账。",
+      "state": "sent",
+      "knowledge_ids": [
+        "BAL-001"
+      ],
+      "route": "answer_and_handoff",
+      "tools": [
+        "search_kb",
+        "get_account_overview",
+        "check_balance_adjustment"
+      ],
+      "admin_basis": "分诊：balance；路由：answer_and_handoff。\n检索：BM25 0.62 + 字符 2/3-gram 0.38，经问题类型和完整错误码过滤，最多 4 条；依据：BAL-001。\n业务查询：get_account_overview → check_balance_adjustment；数据绑定当前工单客户。\n质检：通过；回复来源：本地规则；发生模型回退。",
+      "model": {
+        "requested_model": "gpt-6-astra",
+        "api_mode": "chat_completions",
+        "calls": [
+          {
+            "stage": "support_intents",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 813,
+              "completion_tokens": 16,
+              "total_tokens": 829
+            },
+            "elapsed_ms": 4279
+          },
+          {
+            "stage": "support_reply",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 2130,
+              "completion_tokens": 154,
+              "total_tokens": 2284
+            },
+            "elapsed_ms": 7154
+          },
+          {
+            "stage": "support_quality",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 1891,
+              "completion_tokens": 13,
+              "total_tokens": 1904
+            },
+            "elapsed_ms": 4910,
+            "content_review": {
+              "passed": true,
+              "issues": []
+            }
+          },
+          {
+            "stage": "support_reply",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 2242,
+              "completion_tokens": 147,
+              "total_tokens": 2389
+            },
+            "elapsed_ms": 6818
+          },
+          {
+            "stage": "support_quality",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 1884,
+              "completion_tokens": 13,
+              "total_tokens": 1897
+            },
+            "elapsed_ms": 4016,
+            "content_review": {
+              "passed": true,
+              "issues": []
+            }
+          }
+        ],
+        "review": {
+          "passed": true,
+          "issues": []
+        },
+        "source": "local",
+        "history_messages": 2,
+        "history_truncated": false,
+        "includes_human": false
+      },
+      "fallback": true,
+      "revision_attempted": true,
+      "warnings": [
+        "模型草稿未通过质检，已改用有查询依据的本地基准回复",
+        "规则质检：新增金额缺少本轮业务依据；客户希望保留的金额只能作为其诉求复述，不能推算或确认可退金额"
+      ]
+    },
+    {
+      "case": "large_balance_cooldown_fixed",
+      "question": "我又有7美元负余额了，刚才已经回正过6美元；现在请按规则核验，能直接帮我回正吗？",
+      "ticket_id": 9,
+      "started_at": "2026-11-04T13:30:50.455622+00:00",
+      "completed_at": "2026-11-04T13:31:08.547971+00:00",
+      "checks": {
+        "real_triage_succeeded": true,
+        "no_model_fallback": true,
+        "quality_passed": true,
+        "admin_basis_present": true,
+        "basis_hidden_from_customer": true,
+        "basis_hidden_from_support": true,
+        "technical_details_hidden_from_support_api": true
+      },
+      "answer": "已核验，你当前余额为 **-$7.0000**。由于本次欠款超过 $5，且过去 7 天内已有超过 $5 的成功回正记录，按规则这次不能直接自动回正，本次也未进行余额调整。\n\n请小额充值补足当前 $7 欠款；如需进一步核账，需要由人工处理。",
+      "state": "sent",
+      "knowledge_ids": [
+        "BAL-001"
+      ],
+      "route": "answer_and_handoff",
+      "tools": [
+        "search_kb",
+        "get_account_overview",
+        "check_balance_adjustment"
+      ],
+      "admin_basis": "分诊：balance；路由：answer_and_handoff。\n检索：BM25 0.62 + 字符 2/3-gram 0.38，经问题类型和完整错误码过滤，最多 4 条；依据：BAL-001。\n业务查询：get_account_overview → check_balance_adjustment；数据绑定当前工单客户。\n质检：通过；回复来源：真实模型；未发生模型回退。\n模型依据摘要：命中 BAL-001；get_account_overview 查询当前余额为 -7 美元，check_balance_adjustment 核验不符合自动回正条件：过去 7 天已有超过 5 美元的成功回正记录。本次仅查询，未执行回正。",
+      "model": {
+        "requested_model": "gpt-6-astra",
+        "api_mode": "chat_completions",
+        "calls": [
+          {
+            "stage": "support_intents",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 1024,
+              "completion_tokens": 16,
+              "total_tokens": 1040
+            },
+            "elapsed_ms": 4494
+          },
+          {
+            "stage": "support_reply",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 2341,
+              "completion_tokens": 157,
+              "total_tokens": 2498
+            },
+            "elapsed_ms": 8064
+          },
+          {
+            "stage": "support_quality",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 2105,
+              "completion_tokens": 13,
+              "total_tokens": 2118
+            },
+            "elapsed_ms": 4512,
+            "content_review": {
+              "passed": true,
+              "issues": []
+            }
+          }
+        ],
+        "review": {
+          "passed": true,
+          "issues": []
+        },
+        "source": "model",
+        "history_messages": 4,
+        "history_truncated": false,
+        "includes_human": false
+      },
+      "fallback": false,
+      "revision_attempted": false,
+      "warnings": []
+    },
+    {
+      "case": "large_balance_fixed",
+      "question": "这次最后一笔套餐请求超额后欠了6美元，请按规则核验，符合条件直接帮我回正。",
+      "ticket_id": 9,
+      "started_at": "2026-11-04T13:20:18.925778+00:00",
+      "completed_at": "2026-11-04T13:20:22.948379+00:00",
+      "checks": {
+        "real_triage_succeeded": true,
+        "no_model_fallback": true,
+        "quality_passed": true,
+        "admin_basis_present": true,
+        "basis_hidden_from_customer": true,
+        "basis_hidden_from_support": true,
+        "technical_details_hidden_from_support_api": true
+      },
+      "answer": "你的「轻享月卡」当前周期额度为 $600.0000，已用 $180.0000，剩余 $420.0000。下一次刷新时间为 2026-11-07（UTC），套餐到期时间为 2026-11-25（UTC）。\n\n\n\n已处理本次余额核验，你可以在账户页面查看当前状态；如仍有异常，可以继续在本工单说明。",
+      "state": "sent",
+      "knowledge_ids": [
+        "BAL-001",
+        "PLAN-001"
+      ],
+      "route": "answer",
+      "tools": [
+        "search_kb",
+        "get_subscriptions",
+        "get_account_overview",
+        "check_balance_adjustment"
+      ],
+      "admin_basis": "分诊：quota / balance；路由：answer。\n检索：BM25 0.62 + 字符 2/3-gram 0.38，经问题类型和完整错误码过滤，最多 4 条；依据：BAL-001＋PLAN-001。\n业务查询：get_subscriptions → get_account_overview → check_balance_adjustment；数据绑定当前工单客户。\n质检：通过；回复来源：财务固定模板（真实模型分诊成功；模板用于账本操作）；未发生模型回退。",
+      "model": {
+        "requested_model": "gpt-6-astra",
+        "api_mode": "chat_completions",
+        "calls": [
+          {
+            "stage": "support_intents",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 561,
+              "completion_tokens": 18,
+              "total_tokens": 579
+            },
+            "elapsed_ms": 3512
+          }
+        ],
+        "review": null,
+        "source": "policy",
+        "history_messages": 0,
+        "history_truncated": false,
+        "includes_human": false
+      },
+      "fallback": false,
+      "revision_attempted": false,
+      "warnings": []
+    },
+    {
+      "case": "return403",
+      "question": "回到刚才的403：账户余额是正数就能绕过关闭的余额兜底吗？",
+      "ticket_id": 7,
+      "started_at": "2026-11-04T13:11:58.625109+00:00",
+      "completed_at": "2026-11-04T13:12:22.739116+00:00",
+      "checks": {
+        "real_triage_succeeded": true,
+        "no_model_fallback": true,
+        "quality_passed": true,
+        "admin_basis_present": true,
+        "basis_hidden_from_customer": true,
+        "basis_hidden_from_support": true,
+        "technical_details_hidden_from_support_api": true
+      },
+      "answer": "不能。**账户余额为正数，也不能绕过 Key 上关闭的余额兜底。**\n\n本次核查：\n- 账户余额为 **$18.5000**。\n- Key「开发环境」（末四位 3f8a）的余额兜底仍关闭。\n- 「轻享周卡」仍有效，但本周期额度已用尽，剩余 **$0.0000**。\n\n因此，当前不会自动扣账户余额继续请求。要使用余额，需要开启实际使用的 Key 的余额兜底，且余额足够支付本次请求；否则可等待 **2026-11-07 13:09（UTC）**额度刷新，或请人工核查套餐调整方案。\n\n这是当前配置的判断；最近24小时未查到匹配的 gpt-6.1-sol 403 记录，所以还不能确认那次报错的具体原因。若要继续定位，请补充完整错误文字，并确认客户端使用的是上述 Key、标准线路及正确的 Base URL；不要发送完整密钥。",
+      "state": "sent",
+      "knowledge_ids": [],
+      "route": "answer",
+      "tools": [
+        "search_kb",
+        "get_account_overview",
+        "get_api_keys",
+        "get_recent_requests",
+        "check_platform_status",
+        "get_subscriptions"
+      ],
+      "admin_basis": "分诊：balance / technical；路由：answer。\n检索：BM25 0.62 + 字符 2/3-gram 0.38，经问题类型和完整错误码过滤，最多 4 条；依据：无匹配知识。\n业务查询：get_account_overview → get_api_keys → get_recent_requests → check_platform_status → get_subscriptions；数据绑定当前工单客户。\n质检：通过；回复来源：openai。\n模型依据摘要：本次 search_kb 无命中知识；get_account_overview、get_api_keys、get_subscriptions 确认余额 $18.5000、Key 兜底关闭、有效套餐周期额度已用尽。get_recent_requests 未匹配近24小时目标403；check_platform_status 显示标准线路正常。",
+      "model": {
+        "requested_model": "gpt-6-astra",
+        "api_mode": "chat_completions",
+        "calls": [
+          {
+            "stage": "support_intents",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 1322,
+              "completion_tokens": 18,
+              "total_tokens": 1340
+            },
+            "elapsed_ms": 3747
+          },
+          {
+            "stage": "support_reply",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 3194,
+              "completion_tokens": 322,
+              "total_tokens": 3516
+            },
+            "elapsed_ms": 12962
+          },
+          {
+            "stage": "support_quality",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 3112,
+              "completion_tokens": 13,
+              "total_tokens": 3125
+            },
+            "elapsed_ms": 5161,
+            "content_review": {
+              "passed": true,
+              "issues": []
+            }
+          }
+        ],
+        "review": {
+          "passed": true,
+          "issues": []
+        },
+        "source": "model",
+        "history_messages": 4,
+        "history_truncated": false,
+        "includes_human": false
+      },
+      "fallback": false,
+      "revision_attempted": false,
+      "warnings": []
+    },
+    {
+      "case": "return403_fixed",
+      "question": "回到刚才的403：账户余额是正数就能绕过关闭的余额兜底吗？顺便再核对一下目前实际的兜底设置。",
+      "ticket_id": 7,
+      "started_at": "2026-11-04T13:19:41.527369+00:00",
+      "completed_at": "2026-11-04T13:20:05.670910+00:00",
+      "checks": {
+        "real_triage_succeeded": true,
+        "no_model_fallback": true,
+        "quality_passed": true,
+        "admin_basis_present": true,
+        "basis_hidden_from_customer": true,
+        "basis_hidden_from_support": true,
+        "technical_details_hidden_from_support_api": true
+      },
+      "answer": "不能。**账户余额为正，也不能绕过关闭的余额兜底**；套餐额度不足时，只有本次使用的 Key 开启余额兜底，且余额足够支付请求，才能扣账户余额。\n\n刚重新核对了当前设置（2026-11-04 13:19:46 UTC）：\n- Key「开发环境」（末四位 **3f8a**）：**余额兜底已开启**，不是此前的关闭状态。\n- 当前账户余额：**$18.3800**，账户正常。\n- 「轻享周卡」仍有效，但本周期剩余额度为 **$0.0000**。\n- 标准线路当前正常。\n\n你刚才成功的请求 **#37** 返回 HTTP 200，实际从**账户余额扣除 $0.1200**。这说明该次请求是在开启兜底后正常使用余额，并不是正余额绕过了关闭的设置。无需重复核对 Base URL 或重启。",
+      "state": "sent",
+      "knowledge_ids": [
+        "PLAN-001",
+        "ERR-401"
+      ],
+      "route": "answer",
+      "tools": [
+        "search_kb",
+        "get_account_overview",
+        "get_api_keys",
+        "get_recent_requests",
+        "check_platform_status",
+        "get_subscriptions"
+      ],
+      "admin_basis": "分诊：balance / technical；路由：answer。\n检索：BM25 0.62 + 字符 2/3-gram 0.38，经问题类型和完整错误码过滤，最多 4 条；依据：PLAN-001＋ERR-401。\n业务查询：get_account_overview → get_api_keys → get_recent_requests → check_platform_status → get_subscriptions；数据绑定当前工单客户。\n质检：通过；回复来源：真实模型；未发生模型回退。\n模型依据摘要：命中 PLAN-001、ERR-401；get_account_overview、get_api_keys、get_subscriptions 确认余额 $18.3800、兜底开启、有效套餐周期额度为零；get_recent_requests 精确匹配 #37，成功并扣余额 $0.1200；check_platform_status 确认标准线路正常。",
+      "model": {
+        "requested_model": "gpt-6-astra",
+        "api_mode": "chat_completions",
+        "calls": [
+          {
+            "stage": "support_intents",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 2295,
+              "completion_tokens": 18,
+              "total_tokens": 2313
+            },
+            "elapsed_ms": 4574
+          },
+          {
+            "stage": "support_reply",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 4612,
+              "completion_tokens": 315,
+              "total_tokens": 4927
+            },
+            "elapsed_ms": 14540
+          },
+          {
+            "stage": "support_quality",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 4516,
+              "completion_tokens": 13,
+              "total_tokens": 4529
+            },
+            "elapsed_ms": 4608,
+            "content_review": {
+              "passed": true,
+              "issues": []
+            }
+          }
+        ],
+        "review": {
+          "passed": true,
+          "issues": []
+        },
+        "source": "model",
+        "history_messages": 11,
+        "history_truncated": false,
+        "includes_human": true
+      },
+      "fallback": false,
+      "revision_attempted": false,
+      "warnings": []
+    },
+    {
+      "case": "switch_policy",
+      "question": "先不管403了，换个问题：如果在这个工单申请退款，套餐额度会马上刷新吗？我现在只咨询规则，先不要提交申请。",
+      "ticket_id": 7,
+      "started_at": "2026-11-04T13:11:09.638672+00:00",
+      "completed_at": "2026-11-04T13:11:37.772094+00:00",
+      "checks": {
+        "real_triage_succeeded": true,
+        "no_model_fallback": true,
+        "quality_passed": true,
+        "admin_basis_present": true,
+        "basis_hidden_from_customer": true,
+        "basis_hidden_from_support": true,
+        "technical_details_hidden_from_support_api": true
+      },
+      "answer": "不会。**在这个工单申请退款，不会让套餐额度马上刷新或提前恢复**；额度仍按配置的 UTC 刷新时间和周期恢复，与套餐有效期分别判断。\n\n你这次只是咨询规则，我不会提交退款申请。以后若决定申请，直接在当前工单明确提出即可，无需另开工单；届时会先核查订单和已有申请，避免重复提交，最终由管理员审批。退款金额、手续费及到账时间均需核验后才能确认。",
+      "state": "sent",
+      "knowledge_ids": [
+        "PLAN-001",
+        "REFUND-001"
+      ],
+      "route": "answer",
+      "tools": [
+        "search_kb"
+      ],
+      "admin_basis": "分诊：quota / refund；路由：answer。\n检索：BM25 0.62 + 字符 2/3-gram 0.38，经问题类型和完整错误码过滤，最多 4 条；依据：PLAN-001＋REFUND-001。\n业务查询：无需动态查询；数据绑定当前工单客户。\n质检：通过；回复来源：openai。\n模型依据摘要：本次 search_kb 命中 PLAN-001、REFUND-001：套餐额度按配置的 UTC 时间及周期刷新，申请退款不提前刷新；当前工单可受理明确退款申请，仅咨询不创建申请，最终审批由管理员办理。",
+      "model": {
+        "requested_model": "gpt-6-astra",
+        "api_mode": "chat_completions",
+        "calls": [
+          {
+            "stage": "support_intents",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 1057,
+              "completion_tokens": 18,
+              "total_tokens": 1075
+            },
+            "elapsed_ms": 14680
+          },
+          {
+            "stage": "support_reply",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 2268,
+              "completion_tokens": 182,
+              "total_tokens": 2450
+            },
+            "elapsed_ms": 8246
+          },
+          {
+            "stage": "support_quality",
+            "attempt": 1,
+            "ok": true,
+            "response_model": "gpt-6-astra",
+            "usage": {
+              "prompt_tokens": 2060,
+              "completion_tokens": 13,
+              "total_tokens": 2073
+            },
+            "elapsed_ms": 3932,
+            "content_review": {
+              "passed": true,
+              "issues": []
+            }
+          }
+        ],
+        "review": {
+          "passed": true,
+          "issues": []
+        },
+        "source": "model",
+        "history_messages": 2,
+        "history_truncated": false,
+        "includes_human": false
+      },
+      "fallback": false,
+      "revision_attempted": false,
+      "warnings": []
+    }
+  ]
+}

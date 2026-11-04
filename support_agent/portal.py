@@ -48,6 +48,9 @@ class PortalApplication:
             return s.create_ticket(user, payload)
         if method == "GET" and path == "/api/account":
             return s.account(user)
+        match = re.fullmatch(r"/api/account/keys/(\d+)/fallback", path)
+        if match and method == 'POST':
+            return s.set_balance_fallback(user, int(match[1]), payload)
         if method == "GET" and path == "/api/platform":
             return {"channels": s.db.all("SELECT * FROM platform_status")}
         if method == "GET" and path == "/api/models":
@@ -61,6 +64,9 @@ class PortalApplication:
                 return a.dashboard(user)
             if path == "/api/staff/customers" and method == "GET":
                 return {"users": s.db.all("SELECT id,name,email FROM users WHERE status='active' ORDER BY id")}
+            match = re.fullmatch(r"/api/staff/tickets/(\d+)/invoices/(\d+)", path)
+            if match and method == 'POST':
+                return a.invoice(user, int(match[1]), int(match[2]), payload)
             match = re.fullmatch(r"/api/staff/runs/(\d+)/publish", path)
             if match and method == "POST":
                 return s.publish(user, int(match[1]), payload)
@@ -78,6 +84,8 @@ class PortalApplication:
                 return s.ticket_action(user, tid, payload)
         if path.startswith("/api/admin/"):
             require_admin(user)
+            if path == "/api/admin/usage" and method == "GET":
+                return a.usage(user)
             if path == "/api/admin/dashboard" and method == "GET":
                 return a.dashboard(user)
             if path == "/api/admin/users":
@@ -315,7 +323,7 @@ def serve(config: PortalConfig, *, launcher: bool = False, open_browser: bool = 
     worker = threading.Thread(target=generate_replies, daemon=True)
     worker.start()
     def reminders():
-        while not stopped.wait(60):
+        while not stopped.wait(1):
             try:
                 with db.lock:
                     service.maintenance()

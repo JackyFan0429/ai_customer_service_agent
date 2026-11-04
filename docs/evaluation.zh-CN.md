@@ -1,62 +1,56 @@
-# 评测说明
+# 评测
 
 [首页](../README.zh-CN.md) · [English](evaluation.md)
 
-软件测试、业务验收、检索质量和真实模型表现分别统计，不混写成线上解决率。
+软件检查、业务流程、检索和真实模型质量分别统计，均不等于线上解决率。
 
-## 已有证据
+## v0.5.10 证据
 
-| 层级 | 数据 / 结果 | 限制 |
+| 层次 | 结果 | 限制 |
 |---|---|---|
-| 软件测试 | v0.5.7 共 225 项通过 | API 响应使用模拟数据 |
-| 网站业务 | 29/29 个合成场景 | 检查路由、必要工具和事实片段 |
-| 旧版 RAG | 48/48 场景、63/63 轮 | 属于开发回归，不是未见过的线上流量 |
-| 检索 | 20 道开发题＋10 道保留题，10 条知识 | AI 辅助标签待本人复核 |
-| 历史真实模型 | v0.5.3 修复后 8 轮，22 次调用成功、无回退 | 小样本历史记录，v0.5.7 未重新调用模型 |
+| 软件测试 | 292 项通过 | 模型 API 使用模拟响应 |
+| 网站业务 | 29/29 场景 | 合成题的路由、工具及必要事实 |
+| 旧版 RAG，v0.5.9 历史证据 | 48/48 场景、63/63 轮 | 本版未重跑 |
+| 人工复核检索 | 30/30 标签通过，共 22 组 | 小型合成题集，题目已公开 |
+| 真实模型 | 12 轮、34 次 API 调用 | 包含修复前问题及修复后复测，均为已知合成场景 |
 
-历史 8 轮中，7 轮为模型答复、1 轮为受控业务模板，因此对话轮数不等于 API 次数。[原始记录](topic-switch-live-v0.5.3.json)。
+[真实模型发现与边界](live-model-acceptance.zh-CN.md) · [本版证据](verification.zh-CN.md)。
 
-## 复跑本地检查
+## 检索过滤
 
-网站和检索检查只需 Python 3.11+。完整软件测试包含 PDF 提取，需安装可选依赖：
+保持 BM25 0.62＋字符 2/3-gram 0.38。以下在**同一份已复核 v3 知识和标签**上比较：旧 Top-4 覆盖度过滤，与新增的主题、能力范围、完整错误标识过滤。主题解析器去掉明确暂停的句段，不调用模型改写查询。
+
+| 分区 | 有依据题 | 旧 Recall@4 | 新 Recall@4 | 新方案完整覆盖 | 知识缺失误召回：旧 → 新 |
+|---|---:|---:|---:|---:|---|
+| 开发集 | 17 | 76.47% | 100% | 17/17 | 2/2 → 0/2 |
+| 历史保留集诊断 | 8 | 75% | 100% | 8/8 | 0/1 → 0/1 |
+
+两侧另各有一道纯业务数据题，单独统计；新方案不为它们返回静态依据。[开发报告](../evals/releases/v0.5.10/retrieval-development.json) · [诊断报告](../evals/releases/v0.5.10/retrieval-historical.json)。
+
+先生成开发报告冻结代码与数据哈希，再跑历史保留题。**两个分区此前都已在复核和分析中看过**，因此只能算回归诊断，不能称为独立盲测成绩。过滤规则面向 10 个内置业务 ID 和高覆盖度自定义 FAQ；新表达和新增知识仍需验证。
+
+Recall@4 对每题必要知识命中的比例求平均；MRR 衡量第一个相关结果的名次，都不评价最终答案。知识缺失误召回只统计无答案题；当前余额和单次耗时属于动态查询，不进入这些分母。
+
+[v0.5.6 方法对照](retrieval-comparison.zh-CN.md)及冻结语料保持原样。标签和知识不同，不把旧版本分数与新结果直接比较为质量提升。
+
+## 复现
+
+在项目根目录运行：
 
 ```bash
 python3 -m pip install -e ".[pdf]"
 python3 -m unittest discover -s tests -v
-python3 scripts/evaluate_desk.py --as-of '2026-11-04T00:00:00+11:00' --output runtime/desk-evaluation.json
-python3 scripts/evaluate_agent.py --provider local --output runtime/rag-evaluation.json --fail-on-regression evals/results/after.json
-python3 scripts/validate_retrieval_dataset.py
+python3 scripts/evaluate_desk.py --as-of '2026-11-04T00:00:00+11:00' --output runtime/desk.json
+python3 scripts/evaluate_agent.py --provider local --output runtime/rag.json --fail-on-regression evals/results/after.json
+python3 scripts/validate_retrieval_dataset.py --dataset evals/retrieval/lumen-v3 --require-reviewed --output runtime/labels.json
+python3 scripts/evaluate_reviewed_retrieval.py development --output runtime/retrieval-dev.json
+python3 scripts/evaluate_reviewed_retrieval.py holdout --freeze runtime/retrieval-dev.json --output runtime/retrieval-diagnostic.json
 ```
 
-从项目根目录执行，输出写入 `runtime/`，发布证据保留在 `evals/`。数据校验通过仅表示引用、分组和结构有效，不代表检索成功或标签已人工审核。
+检索每次使用新输出文件名；已有文件或冻结哈希不一致时拒绝运行。完整测试需要 PDF 可选依赖，网站和检索检查不需要。
 
-检索实验按[对照说明](retrieval-comparison.zh-CN.md)执行“开发集 → 冻结 → 保留集”。本版保留 v0.5.6 冻结结果，没有重新利用保留集调参。
+## 后续衡量
 
-## 指标口径
+用新增未见题和真实模型试运行，衡量首次有效回复时间、重复提问、无依据承诺、人工处理时长、建议采纳率及每个已解决工单成本。按相同工单类型比较，失败样本保留在分母中。
 
-- **Recall@4：**每题找到的必要知识比例，再对知识可答题取平均。两条依据仅找到一条，得 0.5。
-- **MRR@4：**第一个相关结果排名的倒数，不能证明所有子问题都有依据。
-- **无答案误召回：**返回非空知识的无答案题 / 全部无答案题。
-- **纯动态查询：**单列观察，静态知识不能证明当前余额或某次请求耗时。
-- **业务通过率：**路由、工具和必要事实检查，不是逐句回答质量评分。
-
-BM25、字符 n-gram 和组合检索过滤后成绩相同：
-
-| 分区 | 可答题分母 | Recall@4 | MRR@4 | 依据完整题数 | 无答案误召回 |
-|---|---:|---:|---:|---:|---:|
-| 开发集 | 17 | 67.65% | 70.59% | 11/17 | 0/2 |
-| 保留集 | 8 | 68.75% | 75.00% | 5/8 | 0/1 |
-
-样本少且标签待复核。保留集仅一道负例被正确过滤，不能据此声称系统普遍没有幻觉。[方法与失败分析](retrieval-comparison.zh-CN.md)。
-
-## 仍需补齐的度量
-
-1. 由项目本人复核标签及遗漏依据，修改时保留数据版本。
-2. 在开发集改进覆盖度过滤；如利用了已公布保留题设计修复，应另建未参与开发的验证题。
-3. 汇总模型用量、重试、耗时和服务商价格；未知费用不记为零。
-4. 真实部署后衡量首次有效回复时间、重复提问率、人工处理时长、建议采纳率和每个已解决工单的成本。
-
-普通模型答复通常调用 3 次，内容修订最多再增加 2 次。本地检索没有 Embedding API 费用，但不能据此证明总成本更低；目前没有量化收入或人力节省。
-
-[旧版评测](legacy/evaluation.zh-CN.md)保留 2026-09-19 前后对照。重建当时实现需要哈希匹配的历史源码，不能直接用当前源码替代。
-
+[管理员用量](admin-evidence.zh-CN.md)已汇总 Token、重试和费用估算。普通模型回复通常 3 次调用，内容修订可再加 2 次；依据摘要与回复同次生成。本地检索没有 Embedding API 费用，但尚不能证明总运营成本更低，也没有量化人力节省或收入提升。

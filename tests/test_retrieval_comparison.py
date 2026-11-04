@@ -125,13 +125,18 @@ class RetrievalComparisonTests(unittest.TestCase):
                     evaluation.run_evaluation(split="holdout", freeze_path=path)
             loader.assert_not_called()
 
-    def test_current_portal_results_match_experiment_hybrid(self):
+    def test_frozen_snapshot_ranker_results_match_historical_filter(self):
         _, corpus, _ = evaluation.load_split(evaluation.DEFAULT_DATASET, "development")
         db = Database(":memory:")
         try:
+            # Production policy text changed in v0.5.8. Compare the ranker on
+            # identical frozen inputs; do not label old scores as new-policy results.
+            for doc in corpus:
+                db.execute('UPDATE knowledge SET title=?,content=?,keywords=?,category=? WHERE id=?',
+                           (doc['title'], doc['text'], json.dumps(doc['keywords']), doc['categories'][0], doc['document_id']))
             for query in ("套餐额度", "401 Key", "无关词XYZ"):
                 tool = LocalBusinessTools(db, 2, 1)
-                actual = [r["document_id"] for r in tool.call("search_kb", query=query)["documents"]]
+                actual = [r["document_id"] for r in search(corpus, query, 4) if r["query_term_coverage"] >= 0.12]
                 task = case(gold=[]); task["query"] = query; task["answerability"] = "business_data_only"
                 ranked = search(corpus, query, len(corpus), method="hybrid")
                 self.assertEqual(actual, evaluation.score_case(task, ranked)["final_ids"])

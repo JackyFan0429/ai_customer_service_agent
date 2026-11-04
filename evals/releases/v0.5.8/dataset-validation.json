@@ -1,0 +1,88 @@
+{
+  "valid": true,
+  "errors": [],
+  "questions": 30,
+  "groups": 22,
+  "answerability": {
+    "kb_answerable": 22,
+    "kb_and_business_data": 3,
+    "no_kb_answer": 3,
+    "business_data_only": 2
+  },
+  "review_status": {
+    "pending_owner_review": 30
+  },
+  "knowledge_coverage": {
+    "ACCOUNT-001": 2,
+    "BAL-001": 4,
+    "ERR-401": 3,
+    "ERR-503": 2,
+    "IMAGE-001": 1,
+    "INVOICE-001": 2,
+    "PLAN-001": 6,
+    "REFUND-001": 3,
+    "SETUP-001": 2,
+    "STATUS-001": 2
+  },
+  "splits": {
+    "development": {
+      "questions": 20,
+      "groups": 14,
+      "answerability": {
+        "kb_answerable": 15,
+        "kb_and_business_data": 2,
+        "no_kb_answer": 2,
+        "business_data_only": 1
+      },
+      "knowledge_coverage": {
+        "ACCOUNT-001": 1,
+        "BAL-001": 2,
+        "ERR-401": 2,
+        "ERR-503": 2,
+        "IMAGE-001": 1,
+        "INVOICE-001": 1,
+        "PLAN-001": 3,
+        "REFUND-001": 3,
+        "SETUP-001": 2,
+        "STATUS-001": 1
+      }
+    },
+    "holdout": {
+      "questions": 10,
+      "groups": 8,
+      "answerability": {
+        "kb_answerable": 7,
+        "kb_and_business_data": 1,
+        "no_kb_answer": 1,
+        "business_data_only": 1
+      },
+      "knowledge_coverage": {
+        "ACCOUNT-001": 1,
+        "BAL-001": 2,
+        "ERR-401": 1,
+        "ERR-503": 0,
+        "IMAGE-001": 0,
+        "INVOICE-001": 1,
+        "PLAN-001": 3,
+        "REFUND-001": 0,
+        "SETUP-001": 0,
+        "STATUS-001": 1
+      }
+    }
+  },
+  "metric_population_sizes": {
+    "recall_at_4_and_mrr_at_4": 25,
+    "no_answer_false_retrieval_rate": 3,
+    "dynamic_diagnostic_only": 2
+  },
+  "retrieval_executed": false,
+  "external_model_calls": 0,
+  "limitation": "Structural and exact-evidence checks only. Semantic relevance and paraphrase grouping still need human review; no retrieval score was measured.",
+  "dataset_id": "lumen-retrieval-v1",
+  "require_reviewed": false,
+  "files_sha256": {
+    "knowledge.json": "b5b154794862070104107e665d5e4d2ebafc2ee057f0a890cc7b310a54ba6d43",
+    "development.jsonl": "31a2fc0bc8f2f3c95b71938ea9915c8da67a8b28279194c56baf07fe5203e8ea",
+    "holdout.jsonl": "5a7f798a4d3ca0fa39ecfe4e9948e7c07f4fcc8e57f150b6584f42315b8d6212"
+  }
+}

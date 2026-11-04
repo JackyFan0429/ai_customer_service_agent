@@ -1,0 +1,88 @@
+{
+  "valid": true,
+  "errors": [],
+  "questions": 30,
+  "groups": 22,
+  "answerability": {
+    "kb_answerable": 19,
+    "kb_and_business_data": 6,
+    "no_kb_answer": 3,
+    "business_data_only": 2
+  },
+  "review_status": {
+    "approved": 30
+  },
+  "knowledge_coverage": {
+    "ACCOUNT-001": 2,
+    "BAL-001": 4,
+    "ERR-401": 3,
+    "ERR-503": 2,
+    "IMAGE-001": 1,
+    "INVOICE-001": 2,
+    "PLAN-001": 6,
+    "REFUND-001": 3,
+    "SETUP-001": 2,
+    "STATUS-001": 2
+  },
+  "splits": {
+    "development": {
+      "questions": 20,
+      "groups": 14,
+      "answerability": {
+        "kb_answerable": 12,
+        "kb_and_business_data": 5,
+        "no_kb_answer": 2,
+        "business_data_only": 1
+      },
+      "knowledge_coverage": {
+        "ACCOUNT-001": 1,
+        "BAL-001": 2,
+        "ERR-401": 2,
+        "ERR-503": 2,
+        "IMAGE-001": 1,
+        "INVOICE-001": 1,
+        "PLAN-001": 3,
+        "REFUND-001": 3,
+        "SETUP-001": 2,
+        "STATUS-001": 1
+      }
+    },
+    "holdout": {
+      "questions": 10,
+      "groups": 8,
+      "answerability": {
+        "kb_answerable": 7,
+        "kb_and_business_data": 1,
+        "no_kb_answer": 1,
+        "business_data_only": 1
+      },
+      "knowledge_coverage": {
+        "ACCOUNT-001": 1,
+        "BAL-001": 2,
+        "ERR-401": 1,
+        "ERR-503": 0,
+        "IMAGE-001": 0,
+        "INVOICE-001": 1,
+        "PLAN-001": 3,
+        "REFUND-001": 0,
+        "SETUP-001": 0,
+        "STATUS-001": 1
+      }
+    }
+  },
+  "metric_population_sizes": {
+    "recall_at_4_and_mrr_at_4": 25,
+    "no_answer_false_retrieval_rate": 3,
+    "dynamic_diagnostic_only": 2
+  },
+  "retrieval_executed": false,
+  "external_model_calls": 0,
+  "limitation": "Structural and exact-evidence checks only. Semantic relevance and paraphrase grouping still need human review; no retrieval score was measured.",
+  "dataset_id": "lumen-retrieval-v3-reviewed",
+  "require_reviewed": true,
+  "files_sha256": {
+    "knowledge.json": "7942dc6d67107d627b15437fbc4353e3dc9d6fc29bc694294b5308c5d59997f0",
+    "development.jsonl": "936a8399bdc0590b736a95398e9c1d518a4c942e2030867a48f3544b5393ecee",
+    "holdout.jsonl": "1b6478f5c1966156dd6e5c9771da007fdaa2f1e2b86c3c0551964923012c755d"
+  }
+}

@@ -1,0 +1,304 @@
+{
+  "release": "0.5.9",
+  "split": "holdout",
+  "dataset_id": "lumen-retrieval-v3-reviewed",
+  "fingerprint": {
+    "code": {
+      "support_agent/retrieval.py": "684db977363cc2fc4fdfeaaf5e1853fe0e1237dd399a356d419ecb059c71a88f",
+      "support_agent/desk/knowledge.py": "0093d33088fb6661fa5b73d2339b3d3d41ba7a5d817a040ada21a18c5381c206",
+      "support_agent/desk/topics.py": "496f1e7a1f003503b2e4aff88a23dc1b43ab1b6e73f385e5733169381aff26b0",
+      "scripts/evaluate_reviewed_retrieval.py": "68d474da59f4d846b1305474914fe8cfd3e0c3cce856c68255db53db35c7d668"
+    },
+    "data": {
+      "approval-log.json": "b1a96409bbf96da6d6b373f15fe4d766be3e2d192a3fe5349de742ea3c47627c",
+      "development.jsonl": "936a8399bdc0590b736a95398e9c1d518a4c942e2030867a48f3544b5393ecee",
+      "holdout.jsonl": "1b6478f5c1966156dd6e5c9771da007fdaa2f1e2b86c3c0551964923012c755d",
+      "knowledge.json": "7942dc6d67107d627b15437fbc4353e3dc9d6fc29bc694294b5308c5d59997f0",
+      "manifest.json": "06b4a5dce0b839b258cb405d9e42bd27b72d0305fa152d8a5a381df8fd2be473"
+    }
+  },
+  "interpretation": "Regression diagnostics on already reviewed/published questions; not blind validation or an answer-quality score.",
+  "configuration": "Unchanged BM25 0.62 + character 2/3-gram 0.38. Compare old top-4 coverage >= 0.12 with topic/capability/identifier filtering. No embedding calls.",
+  "baseline": {
+    "metrics": {
+      "answerable_count": 8,
+      "recall_at_4": 0.75,
+      "mrr_at_4": 0.75,
+      "returned_precision_macro": 0.4583333333333333,
+      "fully_covered": 6,
+      "no_answer_false_retrieval": {
+        "count": 0,
+        "total": 1
+      },
+      "dynamic_queries_with_static_evidence": 0
+    },
+    "cases": [
+      {
+        "id": "RET-021",
+        "expected": [
+          "PLAN-001"
+        ],
+        "returned": [],
+        "answerability": "kb_answerable",
+        "recall": 0.0,
+        "mrr": 0,
+        "precision": 0
+      },
+      {
+        "id": "RET-022",
+        "expected": [
+          "PLAN-001"
+        ],
+        "returned": [],
+        "answerability": "kb_answerable",
+        "recall": 0.0,
+        "mrr": 0,
+        "precision": 0
+      },
+      {
+        "id": "RET-023",
+        "expected": [
+          "BAL-001"
+        ],
+        "returned": [
+          "BAL-001",
+          "ACCOUNT-001",
+          "REFUND-001"
+        ],
+        "answerability": "kb_answerable",
+        "recall": 1.0,
+        "mrr": 1.0,
+        "precision": 0.3333333333333333
+      },
+      {
+        "id": "RET-024",
+        "expected": [
+          "BAL-001"
+        ],
+        "returned": [
+          "BAL-001"
+        ],
+        "answerability": "kb_answerable",
+        "recall": 1.0,
+        "mrr": 1.0,
+        "precision": 1.0
+      },
+      {
+        "id": "RET-025",
+        "expected": [
+          "INVOICE-001"
+        ],
+        "returned": [
+          "INVOICE-001",
+          "STATUS-001"
+        ],
+        "answerability": "kb_answerable",
+        "recall": 1.0,
+        "mrr": 1.0,
+        "precision": 0.5
+      },
+      {
+        "id": "RET-026",
+        "expected": [
+          "ACCOUNT-001"
+        ],
+        "returned": [
+          "ACCOUNT-001",
+          "BAL-001"
+        ],
+        "answerability": "kb_answerable",
+        "recall": 1.0,
+        "mrr": 1.0,
+        "precision": 0.5
+      },
+      {
+        "id": "RET-027",
+        "expected": [
+          "STATUS-001"
+        ],
+        "returned": [
+          "STATUS-001",
+          "ACCOUNT-001",
+          "INVOICE-001"
+        ],
+        "answerability": "kb_answerable",
+        "recall": 1.0,
+        "mrr": 1.0,
+        "precision": 0.3333333333333333
+      },
+      {
+        "id": "RET-028",
+        "expected": [
+          "ERR-401",
+          "PLAN-001"
+        ],
+        "returned": [
+          "PLAN-001",
+          "ERR-401"
+        ],
+        "answerability": "kb_and_business_data",
+        "recall": 1.0,
+        "mrr": 1.0,
+        "precision": 1.0
+      },
+      {
+        "id": "RET-029",
+        "expected": [],
+        "returned": [],
+        "answerability": "no_kb_answer",
+        "recall": null,
+        "mrr": 0,
+        "precision": 0
+      },
+      {
+        "id": "RET-030",
+        "expected": [],
+        "returned": [],
+        "answerability": "business_data_only",
+        "recall": null,
+        "mrr": 0,
+        "precision": 0
+      }
+    ]
+  },
+  "updated": {
+    "metrics": {
+      "answerable_count": 8,
+      "recall_at_4": 1.0,
+      "mrr_at_4": 1.0,
+      "returned_precision_macro": 1.0,
+      "fully_covered": 8,
+      "no_answer_false_retrieval": {
+        "count": 0,
+        "total": 1
+      },
+      "dynamic_queries_with_static_evidence": 0
+    },
+    "cases": [
+      {
+        "id": "RET-021",
+        "expected": [
+          "PLAN-001"
+        ],
+        "returned": [
+          "PLAN-001"
+        ],
+        "answerability": "kb_answerable",
+        "recall": 1.0,
+        "mrr": 1.0,
+        "precision": 1.0
+      },
+      {
+        "id": "RET-022",
+        "expected": [
+          "PLAN-001"
+        ],
+        "returned": [
+          "PLAN-001"
+        ],
+        "answerability": "kb_answerable",
+        "recall": 1.0,
+        "mrr": 1.0,
+        "precision": 1.0
+      },
+      {
+        "id": "RET-023",
+        "expected": [
+          "BAL-001"
+        ],
+        "returned": [
+          "BAL-001"
+        ],
+        "answerability": "kb_answerable",
+        "recall": 1.0,
+        "mrr": 1.0,
+        "precision": 1.0
+      },
+      {
+        "id": "RET-024",
+        "expected": [
+          "BAL-001"
+        ],
+        "returned": [
+          "BAL-001"
+        ],
+        "answerability": "kb_answerable",
+        "recall": 1.0,
+        "mrr": 1.0,
+        "precision": 1.0
+      },
+      {
+        "id": "RET-025",
+        "expected": [
+          "INVOICE-001"
+        ],
+        "returned": [
+          "INVOICE-001"
+        ],
+        "answerability": "kb_answerable",
+        "recall": 1.0,
+        "mrr": 1.0,
+        "precision": 1.0
+      },
+      {
+        "id": "RET-026",
+        "expected": [
+          "ACCOUNT-001"
+        ],
+        "returned": [
+          "ACCOUNT-001"
+        ],
+        "answerability": "kb_answerable",
+        "recall": 1.0,
+        "mrr": 1.0,
+        "precision": 1.0
+      },
+      {
+        "id": "RET-027",
+        "expected": [
+          "STATUS-001"
+        ],
+        "returned": [
+          "STATUS-001"
+        ],
+        "answerability": "kb_answerable",
+        "recall": 1.0,
+        "mrr": 1.0,
+        "precision": 1.0
+      },
+      {
+        "id": "RET-028",
+        "expected": [
+          "ERR-401",
+          "PLAN-001"
+        ],
+        "returned": [
+          "PLAN-001",
+          "ERR-401"
+        ],
+        "answerability": "kb_and_business_data",
+        "recall": 1.0,
+        "mrr": 1.0,
+        "precision": 1.0
+      },
+      {
+        "id": "RET-029",
+        "expected": [],
+        "returned": [],
+        "answerability": "no_kb_answer",
+        "recall": null,
+        "mrr": 0,
+        "precision": 0
+      },
+      {
+        "id": "RET-030",
+        "expected": [],
+        "returned": [],
+        "answerability": "business_data_only",
+        "recall": null,
+        "mrr": 0,
+        "precision": 0
+      }
+    ]
+  }
+}

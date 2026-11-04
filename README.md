@@ -10,7 +10,7 @@
 [![Python 3.11+](docs/assets/badges/python.svg)](pyproject.toml)
 [![SQLite built in](docs/assets/badges/sqlite.svg)](docs/architecture.md)
 [![Live updates SSE](docs/assets/badges/sse.svg)](docs/operations.md#live-updates)
-[![Local tests 225 passed](docs/assets/badges/tests.svg)](docs/verification.md)
+[![Local tests 292 passed](docs/assets/badges/tests.svg)](docs/verification.md)
 [![Read tools 10](docs/assets/badges/tools.svg)](docs/architecture.md#evidence-and-actions)
 
 [Quick start](#quick-start) · [Real model](#connect-a-real-model) · [Evaluation](#evaluation) · [Documentation](docs/README.md)
@@ -23,9 +23,9 @@ Accounts, policies, transactions and knowledge are synthetic. Model and client n
 
 ## Product demo
 
-![Support workbench with human priority, private AI suggestions and message retraction](docs/screenshots/live-admin-collaboration.jpg)
+![Admin workbench with real-model evidence and a private suggestion during human priority](docs/screenshots/v0.5.10-live-admin.png)
 
-*Local demo: staff can inspect evidence, send a suggestion or retract an AI reply. This historical screenshot shows the collaboration workflow, not proof of a live model call.*
+*v0.5.10 real-model acceptance: the admin sees combined knowledge and query evidence before a private suggestion. Support and customer views omit the technical explanation.*
 
 ## What it solves
 
@@ -33,9 +33,11 @@ Accounts, policies, transactions and knowledge are synthetic. Model and client n
 |---|---|
 | Customers wait for routine answers | Automatic replies by default, with visible generation status and live updates |
 | Generic answers miss account details | Retrieve knowledge and query scoped account, quota, request and order data |
+| Request IDs and local times cannot be matched | Match within the customer account by request ID first; convert event time zones in code |
+| Demo usage does not change account state | Scheduled quota refresh, simulated quota/balance debits and visible billing sources |
 | Follow-up questions lose context | Carry recent public customer, AI and staff messages; track topic switches and refresh business facts |
 | AI interrupts a staff conversation | Human priority for 15 minutes; unanswered follow-ups produce private suggestions after 1 minute |
-| Staff need control over mistakes and actions | Reply/retract controls, admin-only account and balance changes, explicit approval for protected operations |
+| Staff need control over mistakes and actions | Reply/retract controls; rule-checked automatic balance corrections, staff `/recharge` and invoice edits; admin-only refunds, account management and arbitrary financial changes |
 
 These are implemented workflows. Reduced handling time, support cost and commercial impact remain outcomes to measure in a real deployment.
 
@@ -58,12 +60,12 @@ All initial passwords: **`Demo123!`**.
 | Role | Email | Access / sample scenario |
 |---|---|---|
 | Administrator | `admin@lumen.test` | Accounts, plans, balances, tickets and global AI switch |
-| Support | `support1@lumen.test`, `support2@lumen.test` | Replies, private suggestions and AI message retraction |
+| Support | `support1@lumen.test`, `support2@lumen.test` | Replies, retractions, ticket-scoped `/recharge` and invoice edits |
 | Customer | `alice@lumen.test` | Small negative balance and failed requests |
 | Customer | `ben@lumen.test` | Exhausted quota and refund requests |
 | Customer | `cora@lumen.test` | Client configuration and invoices |
 
-Staff and admins can switch to their personal view through the bottom-left avatar. Support accounts cannot change balances, plans or the global AI switch.
+Staff and admins can switch views through the bottom-left avatar. AI can clear eligible negative balances. Support/admins can enter `/recharge` in a ticket to override eligibility; the result is staff-only. Support can also edit invoice titles and reissue without changing the amount. Arbitrary balance adjustments, plans, refund approval, invoice amount changes and the global AI switch require an admin.
 
 ### Try the workflow
 
@@ -93,20 +95,24 @@ The application adds `/chat/completions` or `/responses`; do not include that su
 
 Interactive settings stay only in the running Python process. They are not saved to files, the database or the parent shell. A later launch asks again unless you explicitly supplied the corresponding process environment variables. Actual model requests send authentication and scoped conversation/evidence data to **your chosen endpoint**.
 
-The staff panel shows model names, call stages, timings and any fallback. “Provider selected” alone does not prove a successful reply. See [connection troubleshooting and configuration details](docs/operations.md#model-connection).
+Final replies retain their model/source label. Only admins see evidence summaries, knowledge IDs, tool traces, call timings and fallback details. “Provider selected” alone does not prove a successful reply. See [connection troubleshooting and configuration details](docs/operations.md#model-connection).
 
 ## Evaluation
 
-| Evidence | Recorded result | Meaning |
+| Evidence in v0.5.10 | Result | Scope |
 |---|---|---|
-| Local software suite, v0.5.7 | **225 passed** | Automated checks; API behavior is mocked |
-| Portal workflow regression | **29/29 scenarios** | Routing, tools and required facts on synthetic cases |
-| Legacy RAG regression | **48/48 scenarios, 63/63 turns** | Compatibility with the earlier standalone demo |
-| Retrieval comparison, v0.5.6 | **20 development + 10 holdout queries** | BM25, character n-grams and hybrid under the same filtering rules |
+| Software checks | **292 passed** | Includes mocked model calls and role isolation |
+| Portal workflow | **29/29 scenarios** | Synthetic business regression |
+| Real model | **12 turns, 34 API calls** | Includes pre-fix investigations and corrected reruns; not a first-pass success rate |
+| Legacy RAG, historical v0.5.9 | **48/48 scenarios, 63/63 turns** | Earlier standalone workflow; not rerun for this release |
+| Owner-reviewed labels | **30/30 approved** | 20 development + 10 historical holdout questions |
+| Updated retrieval | **25/25 answerable questions fully covered; 0/3 false retrievals on missing knowledge** | Known-question regression; not blind validation or answer accuracy |
 
-All three retrieval methods tied **after filtering**: development Recall@4 **67.65%**, holdout Recall@4 **68.75%**. Raw rankings differed; coverage filtering removed relevant evidence. The existing hybrid remains in use. Labels are AI-assisted and await owner review; these figures are not answer accuracy or production resolution rates.
+The hybrid scorer remains BM25 0.62 + character n-gram 0.38. This release fixes Chinese-adjacent error codes, missing plan-policy dependencies and a monetary check that incorrectly triggered fallback. Live reruns verified the fixes using `gpt-6-astra` through Chat Completions. Historical v0.5.6 results remain unchanged.
 
-[Results, limitations and commands](docs/evaluation.md) · [Retrieval comparison](docs/retrieval-comparison.md) · [Release verification](docs/verification.md)
+Admins now get a short evidence receipt before the final reply, plus reported token usage, retries and estimated cost at self-configured rates. The receipt shares the answer-generation call; no extra model request is added. Missing usage or prices remain unknown.
+
+[Real-model findings](docs/live-model-acceptance.md) · [Evaluation and reproduction](docs/evaluation.md) · [Release verification](docs/verification.md) · [Evidence and cost guide](docs/admin-evidence.md)
 
 ## Project layout
 
@@ -123,7 +129,7 @@ runtime/             Created on launch; excluded from releases
 
 The default database is `runtime/lumen_desk.db`. A newly extracted release creates its own demo data; existing project databases stay in their original folders. [Persistence and optional Docker setup](docs/operations.md#data-and-launch-options).
 
-**Next work:** review retrieval labels, improve coverage filtering using development data, and summarize measured model usage and cost. This version makes no measured cost-saving claim and performs no model fine-tuning.
+**Next measurement:** unseen retrieval questions and a representative business pilot beyond these known synthetic cases. No measured labor savings, revenue improvement or model fine-tuning is claimed.
 
-[Chinese guide](README.zh-CN.md) · [Documentation index](docs/README.md) · [Earlier standalone RAG](docs/legacy/README.md)
+[Approved business rules](docs/business-rules.md) · [Chinese guide](README.zh-CN.md) · [Documentation index](docs/README.md) · [Earlier standalone RAG](docs/legacy/README.md)
 

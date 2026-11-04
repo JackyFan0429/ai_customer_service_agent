@@ -23,7 +23,7 @@ class ReplayProvider(ResponsesProvider):
         if stage == 'support_intents':
             result = {'intents': local_intents(data['message'], {'intents': data['history']['previous_intents']})}
         elif stage == 'support_reply':
-            result = {'answer': self.reply or data['baseline_answer']}
+            result = {'evidence_summary': '依据本次业务查询回复。', 'answer': self.reply or data['baseline_answer']}
         else:
             result = {'issues': []}
         return {'model': 'gpt-6-astra-test', 'output_text': json.dumps(result, ensure_ascii=False)}
@@ -82,7 +82,7 @@ class MultiTurnRegressionTests(unittest.TestCase):
         return self.service.create_ticket(self.customer, {'subject': '多轮回归', 'content': text})['ticket']['id']
 
     def latest(self, tid):
-        return self.service.ticket_detail(self.staff, tid)['runs'][0]
+        return self.service.ticket_detail(self.db.one('SELECT * FROM users WHERE id=1'), tid)['runs'][0]
 
     def test_contextual_reply_passes_generation_and_publication(self):
         tid = self.create('Claude Code 使用 claude-opus-4-8；22:26 悉尼时间报错503，完整错误是 upstream unavailable。')

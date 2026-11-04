@@ -1,0 +1,61 @@
+{
+  "release": "v0.5.8",
+  "date": "2026-11-04",
+  "provider": "local",
+  "data": "synthetic, disposable test database",
+  "external_model_calls": 0,
+  "browser_sessions": "separate localhost and 127.0.0.1 cookie scopes on port 8098",
+  "checks": [
+    {
+      "case": "exact_request_auto_reply",
+      "passed": true,
+      "observed": "Customer created ticket 7 from request 37. Automatic reply identified HTTP 403, zero charge, event UTC 11:28:49 and UTC+11 local 22:28:49. No staff publish or manual reload."
+    },
+    {
+      "case": "display_time_zone_change",
+      "passed": true,
+      "observed": "Customer changed Australia/Sydney to Asia/Shanghai. The 22:28:55 UTC+11 ticket timestamp became 19:28:55 UTC+8; historical event context stayed unchanged."
+    },
+    {
+      "case": "balance_fallback",
+      "passed": true,
+      "observed": "Ben had exhausted quota and fallback off: request 37 failed without charge. Enabling own fallback allowed request 38, deducted $0.12 and changed $18.50 to $18.38; request and ledger showed balance source."
+    },
+    {
+      "case": "support_balance_correction",
+      "passed": true,
+      "observed": "Support1 approved ticket 1 correction from -$0.18 to zero. Customer account page automatically showed $0.00 without reload."
+    },
+    {
+      "case": "invoice_edit_live",
+      "passed": true,
+      "observed": "Support1 verified order LM-DEMO-0004 and edited the invoice title. Amount field was read-only; customer ticket received the public staff message automatically."
+    },
+    {
+      "case": "private_suggestion_delay",
+      "passed": true,
+      "observed": "After a human reply, customer follow-up at 11:19:13 UTC had suggestion due 11:20:13 UTC. Generated internally at due time while the customer received no AI message."
+    },
+    {
+      "case": "invoice_followup_fix",
+      "passed": true,
+      "observed": "Initial result-check follow-up was wrongly treated as a new edit request. Fixed, added regression, regenerated the suggestion: latest title and update timestamp, no duplicate request or email claim."
+    },
+    {
+      "case": "send_and_retract_live",
+      "passed": true,
+      "observed": "Support sent suggestion 9 at 11:22:20 UTC and retracted it at 11:22:23 UTC. Customer page showed the reply then the retracted placeholder without reload."
+    },
+    {
+      "case": "quota_refresh_and_sync",
+      "passed": true,
+      "observed": "Admin set used quota to $20, a past reset at 11:00 UTC and one-day period. Used quota reset to zero, next reset moved to 2026-11-05 11:00 UTC. Customer page automatically showed $600 remaining, new cycle and quota ledger."
+    },
+    {
+      "case": "admin_settings_form",
+      "passed": true,
+      "observed": "Admin saved settings successfully with the revised correction policy. Global automatic-send control was available to admin and absent from support workbench."
+    }
+  ],
+  "limitation": "Observed local workflows only. Does not prove provider compatibility, real-model answer quality, production throughput or cost savings."
+}

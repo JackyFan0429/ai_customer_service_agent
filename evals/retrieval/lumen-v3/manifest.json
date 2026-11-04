@@ -1,0 +1,172 @@
+{
+  "schema_version": 1,
+  "dataset_id": "lumen-retrieval-v3-reviewed",
+  "delivery_version": "0.5.9",
+  "created_on": "2026-11-04",
+  "timezone": "Australia/Sydney",
+  "source_release": "0.5.8",
+  "source_archive_sha256": "12150200d2ee6ee5161833b506a4ca8f7e398adfd5161f63005b783285459893",
+  "as_of": "2026-11-04T00:00:00+00:00",
+  "knowledge_file": "knowledge.json",
+  "knowledge_record_count": 10,
+  "knowledge_source": "v0.5.8 support_agent/desk/data/knowledge.json plus the owner-approved balance policy amendment recorded below",
+  "knowledge_state": {
+    "published": 1,
+    "review_after": "2027-02-01",
+    "basis": "Evaluation-only knowledge snapshot: v0.5.8 baseline plus the owner-approved 2026-11-04 balance amendment. Published=1 is a validator snapshot flag, not deployment status. No runtime customer database was read."
+  },
+  "splits": {
+    "development": {
+      "file": "development.jsonl",
+      "expected_count": 20
+    },
+    "holdout": {
+      "file": "holdout.jsonl",
+      "expected_count": 10
+    }
+  },
+  "split_policy": {
+    "method": "Inherited historical group allocation for audit continuity, not a new blind split.",
+    "groups": {
+      "plan-payment-order": {
+        "split": "development",
+        "intent": "套餐与余额并存时的扣除优先级"
+      },
+      "balance-eligibility": {
+        "split": "development",
+        "intent": "负余额回正的适用条件"
+      },
+      "refund-submission": {
+        "split": "development",
+        "intent": "退款申请入口和处理责任"
+      },
+      "auth401-checklist": {
+        "split": "development",
+        "intent": "401 的配置一致性检查与密钥披露"
+      },
+      "failure-billing": {
+        "split": "development",
+        "intent": "失败请求是否扣费需要什么证据"
+      },
+      "client-protocol": {
+        "split": "development",
+        "intent": "Claude Code 接入时协议与模型的匹配"
+      },
+      "invoice-correction": {
+        "split": "development",
+        "intent": "发票抬头修改的处理权限"
+      },
+      "historical-status": {
+        "split": "development",
+        "intent": "历史故障公告与当前状态的证据边界"
+      },
+      "account-isolation": {
+        "split": "development",
+        "intent": "工单用户的数据访问范围"
+      },
+      "image-placeholder": {
+        "split": "development",
+        "intent": "只有截图占位时如何获取排障信息"
+      },
+      "refund-reset-combination": {
+        "split": "development",
+        "intent": "退款申请是否改变额度周期以及是否另开工单"
+      },
+      "missing-model-spec": {
+        "split": "development",
+        "intent": "知识未提供的模型上下文窗口数值"
+      },
+      "unsupported-error-identifier": {
+        "split": "development",
+        "intent": "未知错误标识不能套用已知 401"
+      },
+      "dynamic-current-balance": {
+        "split": "development",
+        "intent": "只查询当前账户金额"
+      },
+      "quota-expiry-vs-cycle": {
+        "split": "holdout",
+        "intent": "套餐有效期与当前周期额度相互独立"
+      },
+      "balance-write-confirmation": {
+        "split": "holdout",
+        "intent": "提交回正与实际完成的区分"
+      },
+      "invoice-delivery-status": {
+        "split": "holdout",
+        "intent": "待开票与已发送的区别"
+      },
+      "human-assist-priority": {
+        "split": "holdout",
+        "intent": "人工接管后 AI 草稿的可见性"
+      },
+      "status-eta": {
+        "split": "holdout",
+        "intent": "没有恢复时间记录时的答复边界"
+      },
+      "403-quota-key": {
+        "split": "holdout",
+        "intent": "403 下余额、套餐额度与 Key 兜底的组合核验"
+      },
+      "missing-invoice-export-api": {
+        "split": "holdout",
+        "intent": "知识未提供的发票批量导出接口"
+      },
+      "dynamic-request-duration": {
+        "split": "holdout",
+        "intent": "只查询某次请求的耗时"
+      }
+    },
+    "same_knowledge_id_across_splits": "allowed; the same article can support distinct business subproblems",
+    "holdout_use": "Already published and read. Historical holdout is diagnostic only; create new unseen validation cases before evaluating future retrieval changes."
+  },
+  "labeling": {
+    "author": "ChatGPT-assisted",
+    "method": "Review each group with the owner without consulting retrieved rankings. Preserve v2 and the released v0.5.8 corpus; apply the explicit balance policy amendment to a new v3 draft and update affected exact evidence and reasoning.",
+    "query_unit": "The complete query string is retrieval input. No rewrite, dialogue memory, answer generation or tool execution is evaluated.",
+    "source": "New synthetic questions based on the demo business rules; no original customer export or account credentials.",
+    "review_status": "30 approved, 0 pending_owner_review",
+    "quality_claim": "All 30 labels explicitly approved by the project owner; synthetic, small and already exposed."
+  },
+  "metric_populations": {
+    "recall_at_4_and_mrr_at_4": [
+      "kb_answerable",
+      "kb_and_business_data"
+    ],
+    "no_answer_false_retrieval_rate": [
+      "no_kb_answer"
+    ],
+    "diagnostic_only": [
+      "business_data_only"
+    ]
+  },
+  "files_sha256": {
+    "knowledge.json": "7942dc6d67107d627b15437fbc4353e3dc9d6fc29bc694294b5308c5d59997f0",
+    "development.jsonl": "936a8399bdc0590b736a95398e9c1d518a4c942e2030867a48f3544b5393ecee",
+    "holdout.jsonl": "1b6478f5c1966156dd6e5c9771da007fdaa2f1e2b86c3c0551964923012c755d"
+  },
+  "draft_revision": 4,
+  "parent_dataset": "lumen-retrieval-v2-draft",
+  "implementation_status": "implemented_in_v0.5.9",
+  "policy_amendments": [
+    {
+      "id": "balance-auto-and-recharge-20261104",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-11-04",
+      "source": "explicit user reply in this conversation",
+      "source_text": "回正操作也可以直接自动化帮助，也就是说 允许 AI 在我们之前的判断条件下判断后自动帮助用户回正。然后管理员和客服可以通过发送 /recharge 到和用户的对话框里来忽略一切条件帮助用户回正。这个回正后要在聊天框内（仅客服端和管理员端显示回正成功和当前余额）。修改更新，然后继续审核 RET-025、RET-026。",
+      "knowledge_ids": [
+        "BAL-001",
+        "ACCOUNT-001"
+      ],
+      "affected_cases": [
+        "RET-003",
+        "RET-004",
+        "RET-023",
+        "RET-024"
+      ],
+      "implementation_status": "implemented_in_v0.5.9",
+      "scope": "AI may clear a negative balance after existing eligibility checks. Support/admin may use /recharge in the current ticket to bypass eligibility conditions; it remains a role-bound negative-balance-to-zero operation. Successful write and current balance appear only in staff/admin chat. Existing static question labels and the historical split allocation remain unchanged."
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+[
+  {
+    "case_ids": [
+      "RET-001",
+      "RET-002"
+    ],
+    "decision": "approved",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-11-04",
+    "source": "explicit user reply in this conversation",
+    "answer": "通过这两题",
+    "scope": "Knowledge IDs, static-rule interpretation and whole-request quota prerequisite."
+  },
+  {
+    "case_ids": [
+      "RET-003",
+      "RET-004"
+    ],
+    "decision": "approved",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-11-04",
+    "source": "explicit user reply in this conversation",
+    "answer": "通过这两题",
+    "scope": "BAL-001 only, static eligibility explanation, provenance, threshold/cooldown and human approval."
+  },
+  {
+    "case_ids": [
+      "RET-005",
+      "RET-006"
+    ],
+    "decision": "approved",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-11-04",
+    "source": "explicit user reply in this conversation",
+    "answer": "按完整退款诉求评测（推荐）",
+    "scope": "REFUND-001 with kb_and_business_data classification; query orders and existing refund state; admin retains final approval."
+  },
+  {
+    "case_ids": [
+      "RET-007",
+      "RET-008"
+    ],
+    "decision": "approved",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-11-04",
+    "source": "explicit user reply in this conversation",
+    "answer": "这两题通过，按这个标签和解释保留。更新复核记录，然后继续审核 RET-009、RET-010。",
+    "scope": "ERR-401 only; static configuration-checklist explanation; Key name and last four characters only; backend metadata does not establish the customer computer’s active configuration."
+  },
+  {
+    "case_ids": [
+      "RET-009",
+      "RET-010"
+    ],
+    "decision": "approved",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-11-04",
+    "source": "explicit user reply in this conversation",
+    "answer": "通过",
+    "scope": "ERR-503 only; kb_and_business_data; scoped target request log is required and platform status is optional. Confirm no charge only for a matched failed record with zero cost; clarify missing identity/time details and never replace single-request fees with a batch total."
+  },
+  {
+    "case_ids": [
+      "RET-011",
+      "RET-012"
+    ],
+    "decision": "approved",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-11-04",
+    "source": "explicit user reply in this conversation",
+    "answer": "通过",
+    "scope": "SETUP-001 only, static rule explanation; protocol/channel/model compatibility; reuse completed save/restart steps and verify with a minimal request; paused refund and absent auth errors are not relevant labels. Query-contained context does not establish multi-turn memory performance."
+  },
+  {
+    "case_ids": [
+      "RET-013",
+      "RET-014"
+    ],
+    "decision": "approved",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-11-04",
+    "source": "explicit user reply in this conversation",
+    "answer": "通过",
+    "scope": "RET-013: INVOICE-001; approved full invoice-reissue intent as kb_and_business_data, requiring get_invoices and get_orders for the ticket customer; AI cannot modify invoices, support/admin may correct the title or reissue without changing the amount, amount changes require admin approval. RET-014: STATUS-001, static evidence-rule question; distinguish query time from record update time, and do not infer a current outage from a historical notice. A later request for current status requires a fresh business query."
+  },
+  {
+    "case_ids": [
+      "RET-015",
+      "RET-016"
+    ],
+    "decision": "approved",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-11-04",
+    "source": "explicit user reply in this conversation",
+    "answer": "这两题通过，按这个标签和解释保留。更新复核记录，然后继续审核 RET-017、RET-018。",
+    "scope": "RET-015: ACCOUNT-001 only, static rule explanation; AI queries only the ticket customer, and another email in the message does not authorize cross-account access. RET-016: IMAGE-001 only, static rule explanation; do not claim to have seen a placeholder image, reuse known context and ask only for missing diagnostic text, mask credentials and unrelated personal information while preserving model names and error codes, and hand off with available context when the customer cannot provide more. Generic error wording does not justify ERR-503. RET-017 and RET-018 remain pending."
+  },
+  {
+    "case_ids": [
+      "RET-017",
+      "RET-018"
+    ],
+    "decision": "approved",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-11-04",
+    "source": "explicit user reply in this conversation",
+    "answer": "可以，且第二个可以说知识库无答案，我将会帮您对接人工",
+    "scope": "RET-017: PLAN-001 and REFUND-001 are both necessary, static policy consultation; a refund request does not advance quota refresh and no new ticket is needed. Policy consultation does not create an application; an explicit refund request in prior context still requires order and existing-application lookup. RET-018: empty relevant IDs, no_kb_answer; the owner additionally requires explaining that the knowledge base lacks the model specification and arranging human assistance. Do not invent a token limit or treat a matching model name as specification evidence. Human handoff is a downstream workflow requirement, not a relevant knowledge label or a verified action in this label review. RET-019 and RET-020 remain pending."
+  },
+  {
+    "case_ids": [
+      "RET-019",
+      "RET-020"
+    ],
+    "decision": "approved",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-11-04",
+    "source": "explicit user reply in this conversation",
+    "answer": "这两题通过，按这个标签和处理方式保留。更新复核记录，然后继续审核 RET-021、RET-022。",
+    "scope": "RET-019: empty relevant IDs, no_kb_answer; preserve error code 1401, do not equate it with 401 or substitute generic troubleshooting for its documented definition, explain missing knowledge and arrange human verification. RET-020: empty relevant IDs, business_data_only; query the current ticket customer with get_account_overview and answer from the current result, not static policies or a balance from earlier conversation. Missing static knowledge alone is not a reason for handoff. This review approves labels and expected handling, not live tool execution or handoff validation. RET-021 and RET-022 remain pending."
+  },
+  {
+    "case_ids": [
+      "RET-021",
+      "RET-022"
+    ],
+    "decision": "approved",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-11-04",
+    "source": "explicit user reply in this conversation",
+    "answer": "这两题通过，按这个标签和解释保留。更新复核记录，然后继续审核 RET-023、RET-024。",
+    "scope": "RET-021 and RET-022: PLAN-001 only, kb_answerable. Subscription validity and remaining cycle quota are independent; an unexpired plan does not imply remaining quota or an immediate refill. Refresh follows configured time and cycle, with subscription validity and other eligibility conditions still applying to use. These questions ask about the rule; a follow-up asking for the customer’s actual quota or reset time requires get_subscriptions. Keep the paraphrase pair together in the historical holdout allocation; this review is not a new blind evaluation. RET-023 and RET-024 remain pending."
+  },
+  {
+    "case_ids": [
+      "RET-003",
+      "RET-004",
+      "RET-023",
+      "RET-024"
+    ],
+    "decision": "approved",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-11-04",
+    "source": "explicit user reply in this conversation",
+    "answer": "回正操作也可以直接自动化帮助，也就是说 允许 AI 在我们之前的判断条件下判断后自动帮助用户回正。然后管理员和客服可以通过发送 /recharge 到和用户的对话框里来忽略一切条件帮助用户回正。这个回正后要在聊天框内（仅客服端和管理员端显示回正成功和当前余额）。修改更新，然后继续审核 RET-025、RET-026。",
+    "dataset_id": "lumen-retrieval-v3-policy-draft",
+    "scope": "Owner-approved policy revision supersedes the earlier human-only balance execution condition for RET-003/004 and approves RET-023/024 with revised execution authority and staff-only result visibility. Preserve BAL-001 and static-rule answerability for all four. AI can execute after existing source, balance and $5/7-day checks; support/admin /recharge bypasses balance eligibility checks for the current ticket customer. Only successful writes count as completion. Keep role authorization and negative-balance-to-zero semantics; no public automatic success/balance receipt. Rules and labels updated only, implementation pending. RET-025 and RET-026 remain pending."
+  },
+  {
+    "case_ids": [
+      "RET-025",
+      "RET-026"
+    ],
+    "decision": "approved",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-11-04",
+    "source": "explicit user reply in this conversation",
+    "answer": "这两题通过，按这个标签和解释保留。更新复核记录，然后继续审核 RET-027、RET-028。",
+    "dataset_id": "lumen-retrieval-v3-policy-draft",
+    "scope": "RET-025: INVOICE-001 only, static rule explanation; pending issuance is not issued or sent, no unsupported arrival date, and this demo cannot claim real email delivery. RET-026: ACCOUNT-001 only, static rule explanation; within 15 minutes after a human reply AI does not send directly, and a subsequent customer message unanswered for 1 minute can trigger an internal suggestion that staff must review and send before customer visibility. Explicit takeover persists until AI is resumed, and per-ticket resume cannot override the global off state. RET-027 and RET-028 remain pending."
+  },
+  {
+    "case_ids": [
+      "RET-027",
+      "RET-028"
+    ],
+    "decision": "approved",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-11-04",
+    "source": "explicit user reply in this conversation",
+    "answer": "通过",
+    "dataset_id": "lumen-retrieval-v3-policy-draft",
+    "scope": "RET-027: STATUS-001 only, kb_answerable; the promise rule is answerable even when a recovery date is unavailable, so state no published recovery time and do not invent or guarantee a date. A further request for current progress requires fresh status lookup. RET-028: ERR-401 and PLAN-001 together, kb_and_business_data; query get_account_overview, get_subscriptions and get_api_keys to verify the customer account, subscription/quota and key configuration. Positive balance cannot bypass disabled balance fallback when quota is exhausted. Do not request the full key or classify this as negative-balance correction. RET-029 and RET-030 remain pending."
+  },
+  {
+    "case_ids": [
+      "RET-029",
+      "RET-030"
+    ],
+    "decision": "approved",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-11-04",
+    "source": "explicit user reply in this conversation",
+    "answer": "通过这最后两道，然后把刚刚记录好的需要复核修改的内容进行修改，给我新的 zip。",
+    "dataset_id": "lumen-retrieval-v3-policy-draft",
+    "scope": "RET-029: no_kb_answer, no invented export capability/API parameters, handoff for verification. RET-030: business_data_only, owner-scoped get_recent_requests with context-based request identification, clarify ambiguity, return actual milliseconds only. All 30 labels approved."
+  }
+]

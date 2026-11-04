@@ -1,0 +1,38 @@
+{
+  "version": "0.5.10",
+  "tested_on": "2026-11-05",
+  "timezone": "Australia/Sydney",
+  "site": "independent local demo on port 8100",
+  "method": "Separate customer and staff/admin browser sessions; browser observations with API and persisted-run checks.",
+  "checks": {
+    "automatic_reply_visible_without_reload": true,
+    "staff_receives_same_public_reply_without_reload": true,
+    "staff_cannot_see_admin_evidence": true,
+    "admin_evidence_precedes_final_draft": true,
+    "human_reply_visible_to_customer": true,
+    "human_priority_notice_visible": true,
+    "one_minute_delay_before_internal_suggestion": true,
+    "internal_suggestion_hidden_from_customer": true,
+    "staff_publish_updates_customer_without_reload": true,
+    "retraction_updates_customer_without_reload": true,
+    "admin_page_loads_after_final_restart": true
+  },
+  "human_priority_example": {
+    "human_reply_at_utc": "2026-11-04T13:12:40+00:00",
+    "customer_followup_at_utc": "2026-11-04T13:12:48+00:00",
+    "suggestion_due_at_utc": "2026-11-04T13:13:48+00:00",
+    "draft_ready_at_utc": "2026-11-04T13:14:12+00:00",
+    "published_at_utc": "2026-11-04T13:15:21+00:00"
+  },
+  "retraction": {
+    "message_id": 21,
+    "observed_at_utc": "2026-11-04T13:17:25+00:00",
+    "customer_placeholder": "该条 AI 消息已撤回"
+  },
+  "screenshot": "docs/screenshots/v0.5.10-live-admin.png",
+  "notes": [
+    "Pages were reloaded after deployment restarts, not to receive individual message updates.",
+    "No numerical end-to-end SSE latency or load-test claim.",
+    "Manual recharge was verified through authenticated APIs; see manual-override-confirmation.json."
+  ]
+}

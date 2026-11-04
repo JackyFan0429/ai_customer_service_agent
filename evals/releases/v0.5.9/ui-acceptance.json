@@ -1,0 +1,95 @@
+{
+  "release": "0.5.9",
+  "date": "2026-11-04",
+  "provider": "local",
+  "database": "isolated temporary synthetic database; excluded from release",
+  "roles": [
+    "alice customer",
+    "support1 workbench",
+    "admin workbench"
+  ],
+  "checks": [
+    {
+      "check": "Automatic correction and public final reply without staff send or customer reload",
+      "passed": true
+    },
+    {
+      "check": "Correction receipt visible to staff/admin only; customer account balance updated",
+      "passed": true
+    },
+    {
+      "check": "Exact /recharge produces an internal no-op receipt when already nonnegative",
+      "passed": true
+    },
+    {
+      "check": "After human reply, follow-up produces staff-only final draft at 60 seconds; 15-minute priority text visible",
+      "passed": true
+    },
+    {
+      "check": "Staff sends draft and retracts earlier AI message; customer live view updates without reload",
+      "passed": true
+    },
+    {
+      "check": "Admin receipt before final reply contains ERR-401 + PLAN-001, BM25 weights and actual tool chain",
+      "passed": true
+    },
+    {
+      "check": "Support/customer views contain no admin receipt or technical trace",
+      "passed": true
+    },
+    {
+      "check": "Admin cost settings accept test-only model/rates and show successful save; local calls stay zero",
+      "passed": true
+    },
+    {
+      "check": "Final administrator page has no captured browser console errors",
+      "passed": true
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "ai_draft",
+      "created_at": "2026-11-04T12:47:48+00:00",
+      "detail": "生成建议 #8，路由 answer，查询 3 个工具"
+    },
+    {
+      "kind": "ai_sent",
+      "created_at": "2026-11-04T12:47:48+00:00",
+      "detail": "自动回复已发送"
+    },
+    {
+      "kind": "human_reply",
+      "created_at": "2026-11-04T12:48:22+00:00",
+      "detail": "人工已回复，AI 自动发送暂停"
+    },
+    {
+      "kind": "suggestion_scheduled",
+      "created_at": "2026-11-04T12:48:22+00:00",
+      "detail": "人工优先：客户新消息等待 1 分钟，未回复才生成内部建议"
+    },
+    {
+      "kind": "ai_draft",
+      "created_at": "2026-11-04T12:49:22+00:00",
+      "detail": "生成建议 #9，路由 answer，查询 1 个工具"
+    },
+    {
+      "kind": "ai_sent",
+      "created_at": "2026-11-04T12:50:41+00:00",
+      "detail": "客服审核后发送"
+    },
+    {
+      "kind": "ai_retracted",
+      "created_at": "2026-11-04T12:50:48+00:00",
+      "detail": "客服撤回 AI 消息 #22；业务操作记录保留"
+    }
+  ],
+  "screenshots": [
+    "docs/screenshots/v0.5.9-admin-evidence.png",
+    "docs/screenshots/v0.5.9-customer-live.png"
+  ],
+  "limitations": [
+    "No real model API call. Model output/schema and accounting use automated mocked responses.",
+    "No production latency SLA; observed local UI synchronization only.",
+    "Price form used test-model-only at synthetic rates; not a provider price recommendation."
+  ]
+}

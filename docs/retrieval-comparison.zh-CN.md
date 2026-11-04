@@ -1,5 +1,7 @@
 # BM25、字符 n-gram 与组合检索对照
 
+> 以下为 v0.5.6 历史实验，语料及标签状态按当时保留。已复核 v3 及 v0.5.9 过滤结果见[当前评测](evaluation.zh-CN.md)。
+
 [文档索引](README.zh-CN.md) · [English](retrieval-comparison.md)
 
 实验版本 **v0.5.6**，日期 2026-11-04，使用 v0.5.5 冻结数据。本版保留原始报告。

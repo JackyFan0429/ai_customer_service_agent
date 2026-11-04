@@ -1,0 +1,28 @@
+{
+  "tested_at": "2026-11-04T13:31:38.104441+00:00",
+  "ticket_id": 9,
+  "role": "support",
+  "balance_before_units": -70000,
+  "balance_after_units": 0,
+  "balance_fix_rows_before": 2,
+  "balance_fix_rows_after": 3,
+  "checks": {
+    "eligible_rule_overridden": true,
+    "exactly_one_financial_write": true,
+    "public_messages_unchanged": true,
+    "staff_receipt_visible": true,
+    "admin_receipt_visible": true,
+    "repeat_command_no_financial_write": true
+  },
+  "receipt": "回正成功 · 当前余额 $0.0000 · 原余额 $-7.0000 · 工作人员 #5",
+  "new_ledger_row": {
+    "id": 7,
+    "user_id": 2,
+    "kind": "balance_fix",
+    "delta_units": 70000,
+    "balance_after_units": 0,
+    "note": "余额回正",
+    "operation_key": "override:9:6:-70000",
+    "created_at": "2026-11-04T13:31:38+00:00"
+  }
+}

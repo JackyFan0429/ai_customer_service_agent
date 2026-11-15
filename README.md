@@ -13,13 +13,15 @@
 [![Local tests 292 passed](docs/assets/badges/tests.svg)](docs/verification.md)
 [![Read tools 10](docs/assets/badges/tools.svg)](docs/architecture.md#evidence-and-actions)
 
-[Quick start](#quick-start) · [Real model](#connect-a-real-model) · [Evaluation](#evaluation) · [Documentation](docs/README.md)
+[Quick start](#quick-start) · [Real model](#connect-a-real-model) · [Evaluation](#evaluation) · [Product requirements (PDF)](docs/prd/Lumen_Support_Desk_PRD_EN_v1.1.pdf) · [Documentation](docs/README.md)
 
 </div>
 
 A personal portfolio project with a customer website, support workbench, admin console and local business database. **The entire website runs without a model API.** Optional model access adds triage, answer composition and review.
 
 Accounts, policies, transactions and knowledge are synthetic. Model and client names are retained. No real payments, refunds or external customer systems are connected. The interface and sample conversations are in Simplified Chinese; this guide is in English.
+
+The v1.1 product requirements document explains which tickets the AI can answer, when staff take over, and how to test those workflows in v0.5.10.
 
 ## Product demo
 

@@ -13,7 +13,7 @@
 [![本地测试 292 项通过](docs/assets/badges/tests.svg)](docs/verification.zh-CN.md)
 [![10 个只读工具](docs/assets/badges/tools.svg)](docs/architecture.zh-CN.md)
 
-[快速开始](#快速开始) · [接入真实模型](#接入真实模型) · [评测结果](#评测结果) · [产品需求文档（PDF）](docs/prd/Lumen_Support_Desk_PRD_ZH_v1.1.pdf) · [文档索引](docs/README.zh-CN.md)
+[快速开始](#快速开始) · [接入真实模型](#接入真实模型) · [评测结果](#评测结果) · [产品需求文档（PDF）](docs/prd/Lumen_Support_Desk_PRD_ZH_v1.2.pdf) · [文档索引](docs/README.zh-CN.md)
 
 </div>
 

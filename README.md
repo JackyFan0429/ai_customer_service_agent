@@ -13,7 +13,7 @@
 [![Local tests 292 passed](docs/assets/badges/tests.svg)](docs/verification.md)
 [![Read tools 10](docs/assets/badges/tools.svg)](docs/architecture.md#evidence-and-actions)
 
-[Quick start](#quick-start) · [Real model](#connect-a-real-model) · [Evaluation](#evaluation) · [Product requirements (PDF)](docs/prd/Lumen_Support_Desk_PRD_EN_v1.1.pdf) · [Documentation](docs/README.md)
+[Quick start](#quick-start) · [Real model](#connect-a-real-model) · [Evaluation](#evaluation) · [Product requirements (PDF)](docs/prd/Lumen_Support_Desk_PRD_EN_v1.2.pdf) · [Documentation](docs/README.md)
 
 </div>
 
